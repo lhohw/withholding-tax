@@ -1,9 +1,12 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
+
 import readerReducer from "features/reader/readerSlice";
+import personReducer from "features/person/personSlice";
 
 export const store = configureStore({
   reducer: {
     reader: readerReducer,
+    person: personReducer,
   },
 });
 

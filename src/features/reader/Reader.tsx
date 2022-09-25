@@ -3,9 +3,12 @@ import { css } from "@emotion/react";
 import { useAppSelector, useAppDispatch } from "app/hooks";
 
 import colors from "constants/colors";
+import { yearRegex } from "constants/regex";
 
 import { setPersonnel } from "./readerSlice";
+
 import { readPDF } from "lib/readPDF";
+import { Person } from "features/person/personAPI";
 
 const Title = () => (
   <h2
@@ -129,7 +132,9 @@ const Reader = () => {
           fReader.onloadend = async ({ target: { result } }: any) => {
             const withholdingTaxData = await readPDF(result);
             for (const { data, left } of withholdingTaxData) {
-              // const person = new Person({ data, left });
+              const year = parseInt(data[0][0].replace(yearRegex, ""));
+              const person = new Person({ data, left });
+              console.log(person);
               // dispatch(mergePerson(JSON.stringify(person)));
             }
           };
