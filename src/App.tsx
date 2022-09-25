@@ -1,8 +1,12 @@
 import React from "react";
-import { css } from "@emotion/react";
+import Reader from "features/reader/Reader";
 
 const App = () => {
-  return <div></div>;
+  return (
+    <div>
+      <Reader />
+    </div>
+  );
 };
 
 export default App;
