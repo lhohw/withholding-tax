@@ -1,5 +1,6 @@
 const colors = {
   background: "#fefefe",
+  main: "#3258a8",
 
   black100: "#000000",
   black200: "#202020",

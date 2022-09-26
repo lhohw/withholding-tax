@@ -2,11 +2,15 @@ import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 
 import readerReducer from "features/reader/readerSlice";
 import personReducer from "features/person/personSlice";
+import corporateReducer from "features/corporate/corporateSlice";
+import paymentReducer from "features/payment/paymentSlice";
 
 export const store = configureStore({
   reducer: {
     reader: readerReducer,
     person: personReducer,
+    corporate: corporateReducer,
+    payment: paymentReducer,
   },
 });
 
