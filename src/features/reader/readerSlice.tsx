@@ -1,12 +1,8 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
-export type ReaderState = {
-  selected: number;
-};
+export type ReaderState = {};
 
-const initialState: ReaderState = {
-  selected: -1,
-};
+const initialState: ReaderState = {};
 
 export const readerSlice = createSlice({
   name: "reader",

@@ -34,7 +34,7 @@ export const corporateSlice = createSlice({
         corporate: { RN },
         id,
         earnedIncomeWithholdingDepartment: ei,
-        generation,
+        payment,
       } = person;
       if (!state.list[RN]) {
         state.list[RN] = {
@@ -48,7 +48,7 @@ export const corporateSlice = createSlice({
       } else {
         const p = state.list[RN].personnel[id];
         p.earnedIncomeWithholdingDepartment[year] = ei[year];
-        p.generation[year] = generation[year];
+        p.payment[year] = payment[year];
       }
     },
   },

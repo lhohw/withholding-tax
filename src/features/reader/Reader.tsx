@@ -12,7 +12,6 @@ import {
   setPersonnel,
   CorporateState,
 } from "features/corporate/corporateSlice";
-import { setPayment } from "features/payment/paymentSlice";
 
 import { readPDF } from "lib/readPDF";
 import { Person } from "features/person/personAPI";
@@ -28,8 +27,7 @@ const Title = () => (
   </h2>
 );
 type InputProps = {
-  // onClick: () => void;
-  onClick: any;
+  onClick: (e: React.MouseEvent<HTMLInputElement, MouseEvent>) => void;
   onFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 const Input = ({ onClick, onFileChange }: InputProps) => (
@@ -41,7 +39,7 @@ const Input = ({ onClick, onFileChange }: InputProps) => (
       margin: 0;
       align-items: center;
       justify-content: center;
-      border: 1px solid ${colors.black800};
+      border: 1px solid ${colors.black600};
       border-radius: 6px;
       position: relative;
       font-size: ${font.size.small};
@@ -98,7 +96,7 @@ const Corporates = ({
         css={css`
           display: flex;
           padding: 0.5rem;
-          color: ${key === selected ? colors.main : colors.black100};
+          color: ${key === selected ? colors.main : colors.base};
           border: 1px solid ${colors.main};
           border-radius: 6px;
           justify-content: center;
@@ -140,11 +138,8 @@ const Reader = () => {
   const { list, selected } = useAppSelector((state) => state.corporate);
 
   const onCorporateClick = useCallback(
-    (id: string) => {
-      dispatch(setPersonnel(id));
-      dispatch(setPayment(list[id]));
-    },
-    [dispatch, list]
+    (id: string) => dispatch(setPersonnel(id)),
+    [dispatch]
   );
   const onFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

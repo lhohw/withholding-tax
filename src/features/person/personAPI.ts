@@ -38,7 +38,7 @@ const createMonthlyStatement = (
   }
 
   const monthlyStatement: MonthlyStatementOfPaymentOfWageAndSalary = {
-    generation: {
+    payment: {
       youth: 0,
       manhood: 0,
     },
@@ -76,8 +76,8 @@ const createMonthlyStatement = (
     },
   };
   if (isYouth(id, monthlyStatement.paymentDate))
-    monthlyStatement.generation.youth = monthlyStatement.totalPay.total;
-  else monthlyStatement.generation.manhood = monthlyStatement.totalPay.total;
+    monthlyStatement.payment.youth = monthlyStatement.totalPay.total;
+  else monthlyStatement.payment.manhood = monthlyStatement.totalPay.total;
 
   return monthlyStatement;
 };
@@ -85,7 +85,6 @@ const createMonthlyStatement = (
 export class Person {
   id: string = "";
   name: string = "";
-  checked: boolean = false;
   corporate: PersonCorporate = {
     name: null!,
     RN: null!,
@@ -99,7 +98,7 @@ export class Person {
     retirement: null!,
     birth: null!,
   };
-  generation: PersonGeneration = {};
+  payment: personPayment = {};
   constructor({ data, left }: { data: [string, number][]; left: number[] }) {
     this.init({ data, left });
   }
@@ -141,7 +140,7 @@ export class Person {
       left,
       year,
       this.id,
-      this.generation
+      this.payment
     );
   }
 }
@@ -151,14 +150,14 @@ const createStatement = (
   left: number[],
   yearPrefix: number,
   id: string,
-  generation: PersonGeneration
+  payment: personPayment
 ) => {
   const [text, index] = input;
   let match;
   let here = 0;
   const statement: MonthlyStatementOfPaymentOfWageAndSalary[] = [];
 
-  generation[yearPrefix] = { youth: 0, manhood: 0 };
+  payment[yearPrefix] = { youth: 0, manhood: 0 };
   let tag: string = "";
   while ((match = monthlyStatementRegex.exec(text))) {
     if (match.index === 0) {
@@ -174,8 +173,8 @@ const createStatement = (
       yearPrefix
     );
     statement.push(monthlyStatement);
-    generation[yearPrefix].youth += monthlyStatement.generation.youth;
-    generation[yearPrefix].manhood += monthlyStatement.generation.manhood;
+    payment[yearPrefix].youth += monthlyStatement.payment.youth;
+    payment[yearPrefix].manhood += monthlyStatement.payment.manhood;
 
     tag = match[0];
     here = match.index;
@@ -204,12 +203,12 @@ export type PersonDate = Record<"start" | "retirement", YYYYMMDD> & {
   birth: string;
 };
 export type PersonCorporate = Record<"name" | "RN" | "address", string>;
-export type PersonGeneration = {
+export type personPayment = {
   [year: string]: Record<"youth" | "manhood", number>;
 };
 
 export type MonthlyStatementOfPaymentOfWageAndSalary = {
-  generation: {
+  payment: {
     youth: number;
     manhood: number;
   };

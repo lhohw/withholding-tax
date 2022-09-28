@@ -1,23 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Person, YYYYMMDD } from "features/person/personAPI";
+import { Person } from "features/person/personAPI";
 
 import { getLastYears } from "lib/utils";
 
 export type PaymentState = {
-  name: string;
-  personnel: {
-    [id: string]: {
-      name: Person["name"];
-      selected: boolean;
-      date: Person["date"];
-      generation: Person["generation"];
-    };
+  payment: {
+    [id: string]: Person["payment"];
   };
-  total: Person["generation"];
+  total: Person["payment"];
 };
 const initialState: PaymentState = {
-  name: "",
-  personnel: {},
+  payment: {},
   total: {},
 };
 
@@ -25,45 +18,34 @@ export const paymentSlice = createSlice({
   name: "payment",
   initialState,
   reducers: {
-    setPayment: (
-      state,
-      action: PayloadAction<{
-        name: string;
-        personnel: {
-          [key: string]: Person;
-        };
-      }>
-    ) => {
-      const { name, personnel } = action.payload;
-      state.name = name;
+    check: (state, action: PayloadAction<{ id: string; checked: boolean }>) => {
+      const { id, checked } = action.payload;
+      const flag = checked ? 1 : -1;
+      getLastYears(6).forEach((year) => {
+        state.total[year].youth += state.payment[id][year].youth * flag;
+        state.total[year].manhood += state.payment[id][year].manhood * flag;
+      });
+    },
+    setPayment: (state, action: PayloadAction<PaymentState["payment"]>) => {
+      const { payload: payment } = action;
       const last6Years = getLastYears(6);
-      const defaultGeneration: Person["generation"] = {};
+      const defaultPayment: Person["payment"] = {};
 
       last6Years.forEach((year) => {
         state.total[year] = { youth: 0, manhood: 0 };
-        defaultGeneration[year] = { youth: 0, manhood: 0 };
+        defaultPayment[year] = { youth: 0, manhood: 0 };
       });
-      Object.entries(personnel).forEach(([key, person]) => {
-        state.personnel[key] = {
-          name: person.name,
-          selected: false,
-          date: {
-            start: person.date.start.slice(2) as YYYYMMDD,
-            retirement: person.date.retirement.slice(2) as YYYYMMDD,
-            birth: person.date.birth,
-          },
-          generation: { ...defaultGeneration, ...person.generation },
-        };
-        Object.entries(person.generation).forEach(([year, gen]) => {
-          const { youth, manhood } = gen;
-          state.total[year].youth += youth;
-          state.total[year].manhood += manhood;
+      Object.entries(payment).forEach(([key, p]) => {
+        state.payment[key] = { ...defaultPayment, ...p };
+        last6Years.forEach((year) => {
+          state.total[year].youth += state.payment[key][year].youth;
+          state.total[year].manhood += state.payment[key][year].manhood;
         });
       });
     },
   },
 });
 
-export const { setPayment } = paymentSlice.actions;
+export const { check, setPayment } = paymentSlice.actions;
 
 export default paymentSlice.reducer;

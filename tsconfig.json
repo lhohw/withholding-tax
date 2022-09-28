@@ -25,27 +25,4 @@
   "include": [
     "src"
   ],
-  "paths": {
-    "components/*": [
-      "components/*"
-    ],
-    "constants/*": [
-      "constants/*"
-    ],
-    "styles/*": [
-      "styles/*"
-    ],
-    "lib/*": [
-      "lib/*"
-    ],
-    "features/*": [
-      "features/*"
-    ],
-    "stores/*": [
-      "stores/*"
-    ],
-    "app/*": [
-      "app/*"
-    ]
-  }
 }
