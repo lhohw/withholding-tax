@@ -1,6 +1,7 @@
 const colors = {
   background: "#fefefe",
   main: "#3258a8",
+  sub: "#6886be",
   base: "#202020",
 
   black100: "#fbfbff",

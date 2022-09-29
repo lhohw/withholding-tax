@@ -26,3 +26,7 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >;
+export type KnownError = {
+  code: number;
+  errorMessage: string;
+};

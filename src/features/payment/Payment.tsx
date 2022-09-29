@@ -21,7 +21,7 @@ type PaymentItemProps = {
   contents: string[];
   year?: string;
 };
-const PaymentItem = ({ contents, year }: PaymentItemProps) => (
+export const PaymentItem = ({ contents }: PaymentItemProps) => (
   <List
     css={css`
       width: 200px;
@@ -39,7 +39,7 @@ const PaymentItem = ({ contents, year }: PaymentItemProps) => (
 type PaymentRowYearProps = {
   years: string[];
 };
-const PaymentRowYear = ({ years }: PaymentRowYearProps) => (
+export const PaymentRowYear = ({ years }: PaymentRowYearProps) => (
   <List
     css={css`
       font-weight: ${font.weight.semibold};
@@ -60,7 +60,7 @@ type PaymentRowProps = {
   payment: PaymentState["payment"][keyof PaymentState["payment"]];
   years: string[];
 };
-const PaymentRowHeading = ({ years }: { years: string[] }) => (
+export const PaymentRowHeading = ({ years }: { years: string[] }) => (
   <List
     css={css`
       font-weight: ${font.weight.bold};
@@ -74,7 +74,7 @@ const PaymentRowHeading = ({ years }: { years: string[] }) => (
   </List>
 );
 
-const PaymentRow = ({
+export const PaymentRow = ({
   id,
   onToggle,
   info,

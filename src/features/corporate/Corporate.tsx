@@ -1,103 +1,98 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { css } from "@emotion/react";
 
-import { useAppSelector, useAppDispatch } from "app/hooks";
-
-import { setInfo, InfoState, toggle } from "features/info/infoSlice";
 import {
-  setPayment,
-  PaymentState,
-  check as paymentCheck,
-} from "features/payment/paymentSlice";
-import {
-  GenerationState,
-  setGeneration,
-  check as generationCheck,
-} from "features/generation/generationSlice";
+  CorporateContainer,
+  CorporateHeader,
+  CorporateRow,
+} from "./components";
 
-import * as font from "constants/font";
-import colors from "constants/colors";
+import { parseMoney } from "lib/utils";
+import { CorporateState, toggle } from "./corporateSlice";
+import { useAppDispatch } from "app/hooks";
 
-import Payment from "features/payment/Payment";
-import Generation from "features/generation/Generation";
-
-type TitleProps = {
-  title: string;
+export type CorporateProps = {
+  name: string;
+  data: CorporateState["data"][string];
+  year: string;
 };
-const Title = ({ title }: TitleProps) => (
-  <div
-    css={css`
-      padding: 1rem;
-      font-size: 1.5rem;
-      font-weight: ${font.weight.bold};
-      color: ${colors.main};
-    `}
-  >
-    {title}
-  </div>
-);
-
-const Corporate = () => {
+const Corporate = ({ name, data, year }: CorporateProps) => {
   const dispatch = useAppDispatch();
-  const { list, selected } = useAppSelector((state) => state.corporate);
-  useEffect(() => {
-    if (selected) {
-      const info: InfoState = {};
-      const payment: PaymentState["payment"] = {};
-      const generation: GenerationState["generation"] = {};
+  const onToggle = useCallback(
+    (id: string) => {
+      dispatch(toggle(id));
+    },
+    [dispatch]
+  );
+  if (!data)
+    return (
+      <div
+        css={css`
+          margin: 1rem;
+          font-size: 2rem;
+        `}
+      >
+        PDF 데이터가 필요합니다
+      </div>
+    );
 
-      const { personnel } = list[selected];
-      Object.entries(personnel).forEach(([id, person]) => {
-        const {
-          name,
-          date,
-          payment: p,
-          earnedIncomeWithholdingDepartment: ei,
-        } = person;
-        info[id] = { checked: false, name, date };
-        payment[id] = p;
-        generation[id] = Object.entries(ei).reduce(
-          (obj, [year, ms]) => ({
-            ...obj,
-            [year]: ms
-              .slice(0, 12)
-              .map((s) =>
-                s.payment.youth ? "청년" : s.payment.manhood ? "장년" : "-"
-              ),
-          }),
-          {}
-        );
-      });
-      dispatch(setInfo(info));
-      dispatch(setPayment(payment));
-      dispatch(setGeneration(generation));
-    }
-  }, [dispatch, list, selected]);
-
+  const { personnel, total } = data;
   return (
-    <div
-      css={css`
-        display: flex;
-        flex-direction: column;
-        padding: 1rem;
-      `}
-    >
-      {selected && (
-        <div
-          css={css`
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            overflow-x: scroll;
-            padding-bottom: 2rem;
-          `}
-        >
-          <Title title={list[selected].name} />
-          <Payment />
-          <Generation />
-        </div>
-      )}
-    </div>
+    <CorporateContainer>
+      <CorporateHeader
+        corporateName={name}
+        year={year}
+        total={total.generation}
+      />
+      <CorporateRow
+        isHeading
+        type={"heading"}
+        payments={["청년", "장년"]}
+        generations={new Array(12).fill(0).map((_, i) => `${i + 1}월`)}
+      />
+      <ul
+        css={css`
+          display: flex;
+          flex-direction: column;
+          max-height: auto;
+          max-height: 420px;
+          width: 1175px;
+          overflow-y: scroll;
+        `}
+      >
+        {Object.entries(personnel).map(
+          ([id, { info, payment, generation }]) => {
+            return (
+              <CorporateRow
+                key={id}
+                info={info}
+                id={id}
+                onToggle={onToggle}
+                payments={Object.values(payment).map((v) => parseMoney(v))}
+                generations={generation}
+              />
+            );
+          }
+        )}
+      </ul>
+      {["total", "youth", "manhood"].map((type) => (
+        <CorporateRow
+          key={type}
+          isHeading
+          type={type}
+          payments={
+            type === "total"
+              ? Object.values(total.payment).map((v) => parseMoney(v))
+              : type === "youth"
+              ? [parseMoney(total.payment.youth), "0"]
+              : ["0", parseMoney(total.payment.manhood)]
+          }
+          generations={total.generation[
+            type as keyof typeof total.generation
+          ].map((v) => v.toString())}
+        />
+      ))}
+    </CorporateContainer>
   );
 };
 

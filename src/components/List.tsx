@@ -6,7 +6,6 @@ export type ListProps = {
 
 const List = styled.ul<ListProps>(
   {
-    position: "relative",
     display: "flex",
     flexDirection: "row",
     height: "40px",

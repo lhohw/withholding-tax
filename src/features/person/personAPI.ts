@@ -98,7 +98,7 @@ export class Person {
     retirement: null!,
     birth: null!,
   };
-  payment: personPayment = {};
+  payment: PersonPayment = {};
   constructor({ data, left }: { data: [string, number][]; left: number[] }) {
     this.init({ data, left });
   }
@@ -150,7 +150,7 @@ const createStatement = (
   left: number[],
   yearPrefix: number,
   id: string,
-  payment: personPayment
+  payment: PersonPayment
 ) => {
   const [text, index] = input;
   let match;
@@ -203,7 +203,7 @@ export type PersonDate = Record<"start" | "retirement", YYYYMMDD> & {
   birth: string;
 };
 export type PersonCorporate = Record<"name" | "RN" | "address", string>;
-export type personPayment = {
+export type PersonPayment = {
   [year: string]: Record<"youth" | "manhood", number>;
 };
 

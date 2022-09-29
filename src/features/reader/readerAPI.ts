@@ -1,10 +1,10 @@
 import * as pdfjs from "pdfjs-dist";
 // @ts-ignore
-import * as pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
+// import * as pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 import { withholdingTaxRegex } from "constants/regex";
 
-pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
-// pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
+// pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 const read = async (data: string) => {
   const pdf = await pdfjs.getDocument(data).promise;
@@ -64,7 +64,6 @@ const getWithholdingTaxData = (pdfData: { text: string; left: number[] }[]) => {
   for (let i = 0; i < pdfData.length; i++) {
     const { text, left } = pdfData[i];
     const [isWithholdingTax, data] = extractWithholdingTax(text);
-    console.log(data);
     if (isWithholdingTax) datas.push({ data, left });
   }
   return datas;

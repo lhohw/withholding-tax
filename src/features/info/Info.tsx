@@ -17,6 +17,7 @@ export type InfoProps = {
   info: InfoState[string];
   onToggle: (id: string) => void;
 };
+const sizes = [60, 80, 80, 100];
 const Info = ({ id, info, onToggle }: InfoProps) => {
   const {
     name,
@@ -26,10 +27,20 @@ const Info = ({ id, info, onToggle }: InfoProps) => {
   return (
     <InfoContainer>
       <CheckBox id={id} checked={checked} onToggle={onToggle} />
-      <Item width={60}>{name}</Item>
-      <Item width={80}>{start}</Item>
-      <Item width={80}>{retirement}</Item>
-      <Item width={100}>{birth}</Item>
+      {[name, start, retirement, birth].map((d, i) => (
+        <Item
+          key={i}
+          css={css`
+            width: ${sizes[i] + "px"};
+            font-size: 0.75rem;
+            &:nth-of-type(2) {
+              align-items: flex-start;
+            }
+          `}
+        >
+          {d}
+        </Item>
+      ))}
     </InfoContainer>
   );
 };

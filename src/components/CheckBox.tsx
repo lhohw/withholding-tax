@@ -1,5 +1,6 @@
 import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 import Item from "./Item";
+import { css } from "@emotion/react";
 
 export type CheckBoxProps = {
   id: string;
@@ -7,11 +8,28 @@ export type CheckBoxProps = {
   onToggle: (id: string) => void;
 };
 const CheckBox = ({ id, checked, onToggle }: CheckBoxProps) => (
-  <Item width={50}>
+  <Item
+    css={css`
+      width: 50px;
+      /* cursor: pointer; */
+    `}
+  >
     {checked ? (
-      <MdCheckBox size={25} onClick={() => onToggle(id)} />
+      <MdCheckBox
+        css={css`
+          cursor: pointer;
+        `}
+        size={25}
+        onClick={() => onToggle(id)}
+      />
     ) : (
-      <MdCheckBoxOutlineBlank size={25} onClick={() => onToggle(id)} />
+      <MdCheckBoxOutlineBlank
+        css={css`
+          cursor: pointer;
+        `}
+        size={25}
+        onClick={() => onToggle(id)}
+      />
     )}
   </Item>
 );

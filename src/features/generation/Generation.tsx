@@ -86,7 +86,7 @@ type GenerationItemProps = {
   contents: string[];
   year?: string;
 };
-const GenerationItem = ({ contents, year }: GenerationItemProps) => (
+export const GenerationItem = ({ contents, year }: GenerationItemProps) => (
   <List
     css={css`
       /* border-left: 1px solid ${colors.base}; */
@@ -102,7 +102,7 @@ const GenerationItem = ({ contents, year }: GenerationItemProps) => (
   </List>
 );
 
-const GenerationRowHeading = ({ years }: { years: string[] }) => (
+export const GenerationRowHeading = ({ years }: { years: string[] }) => (
   <List
     css={css`
       margin-top: 100px;
@@ -128,7 +128,7 @@ type GenerationRowProps = {
   generation: GenerationState["generation"][string];
   years: string[];
 };
-const GenerationRow = ({
+export const GenerationRow = ({
   id,
   onToggle,
   info,

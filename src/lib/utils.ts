@@ -76,3 +76,7 @@ export const getLastYears = (len: number) => {
     .fill(undefined)
     .map((_, i) => (year - (len - i)).toString());
 };
+
+export const getDefaultPayment = () => ({ youth: 0, manhood: 0 });
+
+export const getDefaultGeneration = () => new Array(12).fill(0);
