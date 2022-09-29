@@ -33,7 +33,7 @@ type RowProps = {
   isHeading?: boolean;
   checked?: boolean;
   id?: string;
-  onToggle?: any;
+  onToggle?: (id: string) => void;
   info?: InfoState[string];
   payments: string[];
   generations: string[];

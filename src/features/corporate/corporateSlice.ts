@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Person, PersonPayment } from "features/person/personAPI";
+import { PersonPayment } from "features/person/personAPI";
 import {
   getDefaultGeneration,
   getDefaultPayment,
@@ -7,18 +7,9 @@ import {
 } from "lib/utils";
 
 import type { InfoState } from "features/info/infoSlice";
+import type { ReaderState } from "features/reader/readerSlice";
 
 export type CorporateState = {
-  list: {
-    [key: string]: {
-      name: string;
-      personnel: {
-        [key: string]: Person;
-      };
-    };
-  };
-  selected?: string;
-  year?: string;
   data: {
     [year: string]: {
       personnel: {
@@ -41,7 +32,6 @@ export type CorporateState = {
 };
 
 const initialState: CorporateState = {
-  list: {},
   data: {},
 };
 
@@ -49,11 +39,13 @@ export const corporateSlice = createSlice({
   name: "corporate",
   initialState,
   reducers: {
-    setPersonnel: (state, action: PayloadAction<string>) => {
-      state.selected = action.payload;
+    setPersonnel: (
+      state,
+      action: PayloadAction<ReaderState["list"][string]["personnel"]>
+    ) => {
       const years = getLastYears(6);
 
-      const { personnel } = state.list[action.payload];
+      const { payload: personnel } = action;
 
       years.forEach((year) => {
         const yearData: CorporateState["data"][string] = {
@@ -97,13 +89,11 @@ export const corporateSlice = createSlice({
         state.data[year] = yearData;
       });
     },
-    setYear: (state, action: PayloadAction<string>) => {
-      state.year = action.payload;
-    },
-    toggle: (state, action: PayloadAction<string>) => {
-      const { year, data } = state;
-      const { payload: id } = action;
-      if (!year) return;
+    toggle: (state, action: PayloadAction<{ id: string; year: string }>) => {
+      const { data } = state;
+      const { id, year } = action.payload;
+      if (!year) throw new Error("year not defined");
+
       const { total, personnel } = data[year];
       const person = personnel[id];
       person.info.checked = !person.info.checked;
@@ -116,37 +106,9 @@ export const corporateSlice = createSlice({
         total["generation"][f === "청년" ? "youth" : "manhood"][idx] += flag;
       });
     },
-    mergePerson: (
-      state,
-      action: PayloadAction<{ year: number; data: string }>
-    ) => {
-      const { year, data } = action.payload;
-      const person: Person = JSON.parse(data);
-      const {
-        corporate: { RN },
-        id,
-        earnedIncomeWithholdingDepartment: ei,
-        payment,
-      } = person;
-      if (!state.list[RN]) {
-        state.list[RN] = {
-          name: person.corporate.name,
-          personnel: {
-            [id]: person,
-          },
-        };
-      } else if (!state.list[RN].personnel[id]) {
-        state.list[RN].personnel[id] = person;
-      } else {
-        const p = state.list[RN].personnel[id];
-        p.earnedIncomeWithholdingDepartment[year] = ei[year];
-        p.payment[year] = payment[year];
-      }
-    },
   },
 });
 
-export const { setPersonnel, mergePerson, setYear, toggle } =
-  corporateSlice.actions;
+export const { setPersonnel, toggle } = corporateSlice.actions;
 
 export default corporateSlice.reducer;

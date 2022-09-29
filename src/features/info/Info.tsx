@@ -5,8 +5,6 @@ import CheckBox from "components/CheckBox";
 import Item from "components/Item";
 import { InfoState } from "./infoSlice";
 
-import colors from "constants/colors";
-
 const InfoContainer = styled.ul`
   display: flex;
   flex-direction: row;

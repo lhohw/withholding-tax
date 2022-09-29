@@ -56,7 +56,23 @@ export const readAsync = createAsyncThunk<
 export const readerSlice = createSlice({
   name: "reader",
   initialState,
-  reducers: {},
+  reducers: {
+    select: (
+      state,
+      action: PayloadAction<{ type: "year" | "corporate"; data: string }>
+    ) => {
+      const { type, data } = action.payload;
+      if (type === "year" && state.selected.year === data) {
+        state.selected.year = "";
+        return;
+      }
+      if (type === "corporate" && state.selected.corporate === data) {
+        state.selected = initialState.selected;
+        return;
+      }
+      state.selected[type] = data;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(readAsync.fulfilled, (state, action) => {
       for (const { year, personStr } of action.payload.data) {
@@ -86,6 +102,6 @@ export const readerSlice = createSlice({
   },
 });
 
-export const {} = readerSlice.actions;
+export const { select } = readerSlice.actions;
 
 export default readerSlice.reducer;

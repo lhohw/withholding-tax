@@ -6,7 +6,6 @@ const Title = () => (
       font-weight: bold;
       margin: 0 0 1rem 0;
     `}
-    onClick={() => window.print()}
   >
     Withholding Tax
   </h2>

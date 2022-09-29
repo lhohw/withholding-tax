@@ -1,18 +1,19 @@
+import type { ReaderState } from "../readerSlice";
+
 import { css } from "@emotion/react";
-import type { CorporateState } from "features/corporate/corporateSlice";
 import Item from "components/Item";
 import * as font from "constants/font";
 import colors from "constants/colors";
 
 type CorporatesProps = {
-  corporates: CorporateState["list"];
-  onCorporateClick: (id: string) => void;
-  selected?: string;
+  corporates: ReaderState["list"];
+  onSelect: (props: { type: "year" | "corporate"; data: string }) => void;
+  selectedCorporate: string;
 };
 const Corporates = ({
   corporates,
-  onCorporateClick,
-  selected,
+  selectedCorporate,
+  onSelect,
 }: CorporatesProps) => (
   <ul
     css={css`
@@ -21,17 +22,13 @@ const Corporates = ({
       font-size: ${font.size.medium};
       display: flex;
       flex-direction: column;
-      /* flex-direction: row;
-      flex-wrap: wrap; */
-      /* margin-left: 2rem; */
-      /* max-width: 50vw; */
     `}
   >
     {Object.entries(corporates).map(([key, value]) => (
       <Item
         key={key}
         css={css`
-          color: ${key === selected ? colors.main : colors.black400};
+          color: ${key === selectedCorporate ? colors.main : colors.black400};
           border: 1px solid ${colors.main};
           border-radius: 6px;
           cursor: pointer;
@@ -39,7 +36,7 @@ const Corporates = ({
             margin-top: 1rem;
           }
         `}
-        onClick={() => onCorporateClick(key)}
+        onClick={() => onSelect({ type: "corporate", data: key })}
       >
         {value.name}
       </Item>

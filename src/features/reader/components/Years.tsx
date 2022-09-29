@@ -6,9 +6,9 @@ import colors from "constants/colors";
 
 type YearsProps = {
   selectedYear: string;
-  onYearClick: (year: string) => void;
+  onSelect: (props: { type: "corporate" | "year"; data: string }) => void;
 };
-const Years = ({ selectedYear, onYearClick }: YearsProps) => (
+const Years = ({ selectedYear, onSelect }: YearsProps) => (
   <ul
     css={css`
       display: flex;
@@ -30,7 +30,7 @@ const Years = ({ selectedYear, onYearClick }: YearsProps) => (
           margin-top: 0.5rem;
           cursor: pointer;
         `}
-        onClick={() => onYearClick(year)}
+        onClick={() => onSelect({ type: "year", data: year })}
       >
         {year}
       </li>

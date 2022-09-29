@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { css } from "@emotion/react";
 
 import {
@@ -8,35 +8,31 @@ import {
 } from "./components";
 
 import { parseMoney } from "lib/utils";
-import { CorporateState, toggle } from "./corporateSlice";
-import { useAppDispatch } from "app/hooks";
+import { setPersonnel, toggle } from "./corporateSlice";
+import { useAppDispatch, useAppSelector } from "app/hooks";
+import { ReaderState } from "features/reader/readerSlice";
 
 export type CorporateProps = {
-  name: string;
-  data: CorporateState["data"][string];
+  data: ReaderState["list"][string];
   year: string;
 };
-const Corporate = ({ name, data, year }: CorporateProps) => {
+const Corporate = ({ data, year }: CorporateProps) => {
   const dispatch = useAppDispatch();
   const onToggle = useCallback(
     (id: string) => {
-      dispatch(toggle(id));
+      dispatch(toggle({ id, year }));
     },
-    [dispatch]
+    [dispatch, year]
   );
-  if (!data)
-    return (
-      <div
-        css={css`
-          margin: 1rem;
-          font-size: 2rem;
-        `}
-      >
-        PDF 데이터가 필요합니다
-      </div>
-    );
+  const { name, personnel: _p } = data;
+  useEffect(() => {
+    dispatch(setPersonnel(_p));
+  }, [dispatch, _p]);
 
-  const { personnel, total } = data;
+  const { data: _d } = useAppSelector((state) => state.corporate);
+  if (!_d[year]) return <div>loading...</div>;
+
+  const { personnel, total } = _d[year];
   return (
     <CorporateContainer>
       <CorporateHeader
