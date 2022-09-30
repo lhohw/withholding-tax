@@ -12,14 +12,18 @@ import colors from "constants/colors";
 type RowItemProps = {
   type: "payment" | "generation";
   contents: string[];
+  checked?: boolean;
 };
-const CorporateItem = ({ type, contents }: RowItemProps) => (
+const CorporateItem = ({ type, contents, checked }: RowItemProps) => (
   <List>
     {contents.map((content, idx) => (
       <Item
         key={type + idx}
         css={css`
           width: ${type === "generation" ? 50 : 200 / contents.length}px;
+          color: ${type === "generation" && content === "청년" && !checked
+            ? colors.main
+            : "inherit"};
         `}
       >
         {content}
@@ -51,7 +55,7 @@ const CorporateRow = ({
     <List
       css={css`
         font-weight: ${isHeading ? font.weight.bold : 400};
-        color: ${info?.checked ? colors.red600 : colors.base};
+        color: ${info?.checked ? colors.red600 : "inherit"};
         text-decoration: ${info?.checked ? "line-through" : "none"};
       `}
     >
@@ -72,8 +76,16 @@ const CorporateRow = ({
           ]}
         />
       )}
-      <CorporateItem type="payment" contents={payments} />
-      <CorporateItem type="generation" contents={generations} />
+      <CorporateItem
+        type="payment"
+        contents={payments}
+        checked={info?.checked}
+      />
+      <CorporateItem
+        type="generation"
+        contents={generations}
+        checked={info?.checked}
+      />
     </List>
   );
 };

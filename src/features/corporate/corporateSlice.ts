@@ -4,7 +4,7 @@ import {
   getDefaultGeneration,
   getDefaultPayment,
   getLastYears,
-} from "lib/utils";
+} from "lib/values";
 
 import type { InfoState } from "features/info/infoSlice";
 import type { ReaderState } from "features/reader/readerSlice";

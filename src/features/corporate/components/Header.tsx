@@ -1,6 +1,4 @@
 import { css } from "@emotion/react";
-import * as font from "constants/font";
-import colors from "constants/colors";
 
 import Title from "./Title";
 import Year from "./Year";
@@ -13,7 +11,7 @@ type HeaderProps = {
   year: string;
   total: CorporateState["data"][string]["total"]["generation"];
 };
-const CorporateHeader = ({ corporateName, year }: HeaderProps) => (
+const CorporateHeader = ({ corporateName, year, total }: HeaderProps) => (
   <header
     css={css`
       width: 100%;
@@ -33,7 +31,7 @@ const CorporateHeader = ({ corporateName, year }: HeaderProps) => (
       <Title title={corporateName} />
       <Year year={year} />
     </div>
-    <Stats />
+    <Stats total={total} />
     <CalculateButton />
   </header>
 );

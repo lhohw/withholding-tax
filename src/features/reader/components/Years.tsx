@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { getLastYears } from "lib/utils";
+import { getLastYears } from "lib/values";
 
 import * as font from "constants/font";
 import colors from "constants/colors";

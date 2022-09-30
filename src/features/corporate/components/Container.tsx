@@ -6,7 +6,8 @@ const CorporateContainer = ({ children }: { children: React.ReactNode }) => (
     css={css`
       display: flex;
       flex-direction: column;
-      margin: 1rem 0 3rem 0;
+      margin-bottom: 3rem;
+      padding-top: 2rem;
       width: 1175px;
     `}
   >

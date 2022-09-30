@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { css } from "@emotion/react";
+import colors from "constants/colors";
 
 import {
   CorporateContainer,
@@ -54,6 +55,7 @@ const Corporate = ({ data, year }: CorporateProps) => {
           max-height: 420px;
           width: 1175px;
           overflow-y: scroll;
+          border-bottom: 1px dotted ${colors.main};
         `}
       >
         {Object.entries(personnel).map(

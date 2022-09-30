@@ -1,4 +1,5 @@
-import { parseMoney, isYouth, getBirthCentury } from "lib/utils";
+import { parseMoney, isYouth } from "lib/utils";
+import { getBirthCentury } from "lib/values";
 import { getDefaultStatement, range, titles } from "./personVariable";
 import {
   yearRegex,

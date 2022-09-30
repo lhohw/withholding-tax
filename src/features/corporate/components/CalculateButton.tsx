@@ -4,7 +4,8 @@ const CalculateButton = () => (
   <div
     css={css`
       display: flex;
-      justify-self: flex-end;
+      align-items: center;
+      justify-content: center;
       border: 1px solid black;
       cursor: pointer;
       padding: 1rem;

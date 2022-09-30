@@ -29,3 +29,5 @@ export const monthlyStatementRegex = new RegExp(
     .join("|") + "|연말|종전|납세|소",
   "g"
 );
+
+export const numberRegex = /[^\d+]/g;

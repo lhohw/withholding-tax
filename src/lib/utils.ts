@@ -1,4 +1,5 @@
 import { PaymentDate } from "../features/person/personAPI";
+import { getBirthCentury } from "./values";
 
 const getDays = (year: number, month: number) =>
   [
@@ -36,19 +37,6 @@ export const isRetired = (
   year = +year;
 };
 
-export const getBirthCentury = (id: string) => {
-  const firstRearDigit = id.split("-")[1][0];
-  return (
-    19 +
-    (firstRearDigit === "3" ||
-    firstRearDigit === "4" ||
-    firstRearDigit === "7" ||
-    firstRearDigit === "8"
-      ? 1
-      : 0)
-  ).toString();
-};
-
 const strToNum = (x: string) => parseInt(x.split(",").join("") || "0");
 const numToStr = (x: number) => {
   let minus = x < 0;
@@ -69,14 +57,3 @@ export function parseMoney(x: string | number) {
   if (typeof x === "string") return strToNum(x);
   return numToStr(x);
 }
-
-export const getLastYears = (len: number) => {
-  const year = parseInt(new Date().toLocaleString().split(". ")[0]);
-  return new Array(len)
-    .fill(undefined)
-    .map((_, i) => (year - (len - i)).toString());
-};
-
-export const getDefaultPayment = () => ({ youth: 0, manhood: 0 });
-
-export const getDefaultGeneration = () => new Array(12).fill(0);
