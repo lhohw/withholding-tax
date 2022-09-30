@@ -5,6 +5,7 @@ import {
   getDefaultPayment,
   getLastYears,
 } from "lib/values";
+import { isRetired } from "lib/utils";
 
 import type { InfoState } from "features/info/infoSlice";
 import type { ReaderState } from "features/reader/readerSlice";
@@ -73,7 +74,13 @@ export const corporateSlice = createSlice({
                 : payment.manhood
                 ? "장년"
                 : "-";
-              if (flag === "-") return;
+
+              if (
+                flag === "-" ||
+                (date.retirement.trim() &&
+                  isRetired(date.retirement, year, idx + 1))
+              )
+                return;
               p[id].payment.youth += payment.youth;
               p[id].payment.manhood += payment.manhood;
               total.generation.total[idx]++;

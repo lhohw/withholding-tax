@@ -32,9 +32,18 @@ export const isYouth = (id: string, date: PaymentDate) => {
 export const isRetired = (
   retirementDate: string,
   year: string | number,
-  month: number
+  month: string | number
 ) => {
-  year = +year;
+  year = year.toString();
+  month = month.toString().padStart(2, "0");
+  const retired = new Date(retirementDate.split(".").join("-"));
+  const monthsFirstDay = new Date(`${year}-${month}-01`);
+  const monthsLastDay = new Date(
+    `${year}-${month}-${getDays(+year, +month - 1)
+      .toString()
+      .padStart(2, "0")}`
+  );
+  return retirementDate && retired >= monthsFirstDay && retired < monthsLastDay;
 };
 
 const strToNum = (x: string) => parseInt(x.split(",").join("") || "0");
