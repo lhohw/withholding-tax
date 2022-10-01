@@ -15,7 +15,7 @@ const Reader = () => {
       const { files } = e.target;
       if (files && files.length) {
         for (let i = 0; i < files.length; i++) {
-          fReader.readAsDataURL(files[0]);
+          fReader.readAsArrayBuffer(files[0]);
           fReader.onloadend = async ({ target: { result } }: any) => {
             await dispatch(readAsync(result));
           };

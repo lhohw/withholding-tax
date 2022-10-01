@@ -36,10 +36,11 @@ export const readAsync = createAsyncThunk<
 >("reader/read", async (data, thunkApi) => {
   try {
     const withholdingTaxData = await readPDF(data);
+    const { datas, isTaxLove } = withholdingTaxData;
     let response = [];
-    for (const { data, left } of withholdingTaxData) {
+    for (const { data, left } of datas) {
       const year = data[0][0].replace(yearRegex, "");
-      const personStr = JSON.stringify(new Person({ data, left }));
+      const personStr = JSON.stringify(new Person({ data, left, isTaxLove }));
       response.push({ year, personStr });
     }
     return { data: response };
