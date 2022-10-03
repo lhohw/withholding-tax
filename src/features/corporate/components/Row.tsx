@@ -1,3 +1,4 @@
+import React from "react";
 import { css } from "@emotion/react";
 import * as font from "constants/font";
 
@@ -6,30 +7,36 @@ import type { InfoState } from "features/info/infoSlice";
 import Item from "components/Item";
 import List from "components/List";
 
-import Info from "features/info/Info";
+import Info, { InfoHeading } from "features/info/Info";
 import colors from "constants/colors";
+import { parseMoney } from "lib/utils";
 
 type RowItemProps = {
   type: "payment" | "generation";
   contents: string[];
   checked?: boolean;
 };
-const CorporateItem = ({ type, contents, checked }: RowItemProps) => (
-  <List>
-    {contents.map((content, idx) => (
-      <Item
-        key={type + idx}
-        css={css`
-          width: ${type === "generation" ? 50 : 200 / contents.length}px;
-          color: ${type === "generation" && content === "청년" && !checked
-            ? colors.main
-            : "inherit"};
-        `}
-      >
-        {content}
-      </Item>
-    ))}
-  </List>
+const CorporateItem = React.memo(
+  ({ type, contents, checked }: RowItemProps) => (
+    <List>
+      {contents.map((content, idx) => (
+        <Item
+          key={type + idx}
+          css={css`
+            width: ${type === "generation" ? 50 : 200 / contents.length}px;
+            color: ${type === "generation" && content === "청년" && !checked
+              ? colors.main
+              : "inherit"};
+          `}
+        >
+          {content}
+        </Item>
+      ))}
+    </List>
+  ),
+  (prevProps, nextProps) =>
+    prevProps.checked === nextProps.checked &&
+    prevProps.contents === nextProps.contents
 );
 
 type RowProps = {
@@ -39,7 +46,7 @@ type RowProps = {
   id?: string;
   onToggle?: (id: string) => void;
   info?: InfoState[string];
-  payments: string[];
+  payments: Record<"youth" | "manhood", number>;
   generations: string[];
 };
 const CorporateRow = ({
@@ -51,6 +58,12 @@ const CorporateRow = ({
   payments,
   generations,
 }: RowProps) => {
+  const _payments =
+    type === undefined || type === "total"
+      ? Object.values(payments)
+      : type === "youth"
+      ? [payments.youth, 0]
+      : [0, payments.manhood];
   return (
     <List
       css={css`
@@ -62,9 +75,9 @@ const CorporateRow = ({
       {info && id && onToggle ? (
         <Info id={id} info={info} onToggle={onToggle} />
       ) : type === "heading" ? (
-        <Info.Heading />
+        <InfoHeading />
       ) : (
-        <Info.Heading
+        <InfoHeading
           data={[
             type === "total"
               ? "합계"
@@ -78,7 +91,13 @@ const CorporateRow = ({
       )}
       <CorporateItem
         type="payment"
-        contents={payments}
+        contents={
+          type === "heading"
+            ? ["청년", "장년"]
+            : type === "total"
+            ? [parseMoney(_payments.reduce((x, y) => x + y))]
+            : _payments.map((v) => parseMoney(v))
+        }
         checked={info?.checked}
       />
       <CorporateItem
@@ -90,4 +109,10 @@ const CorporateRow = ({
   );
 };
 
-export default CorporateRow;
+export default React.memo(
+  CorporateRow,
+  (prevProps, nextProps) =>
+    prevProps.info === nextProps.info &&
+    prevProps.payments === nextProps.payments &&
+    prevProps.generations === nextProps.generations
+);

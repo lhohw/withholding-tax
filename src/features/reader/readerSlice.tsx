@@ -45,12 +45,8 @@ export const readAsync = createAsyncThunk<
     }
     return { data: response };
   } catch (e: any) {
-    const {
-      response: { status: code },
-      message,
-    } = e;
     console.log(e);
-    return thunkApi.rejectWithValue({ code, errorMessage: message });
+    return thunkApi.rejectWithValue({ code: 1, errorMessage: "message" });
   }
 });
 
@@ -81,6 +77,7 @@ export const readerSlice = createSlice({
         const {
           corporate: { RN },
           id,
+          date: { start, retirement, birth },
           earnedIncomeWithholdingDepartment: ei,
           payment,
         } = person;
@@ -97,6 +94,9 @@ export const readerSlice = createSlice({
           const p = state.list[RN].personnel[id];
           p.earnedIncomeWithholdingDepartment[year] = ei[year];
           p.payment[year] = payment[year];
+          if (!p.date.start && start) p.date.start = start;
+          if (!p.date.retirement && retirement) p.date.retirement = retirement;
+          if (!p.date.birth && birth) p.date.birth = birth;
         }
       }
     });

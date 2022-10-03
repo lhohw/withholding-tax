@@ -43,23 +43,25 @@ const Info = ({ id, info, onToggle }: InfoProps) => {
   );
 };
 
-Info.Heading = ({
-  data = ["이름", "입사", "퇴사", "생년월일"],
-}: {
-  data?: string[];
-}) => (
-  <InfoContainer>
-    {[50, 60, 80, 80, 100].map((width, idx) => (
-      <Item
-        key={idx}
-        css={css`
-          width: ${width}px;
-        `}
-      >
-        {5 - data.length <= idx ? data[idx - (5 - data.length)] : ""}
-      </Item>
-    ))}
-  </InfoContainer>
+export const InfoHeading = React.memo(
+  ({ data = ["이름", "입사", "퇴사", "생년월일"] }: { data?: string[] }) => (
+    <InfoContainer>
+      {[50, 60, 80, 80, 100].map((width, idx) => (
+        <Item
+          key={idx}
+          css={css`
+            width: ${width}px;
+          `}
+        >
+          {5 - data.length <= idx ? data[idx - (5 - data.length)] : ""}
+        </Item>
+      ))}
+    </InfoContainer>
+  ),
+  () => true
 );
 
-export default Info;
+export default React.memo(
+  Info,
+  (prevProps, nextProps) => prevProps.info === nextProps.info
+);

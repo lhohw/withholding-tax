@@ -48,6 +48,7 @@ const readPage = async (
       text += item.str;
       if (item.str) {
         left.push(tx[4]);
+        for (let i = 0; i < item.str.length - 1; i++) left.push(-1);
       }
     }
   }
@@ -109,7 +110,6 @@ const getWithholdingTaxData: GetWithholdingTaxData = ({
   pdfData,
 }) => {
   const datas: { data: [string, number][]; left: number[] }[] = [];
-
   for (let i = 0; i < pdfData.length; i++) {
     const { text, left } = pdfData[i];
     const [isWithholdingTax, data] = extractWithholdingTax({

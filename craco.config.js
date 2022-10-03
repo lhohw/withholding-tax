@@ -1,6 +1,6 @@
 const cracoAlias = require("craco-alias");
-const path = require("path");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+// const path = require("path");
+// const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   babel: {

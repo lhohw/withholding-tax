@@ -1,6 +1,11 @@
 import { parseMoney, isYouth } from "lib/utils";
 import { getBirthCentury } from "lib/values";
-import { getDefaultStatement, range, titles } from "./personVariable";
+import {
+  getDefaultStatement,
+  range,
+  taxLoveRange,
+  titles,
+} from "./personVariable";
 import {
   yearRegex,
   idRegex,
@@ -40,11 +45,6 @@ export class Person {
     isTaxLove: boolean;
   }) {
     this.init({ data, left, isTaxLove });
-    // console.log(data, left);
-    // const [s, idx] = data[8];
-    // for (let i = 0; i < s.length; i++) {
-    //   console.log(s[i], left[idx + i]);
-    // }
   }
   init({
     data,
@@ -107,10 +107,11 @@ export class Person {
   }
 }
 
-const findPositionForParsingStatement = (x: number) => {
+const findPositionForParsingStatement = (x: number, isTaxLove: boolean) => {
+  const _range = isTaxLove ? taxLoveRange : range;
   let i = 0;
-  while (i < range.length && x > range[i]) i++;
-  if (i === range.length)
+  while (i < _range.length && x > _range[i]) i++;
+  if (i === _range.length)
     throw new Error("Can not find position for statement");
   return titles[i];
 };
@@ -122,18 +123,21 @@ const createMonthlyStatement = (
   id: string,
   tag: string,
   yearPrefix: number,
-  isTaxLove: boolean
+  isTaxLove: boolean,
+  expectedMonth: number
 ): MonthlyStatementOfPaymentOfWageAndSalary => {
+  if (isTaxLove && expectedMonth <= 11 && line) {
+    line = line.slice(0, line.lastIndexOf((expectedMonth + 1).toString()));
+  }
   const obj = getDefaultStatement();
-  // console.log(line);
+  let prev = -1;
   for (let i = 0; i < line.length; i++) {
     const char = line[i];
     if (!char.trim()) continue;
-    const x = left[startIndex + i];
-
-    // console.log(char, x);
-
-    const title = findPositionForParsingStatement(x);
+    let x = left[startIndex + i];
+    if (x === -1) x = prev;
+    else prev = x;
+    const title = findPositionForParsingStatement(x, isTaxLove);
     obj[title as keyof typeof obj] += char;
   }
 
@@ -142,9 +146,7 @@ const createMonthlyStatement = (
       youth: 0,
       manhood: 0,
     },
-    paymentDate: `${yearPrefix}/${tag
-      .replace("월", "")
-      .padStart(2, "0")}` as PaymentDate,
+    paymentDate: `${yearPrefix}/${tag}` as PaymentDate,
     totalPay: {
       pay: parseMoney(obj.pay),
       bonus: parseMoney(obj.bonus),
@@ -162,10 +164,14 @@ const createMonthlyStatement = (
     },
     theAmountOfTaxCollected: {
       simplifiedTaxAmountApplicable: {
-        payRange: obj.payRange.split("~").map((num) => parseMoney(num)) as [
-          number,
-          number
-        ],
+        payRange: !obj.payRange
+          ? [0, 0]
+          : isTaxLove
+          ? (obj.payRange
+              .split(/이상\s*|미만\s*/g)
+              .slice(0, 2)
+              .map(parseMoney) as [number, number])
+          : (obj.payRange.split("~").map(parseMoney) as [number, number]),
         incomeTax: parseMoney(obj.incomeTax),
       },
       etc: {
@@ -200,11 +206,29 @@ const createStatement = (
   const regex = isTaxLove
     ? taxLoveMonthlyStatementRegex(yearPrefix)
     : monthlyStatementRegex;
+  let expectedMonth = 1;
   while ((match = regex.exec(text))) {
     if (here === -1) {
-      tag = match[0];
+      tag = isTaxLove
+        ? match[0].split("/")[1]
+        : match[0].replace("월", "").padStart(2, "0");
       here = match.index;
       continue;
+    }
+    while (parseInt(tag) && parseInt(tag) !== expectedMonth) {
+      if (parseInt(tag) < expectedMonth)
+        throw new Error("invalid month, check pdf and reader.");
+      const monthlyStatement = createMonthlyStatement(
+        "",
+        left,
+        index + here,
+        id,
+        tag,
+        yearPrefix,
+        isTaxLove,
+        expectedMonth++
+      );
+      statement.push(monthlyStatement);
     }
     const monthlyStatement = createMonthlyStatement(
       text.slice(here, match.index),
@@ -213,13 +237,17 @@ const createStatement = (
       id,
       tag,
       yearPrefix,
-      isTaxLove
+      isTaxLove,
+      expectedMonth++
     );
     statement.push(monthlyStatement);
     payment[yearPrefix].youth += monthlyStatement.payment.youth;
     payment[yearPrefix].manhood += monthlyStatement.payment.manhood;
 
-    tag = match[0];
+    tag =
+      (isTaxLove
+        ? match[0].split("/")[1]
+        : match[0].replace("월", "").padStart(2, "0")) || match[0];
     here = match.index;
   }
   return statement;

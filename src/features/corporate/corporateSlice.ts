@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PersonPayment } from "features/person/personAPI";
+import { PersonPayment, YYYYMMDD } from "features/person/personAPI";
 import {
   getDefaultGeneration,
   getDefaultPayment,
@@ -64,7 +64,15 @@ export const corporateSlice = createSlice({
         Object.entries(personnel).forEach(([id, person]) => {
           const { name, date, earnedIncomeWithholdingDepartment: ei } = person;
           p[id] = {} as typeof yearData.personnel[string];
-          p[id].info = { checked: false, name, date };
+          p[id].info = {
+            checked: false,
+            name,
+            date: {
+              start: date.start.slice(2) as YYYYMMDD,
+              retirement: date.retirement.slice(2) as YYYYMMDD,
+              birth: date.birth,
+            },
+          };
           p[id].payment = getDefaultPayment();
           p[id].generation = new Array(12).fill("-");
           if (ei[year]) {
@@ -99,7 +107,7 @@ export const corporateSlice = createSlice({
     toggle: (state, action: PayloadAction<{ id: string; year: string }>) => {
       const { data } = state;
       const { id, year } = action.payload;
-      if (!year) throw new Error("year not defined");
+      if (!year) throw new Error("year to toggle not defined");
 
       const { total, personnel } = data[year];
       const person = personnel[id];
