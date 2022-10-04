@@ -46,7 +46,7 @@ export const readAsync = createAsyncThunk<
     return { data: response };
   } catch (e: any) {
     console.log(e);
-    return thunkApi.rejectWithValue({ code: 1, errorMessage: "message" });
+    return thunkApi.rejectWithValue({ code: 500, errorMessage: "message" });
   }
 });
 

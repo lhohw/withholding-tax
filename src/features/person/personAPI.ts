@@ -135,8 +135,17 @@ const createMonthlyStatement = (
     const char = line[i];
     if (!char.trim()) continue;
     let x = left[startIndex + i];
-    if (x === -1) x = prev;
-    else prev = x;
+    if (x === -1) {
+      if (i !== 0 && !line[i - 1].trim()) {
+        let tmp = 1;
+        while (
+          startIndex + i + tmp < left.length &&
+          left[startIndex + i + tmp] === -1
+        )
+          tmp++;
+        x = left[startIndex + i + tmp];
+      } else x = prev;
+    } else prev = x;
     const title = findPositionForParsingStatement(x, isTaxLove);
     obj[title as keyof typeof obj] += char;
   }
@@ -184,7 +193,6 @@ const createMonthlyStatement = (
   if (isYouth(id, monthlyStatement.paymentDate))
     monthlyStatement.payment.youth = monthlyStatement.totalPay.total;
   else monthlyStatement.payment.manhood = monthlyStatement.totalPay.total;
-
   return monthlyStatement;
 };
 
@@ -215,7 +223,7 @@ const createStatement = (
       here = match.index;
       continue;
     }
-    while (parseInt(tag) && parseInt(tag) !== expectedMonth) {
+    while (parseInt(tag) !== expectedMonth && expectedMonth <= 12) {
       if (parseInt(tag) < expectedMonth)
         throw new Error("invalid month, check pdf and reader.");
       const monthlyStatement = createMonthlyStatement(
@@ -223,7 +231,7 @@ const createStatement = (
         left,
         index + here,
         id,
-        tag,
+        expectedMonth.toString().padStart(2, "0"),
         yearPrefix,
         isTaxLove,
         expectedMonth++
