@@ -1,41 +1,58 @@
-import { css } from "@emotion/react";
+import React from "react";
 import { getLastYears } from "lib/values";
 
 import * as font from "constants/font";
 import colors from "constants/colors";
+import styled from "@emotion/styled";
 
 type YearsProps = {
   selectedYear: string;
   onSelect: (props: { type: "corporate" | "year"; data: string }) => void;
 };
 const Years = ({ selectedYear, onSelect }: YearsProps) => (
-  <ul
-    css={css`
-      display: flex;
-      flex-direction: column;
-      padding: 1rem;
-      align-items: center;
-      justify-content: space-around;
-    `}
-  >
+  <StyledYears>
     {getLastYears(6).map((year) => (
-      <li
+      <StyledYear
         key={year}
-        css={css`
-          font-size: ${font.size.base};
-          font-weight: ${year === selectedYear
-            ? font.weight.bold
-            : font.weight.medium};
-          color: ${year === selectedYear ? colors.main : colors.base};
-          margin-top: 0.5rem;
-          cursor: pointer;
-        `}
+        year={year}
+        selectedYear={selectedYear}
         onClick={() => onSelect({ type: "year", data: year })}
       >
         {year}
-      </li>
+      </StyledYear>
     ))}
-  </ul>
+  </StyledYears>
 );
 
-export default Years;
+const StyledYears = styled.ul`
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  align-items: center;
+  justify-content: space-around;
+`;
+type YearProps = {
+  year: string;
+  selectedYear: string;
+};
+const StyledYear = React.memo(
+  styled.li<YearProps>`
+    font-size: ${font.size.base};
+    margin-top: 0.5rem;
+    cursor: pointer;
+    font-weight: ${(props) =>
+      props.year === props.selectedYear
+        ? font.weight.bold
+        : font.weight.medium};
+    color: ${(props) =>
+      props.year === props.selectedYear ? colors.main : colors.base};
+  `,
+  (prevProps, nextProps) =>
+    (prevProps.selectedYear === prevProps.year) ===
+    (nextProps.selectedYear === nextProps.year)
+);
+
+export default React.memo(
+  Years,
+  (prevProps, nextProps) => prevProps.selectedYear === nextProps.selectedYear
+);

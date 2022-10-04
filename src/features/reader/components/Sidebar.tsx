@@ -18,6 +18,12 @@ const Sidebar = ({ children }: SidebarProps) => (
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
+      @media (max-width: 1200px) {
+        display: none;
+      }
+      & .column {
+        flex-direction: column;
+      }
     `}
   >
     {children}
