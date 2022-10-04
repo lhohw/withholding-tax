@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import { css } from "@emotion/react";
 import { useAppSelector, useAppDispatch } from "app/hooks";
 
 import { readAsync, select } from "./readerSlice";
@@ -8,14 +7,13 @@ import { Title, Input, Corporates, Sidebar, Years } from "./components";
 
 const Reader = () => {
   const dispatch = useAppDispatch();
-
   const onFileChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const fReader = new FileReader();
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
       const { files } = e.target;
       if (files && files.length) {
         for (let i = 0; i < files.length; i++) {
-          fReader.readAsArrayBuffer(files[0]);
+          const fReader = new FileReader();
+          fReader.readAsArrayBuffer(files[i]);
           fReader.onloadend = async ({ target: { result } }: any) => {
             await dispatch(readAsync(result));
           };
@@ -45,11 +43,7 @@ const Reader = () => {
 
   return (
     <Sidebar>
-      <div
-        css={css`
-          flex-direction: column;
-        `}
-      >
+      <div className="column">
         <Title />
         <Input onClick={onInputClick} onFileChange={onFileChange} />
       </div>
