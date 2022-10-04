@@ -1,4 +1,4 @@
-import { PaymentDate } from "../features/person/personAPI";
+import { PaymentDate, YYYYMMDD } from "../features/person/personAPI";
 import { getBirthCentury } from "./values";
 
 const getDays = (year: number, month: number) =>
@@ -66,3 +66,19 @@ export function parseMoney(x: string | number) {
   if (typeof x === "string") return strToNum(x);
   return numToStr(x);
 }
+
+export const lessThanAMonth = (date: {
+  start: YYYYMMDD;
+  retirement: YYYYMMDD;
+}) => {
+  const { start, retirement } = date;
+  if (!retirement) return false;
+  const [sy, sm, sd] = start.split(".").map(Number);
+  const [ry, rm, rd] = retirement.split(".").map(Number);
+  if (sd === 1) return sy === ry && sm === rm && rd < getDays(sy, sm - 1);
+  const limit = new Date(
+    `${sy + (sm === 12 ? 1 : 0)}-${sm + 1 === 13 ? 1 : sm + 1}-${sd}`
+  );
+  const ret = new Date(`${ry}-${rm}-${rd}`);
+  return ret < limit;
+};

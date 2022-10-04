@@ -5,7 +5,7 @@ import {
   getDefaultPayment,
   getLastYears,
 } from "lib/values";
-import { isRetired } from "lib/utils";
+import { isRetired, lessThanAMonth } from "lib/utils";
 
 import type { InfoState } from "features/info/infoSlice";
 import type { ReaderState } from "features/reader/readerSlice";
@@ -86,7 +86,8 @@ export const corporateSlice = createSlice({
               if (
                 flag === "-" ||
                 (date.retirement.trim() &&
-                  isRetired(date.retirement, year, idx + 1))
+                  (isRetired(date.retirement, year, idx + 1) ||
+                    lessThanAMonth(date)))
               )
                 return;
               p[id].payment.youth += payment.youth;
