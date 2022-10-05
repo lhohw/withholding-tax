@@ -1,18 +1,17 @@
 import type { CorporateState } from "../corporateSlice";
+import React from "react";
 
-import React, { useState } from "react";
 import { css } from "@emotion/react";
 import * as font from "constants/font";
 import colors from "constants/colors";
 
-import { numberRegex } from "constants/regex";
 import styled from "@emotion/styled";
 
 type MonthHandlerProps = {
   month: number;
-  setMonth: (value: number) => void;
+  onMonthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
-const MonthHandler = ({ month, setMonth }: MonthHandlerProps) => {
+const MonthHandler = ({ month = 12, onMonthChange }: MonthHandlerProps) => {
   return (
     <div
       css={css`
@@ -44,11 +43,7 @@ const MonthHandler = ({ month, setMonth }: MonthHandlerProps) => {
         type="text"
         value={month}
         maxLength={2}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-          const month = e.target.value;
-          if (numberRegex.exec(month) || parseInt(month) > 12) return;
-          setMonth(parseInt(month || "0"));
-        }}
+        onChange={onMonthChange}
       />
       개월
     </div>
@@ -89,7 +84,7 @@ const StatData = ({ title, data, month = 12 }: StatDataType) => (
 type StatProps = {
   title: string;
   month: number;
-  data: Record<"youth" | "manhood" | "total", number[]>;
+  data: Record<"youth" | "manhood" | "total", number>;
 };
 const Stat = ({ title, month, data }: StatProps) => (
   <div
@@ -111,38 +106,25 @@ const Stat = ({ title, month, data }: StatProps) => (
     >
       {title}
     </span>
-    <StatData
-      title="전체"
-      data={data["total"].reduce((x, y) => x + y)}
-      month={month}
-    />
-    <StatData
-      title="청년"
-      data={data["youth"].reduce((x, y) => x + y)}
-      month={month}
-    />
-    <StatData
-      title="장년"
-      data={data["manhood"].reduce((x, y) => x + y)}
-      month={month}
-    />
+    <StatData title="전체" data={data["total"]} month={month} />
+    <StatData title="청년" data={data["youth"]} month={month} />
+    <StatData title="장년" data={data["manhood"]} month={month} />
   </div>
 );
 
 type StatsProps = {
-  total: CorporateState["data"][string]["total"]["generation"];
-  variation: CorporateState["data"][string]["total"]["generation"];
+  sum: CorporateState["data"][string]["total"]["sum"];
+  variation: CorporateState["data"][string]["total"]["sum"];
+  month: number;
+  onMonthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
-const Stats = ({ total, variation }: StatsProps) => {
-  const [month, setMonth] = useState<number>(12);
-  return (
-    <StyledStats>
-      <Stat title="합" month={month} data={total} />
-      <Stat title="증감" month={month} data={variation} />
-      <MonthHandler month={month} setMonth={setMonth} />
-    </StyledStats>
-  );
-};
+const Stats = ({ sum, variation, month, onMonthChange }: StatsProps) => (
+  <StyledStats>
+    <Stat title="합" month={month} data={sum} />
+    <Stat title="증감" month={month} data={variation} />
+    <MonthHandler month={month} onMonthChange={onMonthChange} />
+  </StyledStats>
+);
 
 const StyledStats = styled.div`
   display: flex;

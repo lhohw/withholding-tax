@@ -10,7 +10,6 @@ import {
 import { setPersonnel, toggle } from "./corporateSlice";
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import { ReaderState } from "features/reader/readerSlice";
-import { getDefaultGeneration } from "lib/values";
 import styled from "@emotion/styled";
 
 export type CorporateProps = {
@@ -40,24 +39,19 @@ const Corporate = ({ data, year }: CorporateProps) => {
 
   const {
     personnel,
-    total: { payment, generation },
+    total: { payment, generation, sum },
   } = _d[year];
-  const prev = _d[+year - 1]?.total.generation || {
-    youth: getDefaultGeneration(),
-    manhood: getDefaultGeneration(),
-    total: getDefaultGeneration(),
-  };
   const variation = {
-    youth: generation.youth.map((val, i) => val - prev.youth[i]),
-    manhood: generation.manhood.map((val, i) => val - prev.manhood[i]),
-    total: generation.total.map((val, i) => val - prev.total[i]),
+    youth: sum.youth - (_d[+year - 1]?.total.sum.youth || 0),
+    manhood: sum.manhood - (_d[+year - 1]?.total.sum.manhood || 0),
+    total: sum.total - (_d[+year - 1]?.total.sum.total || 0),
   };
   return (
     <CorporateContainer>
       <CorporateHeader
         corporateName={name}
         year={year}
-        total={generation}
+        sum={sum}
         variation={variation}
       />
       <CorporateRow

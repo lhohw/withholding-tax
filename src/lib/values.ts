@@ -20,4 +20,4 @@ export const getLastYears = (len: number) => {
 
 export const getDefaultPayment = () => ({ youth: 0, manhood: 0 });
 
-export const getDefaultGeneration = () => new Array(12).fill(0);
+export const getDefaultGeneration = (): number[] => new Array(12).fill(0);

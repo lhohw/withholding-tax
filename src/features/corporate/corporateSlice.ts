@@ -27,7 +27,13 @@ export type CorporateState = {
           manhood: number[];
           total: number[];
         };
+        sum: {
+          youth: number;
+          manhood: number;
+          total: number;
+        };
       };
+      month: number;
     };
   };
 };
@@ -57,8 +63,14 @@ export const corporateSlice = createSlice({
               manhood: getDefaultGeneration(),
               total: getDefaultGeneration(),
             },
+            sum: {
+              youth: 0,
+              manhood: 0,
+              total: 0,
+            },
           },
           personnel: {},
+          month: 12,
         };
         const { total, personnel: p } = yearData;
         Object.entries(personnel).forEach(([id, person]) => {
@@ -95,8 +107,15 @@ export const corporateSlice = createSlice({
               total.generation.total[idx]++;
               total.payment.youth += payment.youth;
               total.payment.manhood += payment.manhood;
-              if (flag === "청년") total.generation["youth"][idx]++;
-              else total.generation["manhood"][idx]++;
+              if (flag === "청년") {
+                total.generation["youth"][idx]++;
+                total.sum.total++;
+                total.sum.youth++;
+              } else {
+                total.generation["manhood"][idx]++;
+                total.sum.total++;
+                total.sum.manhood++;
+              }
 
               p[id].generation[idx] = flag;
             });
@@ -118,13 +137,27 @@ export const corporateSlice = createSlice({
       total.payment.manhood += person.payment.manhood * flag;
       person.generation.forEach((f, idx) => {
         if (f === "-") return;
-        total["generation"].total[idx] += flag;
-        total["generation"][f === "청년" ? "youth" : "manhood"][idx] += flag;
+        total.generation.total[idx] += flag;
+        total.sum.total += flag;
+        if (f === "청년") {
+          total.generation.youth[idx] += flag;
+          total.sum.youth += flag;
+        } else {
+          total.generation.manhood[idx] += flag;
+          total.sum.manhood += flag;
+        }
       });
+    },
+    setMonth: (
+      state,
+      action: PayloadAction<{ year: string; month: number }>
+    ) => {
+      const { month, year } = action.payload;
+      state.data[year].month = month;
     },
   },
 });
 
-export const { setPersonnel, toggle } = corporateSlice.actions;
+export const { setPersonnel, toggle, setMonth } = corporateSlice.actions;
 
 export default corporateSlice.reducer;
