@@ -1,59 +1,43 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { css } from "@emotion/react";
 
-import { getLastYears } from "lib/values";
 import { roundOff } from "lib/utils";
 
 import * as font from "constants/font";
 
-import { useAppSelector } from "app/hooks";
 import colors from "constants/colors";
 
-const Variation = () => {
-  const { data } = useAppSelector((state) => state.corporate);
-  const last6Years = useMemo(() => getLastYears(6), []);
-  const last5Years = useMemo(() => getLastYears(5), []);
-  const sum = useMemo(
-    () =>
-      last6Years.reduce(
-        (s, year) => ({ ...s, [year]: data[year].total.sum }),
-        {}
-      ),
-    [data, last6Years]
-  );
-  const variation = useMemo(
-    () =>
-      last5Years.reduce(
-        (v, year) => ({
-          ...v,
-          [year]: {
-            total: data[year].total.sum.total - data[+year - 1].total.sum.total,
-            youth: data[year].total.sum.youth - data[+year - 1].total.sum.youth,
-            manhood:
-              data[year].total.sum.manhood - data[+year - 1].total.sum.manhood,
-          },
-        }),
-        {}
-      ),
-    [data, last5Years]
-  );
-  const months = useMemo(
-    () =>
-      last6Years.reduce(
-        (s, year) => ({
-          ...s,
-          [year]: data[year].month,
-        }),
-        {}
-      ),
-    [last6Years, data]
-  );
+type VariationProps = {
+  monthCnts: {
+    [year: string]: number;
+  };
+  last5Years: string[];
+  last6Years: string[];
+  sum: {
+    [year: string]: Record<"total" | "youth" | "manhood", number>;
+  };
+  variation: {
+    [year: string]: Record<"total" | "youth" | "manhood", number>;
+  };
+};
+const Variation = ({
+  monthCnts,
+  last5Years,
+  last6Years,
+  sum,
+  variation,
+}: VariationProps) => {
   return (
     <VariationContainer>
-      <VariationList type="sum" months={months} years={last6Years} data={sum} />
+      <VariationList
+        type="sum"
+        monthCnts={monthCnts}
+        years={last6Years}
+        data={sum}
+      />
       <VariationList
         type="variation"
-        months={months}
+        monthCnts={monthCnts}
         years={last5Years}
         data={variation}
       />
@@ -75,10 +59,10 @@ const VariationContainer = ({ children }: { children: React.ReactNode }) => (
 
 type VariationItemProps = {
   year?: string | number;
-  month: number;
+  monthCnt: number;
   data: Record<"total" | "youth" | "manhood", number>;
 };
-const VariationItem = ({ year, month, data }: VariationItemProps) => (
+const VariationItem = ({ year, monthCnt, data }: VariationItemProps) => (
   <ul
     css={css`
       display: flex;
@@ -112,7 +96,7 @@ const VariationItem = ({ year, month, data }: VariationItemProps) => (
             : colors.base};
         `}
       >
-        {`${roundOff(data[category as keyof typeof data] / month)} [${
+        {`${roundOff(data[category as keyof typeof data] / monthCnt)} [${
           data[category as keyof typeof data]
         }]`}
       </li>
@@ -123,14 +107,19 @@ const VariationItem = ({ year, month, data }: VariationItemProps) => (
 type VariationListProps = {
   type: "sum" | "variation";
   years: string[];
-  months: {
+  monthCnts: {
     [year: string]: number;
   };
   data: {
     [year: string]: Record<"total" | "youth" | "manhood", number>;
   };
 };
-const VariationList = ({ type, years, months, data }: VariationListProps) => (
+const VariationList = ({
+  type,
+  years,
+  monthCnts,
+  data,
+}: VariationListProps) => (
   <div
     css={css`
       display: flex;
@@ -143,7 +132,7 @@ const VariationList = ({ type, years, months, data }: VariationListProps) => (
       <VariationItem
         key={year}
         year={type === "sum" ? year : undefined}
-        month={months[year]}
+        monthCnt={monthCnts[year]}
         data={data[year]}
       />
     ))}
