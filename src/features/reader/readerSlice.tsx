@@ -80,7 +80,13 @@ export const readerSlice = createSlice({
           date: { start, retirement, birth },
           earnedIncomeWithholdingDepartment: ei,
           payment,
+          RRN,
         } = person;
+        const exist =
+          state.list[RN] &&
+          Object.entries(state.list[RN].personnel).find(
+            ([_, person]) => person.RRN === RRN
+          );
         if (!state.list[RN]) {
           state.list[RN] = {
             name: person.corporate.name,
@@ -88,10 +94,10 @@ export const readerSlice = createSlice({
               [id]: person,
             },
           };
-        } else if (!state.list[RN].personnel[id]) {
+        } else if (!exist) {
           state.list[RN].personnel[id] = person;
         } else {
-          const p = state.list[RN].personnel[id];
+          const p = state.list[RN].personnel[exist[0]];
           p.earnedIncomeWithholdingDepartment[year] = ei[year];
           p.payment[year] = payment[year];
           if (!p.date.start && start) p.date.start = start;

@@ -7,7 +7,6 @@ import {
 } from "lib/values";
 import { isRetired, lessThanAMonth } from "lib/utils";
 
-// import type { InfoState } from "features/info/infoSlice";
 import type { ReaderState } from "features/reader/readerSlice";
 
 export type CorporateState = {
@@ -17,7 +16,6 @@ export type CorporateState = {
       [year: string]: {
         personnel: {
           [id: string]: {
-            // info: InfoState[string];
             info: {
               checked: boolean;
               name: Person["name"];

@@ -8,14 +8,12 @@ import {
 import readerReducer from "features/reader/readerSlice";
 import personReducer from "features/person/personSlice";
 import corporateReducer from "features/corporate/corporateSlice";
-import infoReducer from "features/info/infoSlice";
 import calculatorReducer from "features/calculator/calculatorSlice";
 
 const rootReducer = combineReducers({
   reader: readerReducer,
   person: personReducer,
   corporate: corporateReducer,
-  info: infoReducer,
   calculator: calculatorReducer,
 });
 

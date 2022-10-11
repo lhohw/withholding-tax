@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import { parseMoney, isYouth } from "lib/utils";
 import { getBirthCentury } from "lib/values";
 import {
@@ -8,7 +9,7 @@ import {
 } from "./personVariable";
 import {
   yearRegex,
-  idRegex,
+  RRNRegex,
   nameRegex,
   corporateRegex,
   RNRegex,
@@ -20,6 +21,7 @@ import {
 
 export class Person {
   id: string = "";
+  RRN: string = "";
   name: string = "";
   corporate: PersonCorporate = {
     name: null!,
@@ -62,21 +64,21 @@ export class Person {
       address,
       name,
       earnedIncomeWithholdingDepartment,
-      id,
+      RRN,
       startDate,
       retirementDate,
     ] = data;
     if (isTaxLove) {
-      [id, startDate, retirementDate, earnedIncomeWithholdingDepartment] = [
+      [RRN, startDate, retirementDate, earnedIncomeWithholdingDepartment] = [
         earnedIncomeWithholdingDepartment,
-        id,
+        RRN,
         startDate,
         retirementDate,
       ];
     }
-
+    this.id = uuidv4();
     const year = parseInt(_year[0].replace(yearRegex, ""));
-    this.id = id[0].replace(idRegex, "");
+    this.RRN = RRN[0].replace(RRNRegex, "");
     this.name = name[0].replace(nameRegex, "");
     this.corporate = {
       name: corporate[0].replace(corporateRegex, ""),
@@ -94,13 +96,13 @@ export class Person {
         .split(/[가-힣]+/g)
         .slice(0, 3)
         .join(".") as YYYYMMDD,
-      birth: getBirthCentury(this.id) + this.id.slice(0, 8),
+      birth: getBirthCentury(this.RRN) + this.RRN.slice(0, 8),
     };
     this.earnedIncomeWithholdingDepartment[year] = createStatement(
       earnedIncomeWithholdingDepartment,
       left,
       year,
-      this.id,
+      this.RRN,
       this.payment,
       isTaxLove
     );
@@ -120,7 +122,7 @@ const createMonthlyStatement = (
   line: string,
   left: number[],
   startIndex: number,
-  id: string,
+  RRN: string,
   tag: string,
   yearPrefix: number,
   isTaxLove: boolean,
@@ -190,7 +192,7 @@ const createMonthlyStatement = (
       localIncomeTax: parseMoney(obj.localIncomeTax),
     },
   };
-  if (isYouth(id, monthlyStatement.paymentDate))
+  if (isYouth(RRN, monthlyStatement.paymentDate))
     monthlyStatement.payment.youth = monthlyStatement.totalPay.total;
   else monthlyStatement.payment.manhood = monthlyStatement.totalPay.total;
   return monthlyStatement;
@@ -200,7 +202,7 @@ const createStatement = (
   input: [string, number],
   left: number[],
   yearPrefix: number,
-  id: string,
+  RRN: string,
   payment: PersonPayment,
   isTaxLove: boolean
 ) => {
@@ -225,12 +227,12 @@ const createStatement = (
     }
     while (parseInt(tag) !== expectedMonth && expectedMonth <= 12) {
       if (parseInt(tag) < expectedMonth)
-        throw new Error("invalid month, check pdf and reader.");
+        throw new Error("invalRRN month, check pdf and reader.");
       const monthlyStatement = createMonthlyStatement(
         "",
         left,
         index + here,
-        id,
+        RRN,
         expectedMonth.toString().padStart(2, "0"),
         yearPrefix,
         isTaxLove,
@@ -242,7 +244,7 @@ const createStatement = (
       text.slice(here, match.index),
       left,
       index + here,
-      id,
+      RRN,
       tag,
       yearPrefix,
       isTaxLove,

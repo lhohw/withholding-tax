@@ -17,11 +17,11 @@ const getDays = (year: number, month: number) =>
     31,
   ][month];
 
-export const isYouth = (id: string, date: PaymentDate) => {
+export const isYouth = (RRN: string, date: PaymentDate) => {
   const [year, month] = date.split("/").map(Number);
   const limit = new Date(year - 30, month - 1, getDays(year, month - 1));
-  const [f] = id.split("-");
-  const prefix = getBirthCentury(id);
+  const [f] = RRN.split("-");
+  const prefix = getBirthCentury(RRN);
   const y = parseInt(prefix + f.slice(0, 2));
   const m = parseInt(f.slice(2, 4));
   const d = parseInt(f.slice(4, 6));

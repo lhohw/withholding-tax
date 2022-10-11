@@ -27,7 +27,7 @@ export const taxLoveWithholdingTaxRegex = new RegExp(
 );
 
 export const yearRegex = /귀속연도\s?/;
-export const idRegex = /주민등록번호\s?/;
+export const RRNRegex = /주민등록번호\s?/;
 export const nameRegex = /성명:\s?/;
 export const corporateRegex = /법인명\(상호\)\s?/;
 export const RNRegex = /사업자등록번호\s?/;

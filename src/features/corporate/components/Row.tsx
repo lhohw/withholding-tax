@@ -2,14 +2,13 @@ import React from "react";
 import { css } from "@emotion/react";
 import * as font from "constants/font";
 
-import type { InfoState } from "features/info/infoSlice";
-
 import Item from "components/Item";
 import List from "components/List";
 
-import Info, { InfoHeading } from "features/info/Info";
+import Info, { InfoHeading } from "./Info";
 import colors from "constants/colors";
 import { parseMoney } from "lib/utils";
+import { CorporateState } from "../corporateSlice";
 
 type RowItemProps = {
   type: "payment" | "generation";
@@ -45,7 +44,7 @@ type RowProps = {
   checked?: boolean;
   id?: string;
   onToggle?: (id: string) => void;
-  info?: InfoState[string];
+  info?: CorporateState[string]["data"][string]["personnel"][string]["info"];
   payments: Record<"youth" | "manhood", number>;
   generations: string[];
 };

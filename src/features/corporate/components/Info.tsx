@@ -1,18 +1,14 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
+
 import CheckBox from "components/CheckBox";
 import Item from "components/Item";
-import { InfoState } from "./infoSlice";
-
-const InfoContainer = styled.ul`
-  display: flex;
-  flex-direction: row;
-`;
+import { CorporateState } from "features/corporate/corporateSlice";
 
 export type InfoProps = {
   id: string;
-  info: InfoState[string];
+  info: CorporateState[string]["data"][string]["personnel"][string]["info"];
   onToggle: (id: string) => void;
 };
 const sizes = [60, 80, 80, 100];
@@ -60,6 +56,11 @@ export const InfoHeading = React.memo(
   ),
   () => true
 );
+
+const InfoContainer = styled.ul`
+  display: flex;
+  flex-direction: row;
+`;
 
 export default React.memo(
   Info,

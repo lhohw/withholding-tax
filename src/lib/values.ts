@@ -1,5 +1,5 @@
-export const getBirthCentury = (id: string) => {
-  const firstRearDigit = id.split("-")[1][0];
+export const getBirthCentury = (RRN: string) => {
+  const firstRearDigit = RRN.split("-")[1][0];
   return (
     19 +
     (firstRearDigit === "3" ||
