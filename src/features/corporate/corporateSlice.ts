@@ -11,6 +11,7 @@ import type { InfoState } from "features/info/infoSlice";
 import type { ReaderState } from "features/reader/readerSlice";
 
 export type CorporateState = {
+  name: string;
   data: {
     [year: string]: {
       personnel: {
@@ -39,6 +40,7 @@ export type CorporateState = {
 };
 
 const initialState: CorporateState = {
+  name: "",
   data: {},
 };
 
@@ -48,12 +50,15 @@ export const corporateSlice = createSlice({
   reducers: {
     setPersonnel: (
       state,
-      action: PayloadAction<ReaderState["list"][string]["personnel"]>
+      action: PayloadAction<{
+        name: string;
+        personnel: ReaderState["list"][string]["personnel"];
+      }>
     ) => {
       const years = getLastYears(6);
 
-      const { payload: personnel } = action;
-
+      const { name, personnel } = action.payload;
+      state.name = name;
       years.forEach((year) => {
         const yearData: CorporateState["data"][string] = {
           total: {

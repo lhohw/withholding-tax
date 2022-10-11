@@ -24,10 +24,10 @@ const Corporate = ({ data, year }: CorporateProps) => {
     },
     [dispatch, year]
   );
-  const { name, personnel: _p } = data;
+  const { name } = data;
   useEffect(() => {
-    dispatch(setPersonnel(_p));
-  }, [dispatch, _p]);
+    dispatch(setPersonnel(data));
+  }, [dispatch, data]);
 
   const paymentTitle = useMemo(() => ({ youth: -1, manhood: -1 }), []);
   const generationTitle = useMemo(

@@ -82,3 +82,5 @@ export const lessThanAMonth = (date: {
   const ret = new Date(`${ry}-${rm}-${rd}`);
   return ret < limit;
 };
+
+export const roundOff = (x: number) => Math.floor(x * 100) / 100;

@@ -5,6 +5,8 @@ import { css } from "@emotion/react";
 import * as font from "constants/font";
 import colors from "constants/colors";
 
+import { roundOff } from "lib/utils";
+
 import styled from "@emotion/styled";
 
 type MonthHandlerProps = {
@@ -77,7 +79,7 @@ const StatData = ({ title, data, month = 12 }: StatDataType) => (
         margin-left: 1rem;
         color: ${data < 0 ? colors.red600 : colors.base};
       `}
-    >{`${(data / Math.max(1, month)).toFixed(2)} [${data}]`}</span>
+    >{`${roundOff(data / Math.max(1, month))} [${data}]`}</span>
   </div>
 );
 
