@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PersonPayment, YYYYMMDD } from "features/person/personAPI";
+import { PersonPayment, YYYYMMDD, Person } from "features/person/personAPI";
 import {
   getDefaultGeneration,
   getDefaultPayment,
@@ -7,42 +7,46 @@ import {
 } from "lib/values";
 import { isRetired, lessThanAMonth } from "lib/utils";
 
-import type { InfoState } from "features/info/infoSlice";
+// import type { InfoState } from "features/info/infoSlice";
 import type { ReaderState } from "features/reader/readerSlice";
 
 export type CorporateState = {
-  name: string;
-  data: {
-    [year: string]: {
-      personnel: {
-        [id: string]: {
-          info: InfoState[string];
+  [RN: string]: {
+    name: string;
+    data: {
+      [year: string]: {
+        personnel: {
+          [id: string]: {
+            // info: InfoState[string];
+            info: {
+              checked: boolean;
+              name: Person["name"];
+              date: Person["date"];
+            };
+            payment: PersonPayment[string];
+            generation: ("청년" | "장년" | "-")[];
+          };
+        };
+        total: {
           payment: PersonPayment[string];
-          generation: ("청년" | "장년" | "-")[];
+          generation: {
+            youth: number[];
+            manhood: number[];
+            total: number[];
+          };
+          sum: {
+            youth: number;
+            manhood: number;
+            total: number;
+          };
         };
+        monthCnt: number;
       };
-      total: {
-        payment: PersonPayment[string];
-        generation: {
-          youth: number[];
-          manhood: number[];
-          total: number[];
-        };
-        sum: {
-          youth: number;
-          manhood: number;
-          total: number;
-        };
-      };
-      month: number;
     };
   };
 };
 
-const initialState: CorporateState = {
-  name: "",
-  data: {},
-};
+const initialState: CorporateState = {};
 
 export const corporateSlice = createSlice({
   name: "corporate",
@@ -51,16 +55,27 @@ export const corporateSlice = createSlice({
     setPersonnel: (
       state,
       action: PayloadAction<{
-        name: string;
-        personnel: ReaderState["list"][string]["personnel"];
+        data: {
+          name: string;
+          personnel: ReaderState["list"][string]["personnel"];
+        };
+        RN: string;
       }>
     ) => {
       const years = getLastYears(6);
 
-      const { name, personnel } = action.payload;
-      state.name = name;
+      const {
+        data: { name, personnel },
+        RN,
+      } = action.payload;
+      state[RN] = {
+        name,
+        data: {},
+      };
+      const corporate = state[RN];
+      corporate.name = name;
       years.forEach((year) => {
-        const yearData: CorporateState["data"][string] = {
+        const yearData: CorporateState[string]["data"][string] = {
           total: {
             payment: { youth: 0, manhood: 0 },
             generation: {
@@ -75,7 +90,7 @@ export const corporateSlice = createSlice({
             },
           },
           personnel: {},
-          month: 12,
+          monthCnt: 12,
         };
         const { total, personnel: p } = yearData;
         Object.entries(personnel).forEach(([id, person]) => {
@@ -126,12 +141,15 @@ export const corporateSlice = createSlice({
             });
           }
         });
-        state.data[year] = yearData;
+        corporate.data[year] = yearData;
       });
     },
-    toggle: (state, action: PayloadAction<{ id: string; year: string }>) => {
-      const { data } = state;
-      const { id, year } = action.payload;
+    toggle: (
+      state,
+      action: PayloadAction<{ id: string; year: string; RN: string }>
+    ) => {
+      const { id, year, RN } = action.payload;
+      const { data } = state[RN];
       if (!year) throw new Error("year to toggle not defined");
 
       const { total, personnel } = data[year];
@@ -153,16 +171,16 @@ export const corporateSlice = createSlice({
         }
       });
     },
-    setMonth: (
+    setMonthCnt: (
       state,
-      action: PayloadAction<{ year: string; month: number }>
+      action: PayloadAction<{ year: string; monthCnt: number; RN: string }>
     ) => {
-      const { month, year } = action.payload;
-      state.data[year].month = month;
+      const { monthCnt, year, RN } = action.payload;
+      state[RN].data[year].monthCnt = monthCnt;
     },
   },
 });
 
-export const { setPersonnel, toggle, setMonth } = corporateSlice.actions;
+export const { setPersonnel, toggle, setMonthCnt } = corporateSlice.actions;
 
 export default corporateSlice.reducer;

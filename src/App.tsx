@@ -14,7 +14,9 @@ const App = () => {
   return (
     <div style={{ paddingBottom: "1rem" }}>
       <Reader />
-      {year && corporate && <Corporate year={year} data={list[corporate]} />}
+      {year && corporate && (
+        <Corporate RN={corporate} year={year} data={list[corporate]} />
+      )}
     </div>
   );
 };

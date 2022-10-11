@@ -4,7 +4,10 @@ import * as font from "constants/font";
 import { IoCalculator } from "react-icons/io5";
 import colors from "constants/colors";
 
-const CalculateButton = () => (
+type CalculateButtonProps = {
+  RN: string;
+};
+const CalculateButton = ({ RN }: CalculateButtonProps) => (
   <Link
     css={css`
       display: flex;
@@ -25,6 +28,7 @@ const CalculateButton = () => (
       }
     `}
     to={"calculator"}
+    state={{ RN }}
   >
     <span>세액공제</span>
     <IoCalculator

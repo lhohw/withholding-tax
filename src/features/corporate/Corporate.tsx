@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from "react";
+
 import colors from "constants/colors";
 
 import {
@@ -15,36 +16,40 @@ import styled from "@emotion/styled";
 export type CorporateProps = {
   data: ReaderState["list"][string];
   year: string;
+  RN: string;
 };
-const Corporate = ({ data, year }: CorporateProps) => {
+const Corporate = ({ data, year, RN }: CorporateProps) => {
   const dispatch = useAppDispatch();
+  const { name } = data;
+
   const onToggle = useCallback(
     (id: string) => {
-      dispatch(toggle({ id, year }));
+      dispatch(toggle({ id, year, RN }));
     },
-    [dispatch, year]
+    [dispatch, year, RN]
   );
-  const { name } = data;
   useEffect(() => {
-    dispatch(setPersonnel(data));
-  }, [dispatch, data]);
+    dispatch(setPersonnel({ data, RN }));
+  }, [dispatch, data, RN]);
 
   const paymentTitle = useMemo(() => ({ youth: -1, manhood: -1 }), []);
   const generationTitle = useMemo(
     () => new Array(12).fill(0).map((_, i) => `${i + 1}월`),
     []
   );
-  const { data: _d } = useAppSelector((state) => state.corporate);
-  if (!_d[year]) return <div>loading...</div>;
+  const corporates = useAppSelector((state) => state.corporate);
+  const corporate = corporates[RN]?.data;
+
+  if (!corporate || !corporate[year]) return <div>loading...</div>;
 
   const {
     personnel,
     total: { payment, generation, sum },
-  } = _d[year];
+  } = corporate[year];
   const variation = {
-    youth: sum.youth - (_d[+year - 1]?.total.sum.youth || 0),
-    manhood: sum.manhood - (_d[+year - 1]?.total.sum.manhood || 0),
-    total: sum.total - (_d[+year - 1]?.total.sum.total || 0),
+    youth: sum.youth - (corporate[+year - 1]?.total.sum.youth || 0),
+    manhood: sum.manhood - (corporate[+year - 1]?.total.sum.manhood || 0),
+    total: sum.total - (corporate[+year - 1]?.total.sum.total || 0),
   };
   return (
     <CorporateContainer>
@@ -53,6 +58,7 @@ const Corporate = ({ data, year }: CorporateProps) => {
         year={year}
         sum={sum}
         variation={variation}
+        RN={RN}
       />
       <CorporateRow
         isHeading
@@ -101,4 +107,4 @@ const CorporateList = styled.ul`
   border-bottom: 1px dotted ${colors.main};
 `;
 
-export default Corporate;
+export default React.memo(Corporate);

@@ -46,17 +46,25 @@ export const isRetired = (
   return retirementDate && retired >= monthsFirstDay && retired < monthsLastDay;
 };
 
-const strToNum = (x: string) => parseInt(x.split(",").join("") || "0");
+const strToNum = (x: string) => roundOff(Number(x.split(",").join("") || "0"));
 const numToStr = (x: number) => {
-  let minus = x < 0;
-  const str = minus ? x.toString().slice(1) : x.toString();
+  const minus = x < 0;
+  let str = minus ? x.toString().slice(1) : x.toString();
+  let underDecimalPoint = "";
+  if (str.indexOf(".") !== -1) {
+    [str, underDecimalPoint] = str.split(".");
+  }
   let i = str.length;
   let ret = "";
   while (i > 0) {
     ret = "," + str.slice(Math.max(0, i - 3), i) + ret;
     i -= 3;
   }
-  return (minus ? "-" : "") + ret.slice(1);
+  return (
+    (minus ? "-" : "") +
+    ret.slice(1) +
+    (underDecimalPoint ? `.${underDecimalPoint.slice(0, 2)}` : "")
+  );
 };
 
 export function parseMoney<T extends string | number>(
@@ -83,4 +91,5 @@ export const lessThanAMonth = (date: {
   return ret < limit;
 };
 
-export const roundOff = (x: number) => Math.floor(x * 100) / 100;
+export const roundOff = (x: number) =>
+  (x < 0 ? Math.ceil(x * 100) : Math.floor(x * 100)) / 100;

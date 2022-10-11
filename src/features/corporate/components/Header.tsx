@@ -10,15 +10,17 @@ import colors from "constants/colors";
 import { numberRegex } from "constants/regex";
 import { useAppDispatch, useAppSelector } from "app/hooks";
 
-import { CorporateState, setMonth } from "../corporateSlice";
+import { CorporateState, setMonthCnt } from "../corporateSlice";
 
 type HeaderProps = {
+  RN: string;
   corporateName: string;
   year: string;
-  sum: CorporateState["data"][string]["total"]["sum"];
-  variation: CorporateState["data"][string]["total"]["sum"];
+  sum: CorporateState[string]["data"][string]["total"]["sum"];
+  variation: CorporateState[string]["data"][string]["total"]["sum"];
 };
 const CorporateHeader = ({
+  RN,
   corporateName,
   year,
   sum,
@@ -26,14 +28,29 @@ const CorporateHeader = ({
 }: HeaderProps) => {
   const dispatch = useAppDispatch();
 
-  const { month } = useAppSelector((state) => state.corporate.data[year]);
-  const onMonthChange = useCallback(
+  const { monthCnt } = useAppSelector(
+    (state) => state.corporate[RN].data[year]
+  );
+  const onMonthCntChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const month = e.target.value;
-      if (numberRegex.exec(month) || parseInt(month) > 12) return;
-      dispatch(setMonth({ year, month: parseInt(month || "0") }));
+      const monthCnt = e.target.value;
+      if (numberRegex.exec(monthCnt) || parseInt(monthCnt) > 12) return;
+      const storageMonthCnts = JSON.parse(
+        sessionStorage.getItem("monthCnts") || "{}"
+      );
+      sessionStorage.setItem(
+        "monthCnts",
+        JSON.stringify({
+          ...storageMonthCnts,
+          [RN]: {
+            ...storageMonthCnts[RN],
+            [year]: parseInt(monthCnt || "0"),
+          },
+        })
+      );
+      dispatch(setMonthCnt({ year, monthCnt: parseInt(monthCnt || "0"), RN }));
     },
-    [year, dispatch]
+    [year, dispatch, RN]
   );
   return (
     <StyledHeader>
@@ -44,10 +61,10 @@ const CorporateHeader = ({
       <Stats
         sum={sum}
         variation={variation}
-        month={month}
-        onMonthChange={onMonthChange}
+        monthCnt={monthCnt}
+        onMonthCntChange={onMonthCntChange}
       />
-      <CalculateButton />
+      <CalculateButton RN={RN} />
     </StyledHeader>
   );
 };

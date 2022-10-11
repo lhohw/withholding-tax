@@ -10,10 +10,13 @@ import { roundOff } from "lib/utils";
 import styled from "@emotion/styled";
 
 type MonthHandlerProps = {
-  month: number;
-  onMonthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  monthCnt: number;
+  onMonthCntChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
-const MonthHandler = ({ month = 12, onMonthChange }: MonthHandlerProps) => {
+const MonthHandler = ({
+  monthCnt = 12,
+  onMonthCntChange,
+}: MonthHandlerProps) => {
   return (
     <div
       css={css`
@@ -43,9 +46,9 @@ const MonthHandler = ({ month = 12, onMonthChange }: MonthHandlerProps) => {
           }
         `}
         type="text"
-        value={month}
+        value={monthCnt}
         maxLength={2}
-        onChange={onMonthChange}
+        onChange={onMonthCntChange}
       />
       개월
     </div>
@@ -54,9 +57,9 @@ const MonthHandler = ({ month = 12, onMonthChange }: MonthHandlerProps) => {
 type StatDataType = {
   title: string;
   data: number;
-  month?: number;
+  monthCnt?: number;
 };
-const StatData = ({ title, data, month = 12 }: StatDataType) => (
+const StatData = ({ title, data, monthCnt = 12 }: StatDataType) => (
   <div
     css={css`
       display: flex;
@@ -79,16 +82,16 @@ const StatData = ({ title, data, month = 12 }: StatDataType) => (
         margin-left: 1rem;
         color: ${data < 0 ? colors.red600 : colors.base};
       `}
-    >{`${roundOff(data / Math.max(1, month))} [${data}]`}</span>
+    >{`${roundOff(data / Math.max(1, monthCnt))} [${data}]`}</span>
   </div>
 );
 
 type StatProps = {
   title: string;
-  month: number;
+  monthCnt: number;
   data: Record<"youth" | "manhood" | "total", number>;
 };
-const Stat = ({ title, month, data }: StatProps) => (
+const Stat = ({ title, monthCnt, data }: StatProps) => (
   <div
     css={css`
       display: flex;
@@ -108,23 +111,23 @@ const Stat = ({ title, month, data }: StatProps) => (
     >
       {title}
     </span>
-    <StatData title="전체" data={data["total"]} month={month} />
-    <StatData title="청년" data={data["youth"]} month={month} />
-    <StatData title="장년" data={data["manhood"]} month={month} />
+    <StatData title="전체" data={data["total"]} monthCnt={monthCnt} />
+    <StatData title="청년" data={data["youth"]} monthCnt={monthCnt} />
+    <StatData title="장년" data={data["manhood"]} monthCnt={monthCnt} />
   </div>
 );
 
 type StatsProps = {
-  sum: CorporateState["data"][string]["total"]["sum"];
-  variation: CorporateState["data"][string]["total"]["sum"];
-  month: number;
-  onMonthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  sum: CorporateState[string]["data"][string]["total"]["sum"];
+  variation: CorporateState[string]["data"][string]["total"]["sum"];
+  monthCnt: number;
+  onMonthCntChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
-const Stats = ({ sum, variation, month, onMonthChange }: StatsProps) => (
+const Stats = ({ sum, variation, monthCnt, onMonthCntChange }: StatsProps) => (
   <StyledStats>
-    <Stat title="합" month={month} data={sum} />
-    <Stat title="증감" month={month} data={variation} />
-    <MonthHandler month={month} onMonthChange={onMonthChange} />
+    <Stat title="합" monthCnt={monthCnt} data={sum} />
+    <Stat title="증감" monthCnt={monthCnt} data={variation} />
+    <MonthHandler monthCnt={monthCnt} onMonthCntChange={onMonthCntChange} />
   </StyledStats>
 );
 
