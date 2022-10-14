@@ -66,12 +66,12 @@ export const corporateSlice = createSlice({
         data: { name, personnel },
         RN,
       } = action.payload;
-      state[RN] = {
-        name,
-        data: {},
-      };
+      if (!state[RN])
+        state[RN] = {
+          name,
+          data: {},
+        };
       const corporate = state[RN];
-      corporate.name = name;
       years.forEach((year) => {
         const yearData: CorporateState[string]["data"][string] = {
           total: {
@@ -88,23 +88,28 @@ export const corporateSlice = createSlice({
             },
           },
           personnel: {},
-          monthCnt: 12,
+          monthCnt: corporate.data[year]?.monthCnt || 12,
         };
         const { total, personnel: p } = yearData;
         Object.entries(personnel).forEach(([id, person]) => {
+          const existPerson = corporate.data[year]?.personnel[id];
           const { name, date, earnedIncomeWithholdingDepartment: ei } = person;
-          p[id] = {} as typeof yearData.personnel[string];
-          p[id].info = {
-            checked: false,
-            name,
-            date: {
-              start: date.start.slice(2) as YYYYMMDD,
-              retirement: date.retirement.slice(2) as YYYYMMDD,
-              birth: date.birth,
-            },
-          };
-          p[id].payment = getDefaultPayment();
-          p[id].generation = new Array(12).fill("-");
+          if (existPerson && !ei[year]) {
+            p[id] = existPerson;
+          } else {
+            p[id] = {} as typeof yearData.personnel[string];
+            p[id].info = {
+              checked: existPerson?.info.checked || false,
+              name,
+              date: {
+                start: date.start.slice(2) as YYYYMMDD,
+                retirement: date.retirement.slice(2) as YYYYMMDD,
+                birth: date.birth,
+              },
+            };
+            p[id].payment = getDefaultPayment();
+            p[id].generation = new Array(12).fill("-");
+          }
           if (ei[year]) {
             ei[year].slice(0, 12).forEach(({ payment }, idx) => {
               const flag = payment.youth
@@ -120,19 +125,20 @@ export const corporateSlice = createSlice({
                     lessThanAMonth(date)))
               )
                 return;
+              const checked = p[id].info.checked;
               p[id].payment.youth += payment.youth;
               p[id].payment.manhood += payment.manhood;
-              total.generation.total[idx]++;
-              total.payment.youth += payment.youth;
-              total.payment.manhood += payment.manhood;
+              total.generation.total[idx] += checked ? 0 : 1;
+              total.payment.youth += checked ? 0 : payment.youth;
+              total.payment.manhood += checked ? 0 : payment.manhood;
               if (flag === "청년") {
-                total.generation["youth"][idx]++;
-                total.sum.total++;
-                total.sum.youth++;
+                total.generation["youth"][idx] += checked ? 0 : 1;
+                total.sum.total += checked ? 0 : 1;
+                total.sum.youth += checked ? 0 : 1;
               } else {
-                total.generation["manhood"][idx]++;
-                total.sum.total++;
-                total.sum.manhood++;
+                total.generation["manhood"][idx] += checked ? 0 : 1;
+                total.sum.total += checked ? 0 : 1;
+                total.sum.manhood += checked ? 0 : 1;
               }
 
               p[id].generation[idx] = flag;
@@ -176,9 +182,22 @@ export const corporateSlice = createSlice({
       const { monthCnt, year, RN } = action.payload;
       state[RN].data[year].monthCnt = monthCnt;
     },
+    setChecked: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        checked: boolean;
+        RN: string;
+        year: string;
+      }>
+    ) => {
+      const { id, checked, RN, year } = action.payload;
+      state[RN].data[year].personnel[id].info.checked = checked;
+    },
   },
 });
 
-export const { setPersonnel, toggle, setMonthCnt } = corporateSlice.actions;
+export const { setPersonnel, toggle, setMonthCnt, setChecked } =
+  corporateSlice.actions;
 
 export default corporateSlice.reducer;

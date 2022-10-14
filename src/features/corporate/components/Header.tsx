@@ -7,7 +7,7 @@ import styled from "@emotion/styled";
 import * as font from "constants/font";
 import colors from "constants/colors";
 
-import { numberRegex } from "constants/regex";
+import { exceptNumberRegex } from "constants/regex";
 import { useAppDispatch, useAppSelector } from "app/hooks";
 
 import { CorporateState, setMonthCnt } from "../corporateSlice";
@@ -34,20 +34,7 @@ const CorporateHeader = ({
   const onMonthCntChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const monthCnt = e.target.value;
-      if (numberRegex.exec(monthCnt) || parseInt(monthCnt) > 12) return;
-      const storageMonthCnts = JSON.parse(
-        sessionStorage.getItem("monthCnts") || "{}"
-      );
-      sessionStorage.setItem(
-        "monthCnts",
-        JSON.stringify({
-          ...storageMonthCnts,
-          [RN]: {
-            ...storageMonthCnts[RN],
-            [year]: parseInt(monthCnt || "0"),
-          },
-        })
-      );
+      if (exceptNumberRegex.exec(monthCnt) || parseInt(monthCnt) > 12) return;
       dispatch(setMonthCnt({ year, monthCnt: parseInt(monthCnt || "0"), RN }));
     },
     [year, dispatch, RN]

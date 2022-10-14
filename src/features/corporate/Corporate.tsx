@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-
 import colors from "constants/colors";
 
 import {
@@ -18,9 +17,13 @@ export type CorporateProps = {
   year: string;
   RN: string;
 };
+
 const Corporate = ({ data, year, RN }: CorporateProps) => {
   const dispatch = useAppDispatch();
   const { name } = data;
+
+  const corporates = useAppSelector((state) => state.corporate);
+  const corporate = corporates[RN]?.data;
 
   const onToggle = useCallback(
     (id: string) => {
@@ -28,17 +31,16 @@ const Corporate = ({ data, year, RN }: CorporateProps) => {
     },
     [dispatch, year, RN]
   );
+
   useEffect(() => {
-    dispatch(setPersonnel({ data, RN }));
-  }, [dispatch, data, RN]);
+    dispatch(setPersonnel({ RN, data }));
+  }, [dispatch, RN, data]);
 
   const paymentTitle = useMemo(() => ({ youth: -1, manhood: -1 }), []);
   const generationTitle = useMemo(
     () => new Array(12).fill(0).map((_, i) => `${i + 1}월`),
     []
   );
-  const corporates = useAppSelector((state) => state.corporate);
-  const corporate = corporates[RN]?.data;
 
   if (!corporate || !corporate[year]) return <div>loading...</div>;
 
@@ -107,4 +109,10 @@ const CorporateList = styled.ul`
   border-bottom: 1px dotted ${colors.main};
 `;
 
-export default React.memo(Corporate);
+export default React.memo(
+  Corporate,
+  (prevProps, nextProps) =>
+    prevProps.RN === nextProps.RN &&
+    prevProps.data === nextProps.data &&
+    prevProps.year === nextProps.year
+);
