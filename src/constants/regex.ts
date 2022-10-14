@@ -53,4 +53,4 @@ export const taxLoveMonthlyStatementRegex = (year: number) =>
     "g"
   );
 
-export const numberRegex = /[^\d+]/g;
+export const exceptNumberRegex = /[^\d+]/g;

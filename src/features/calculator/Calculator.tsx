@@ -9,18 +9,17 @@ import { getLastYears } from "lib/values";
 
 import { setType } from "./calculatorSlice";
 
-import Variation from "./Variation";
-import Controller from "./Controller";
-import SocialInsurance from "./SocialInsurance";
+import Code from "./components/Code";
+import Variation from "./components/Variation";
+import Controller from "./components/Controller";
+import SocialInsurance from "./components/SocialInsurance";
 
 const Calculator = () => {
   const navigate = useNavigate();
   const loc = useLocation();
-
   const { RN } = loc.state;
 
   const dispatch = useAppDispatch();
-  // const { name, data } = useAppSelector((state) => state.corporate[RN]);
   const corporates = useAppSelector((state) => state.corporate);
   const corporate = corporates[RN];
 
@@ -91,10 +90,9 @@ const Calculator = () => {
     [dispatch]
   );
   useEffect(() => {
-    if (!corporate) {
-      navigate("/", { replace: true });
-    }
+    if (!corporate) navigate("/", { replace: true });
   }, [corporate, navigate]);
+
   if (!corporate) return <></>;
   return (
     <StyledCalculator>
@@ -111,11 +109,14 @@ const Calculator = () => {
       </div>
       {type &&
         (type === "social" ? (
-          <SocialInsurance
-            last5Years={last5Years}
-            data={{ paymentSum, generationSum, variation }}
-            monthCnts={monthCnts}
-          />
+          <>
+            <Code />
+            <SocialInsurance
+              last5Years={last5Years}
+              data={{ paymentSum, generationSum, variation }}
+              monthCnts={monthCnts}
+            />
+          </>
         ) : (
           <div>고용증대</div>
         ))}

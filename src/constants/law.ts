@@ -1,37 +1,50 @@
-export const socialInsuranceRate = {
+export type SocialInsuranceRate = {
+  [year: string]: {
+    healthInsuranceRate: number;
+    longTermCareInsuranceRate: number;
+    nationalPensionInsuranceRate: number;
+    employmentInsuranceRate: number;
+  };
+};
+export const socialInsuranceRate: SocialInsuranceRate = {
   "2017": {
     healthInsuranceRate: 3.06,
-    longTermCareInsuranceRate: 0.20043,
+    longTermCareInsuranceRate: 0.2, //043,
     nationalPensionInsuranceRate: 4.5,
     employmentInsuranceRate: 0.9,
   },
   "2018": {
     healthInsuranceRate: 3.06,
-    longTermCareInsuranceRate: 0.20043,
+    longTermCareInsuranceRate: 0.2, //043,
     nationalPensionInsuranceRate: 4.5,
     employmentInsuranceRate: 0.9,
   },
   "2019": {
     healthInsuranceRate: 3.12,
-    longTermCareInsuranceRate: 0.23026,
+    longTermCareInsuranceRate: 0.23, //026,
     nationalPensionInsuranceRate: 4.5,
     employmentInsuranceRate: 0.9,
   },
   "2020": {
     healthInsuranceRate: 3.23,
-    longTermCareInsuranceRate: 0.27487,
+    longTermCareInsuranceRate: 0.27, //487,
     nationalPensionInsuranceRate: 4.5,
     employmentInsuranceRate: 0.9,
   },
   "2021": {
     healthInsuranceRate: 3.335,
-    longTermCareInsuranceRate: 0.34184,
+    longTermCareInsuranceRate: 0.34, //184,
     nationalPensionInsuranceRate: 4.5,
     employmentInsuranceRate: 1.05,
   },
 };
 
-export const industrialAccidentRate = {
+export type IndustrialAccidentRate = {
+  [year: string]: {
+    [code: string]: number;
+  };
+};
+export const industrialAccidentRate: IndustrialAccidentRate = {
   "2017": {
     // 1. 광업
     "100": 323,

@@ -8,7 +8,7 @@ type ControllerType = {
   type: string;
   onItemClick: (type: string) => void;
 };
-const Controller = ({ type, onItemClick }: ControllerType) => {
+const Controller = React.memo(({ type, onItemClick }: ControllerType) => {
   return (
     <ControllerContainer>
       <LinkContainer>
@@ -27,7 +27,7 @@ const Controller = ({ type, onItemClick }: ControllerType) => {
       </LinkContainer>
     </ControllerContainer>
   );
-};
+});
 
 const StyledButton = styled.button<{ isActive: boolean }>`
   display: flex;

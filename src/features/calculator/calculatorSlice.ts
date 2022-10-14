@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export type CalculatorState = {
   type: string;
@@ -18,7 +18,7 @@ export const calculatorSlice = createSlice({
       if (state.type === type) state.type = "";
       else state.type = type;
     },
-    setCode: (state, action) => {
+    setCode: (state, action: PayloadAction<string>) => {
       const { payload: code } = action;
       state.code = code;
     },
