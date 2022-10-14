@@ -6,27 +6,15 @@ import { roundOff } from "lib/utils";
 import * as font from "constants/font";
 
 import colors from "constants/colors";
+import { CalculatorState } from "../calculatorSlice";
 
 type VariationProps = {
-  monthCnts: {
-    [year: string]: number;
-  };
   last5Years: string[];
   last6Years: string[];
-  sum: {
-    [year: string]: Record<"total" | "youth" | "manhood", number>;
-  };
-  variation: {
-    [year: string]: Record<"total" | "youth" | "manhood", number>;
-  };
+  data: CalculatorState["data"];
 };
-const Variation = ({
-  monthCnts,
-  last5Years,
-  last6Years,
-  sum,
-  variation,
-}: VariationProps) => {
+const Variation = ({ last5Years, last6Years, data }: VariationProps) => {
+  const { monthCnts, generationSum: sum, variation } = data;
   return (
     <VariationContainer>
       <VariationList
@@ -60,7 +48,7 @@ const VariationContainer = ({ children }: { children: React.ReactNode }) => (
 type VariationItemProps = {
   year?: string | number;
   monthCnt: number;
-  data: Record<"total" | "youth" | "manhood", number>;
+  data: VariationListProps["data"][string];
 };
 const VariationItem = ({ year, monthCnt, data }: VariationItemProps) => (
   <ul
@@ -87,7 +75,7 @@ const VariationItem = ({ year, monthCnt, data }: VariationItemProps) => (
         {year}
       </li>
     )}
-    {["total", "youth", "manhood"].map((category) => (
+    {Object.keys(data).map((category) => (
       <li
         key={category}
         css={css`
@@ -111,7 +99,7 @@ type VariationListProps = {
     [year: string]: number;
   };
   data: {
-    [year: string]: Record<"total" | "youth" | "manhood", number>;
+    [year: string]: Record<"youth" | "manhood" | "total", number>;
   };
 };
 const VariationList = ({

@@ -7,7 +7,7 @@ import { useAppSelector, useAppDispatch } from "app/hooks";
 import colors from "constants/colors";
 import { getLastYears } from "lib/values";
 
-import { setType } from "./calculatorSlice";
+import { setType, setData } from "./calculatorSlice";
 
 import Code from "./components/Code";
 import Variation from "./components/Variation";
@@ -28,82 +28,26 @@ const Calculator = () => {
   const last6Years = useMemo(() => getLastYears(6), []);
   const last5Years = useMemo(() => getLastYears(5), []);
 
-  const paymentSum = useMemo(
-    () =>
-      corporate
-        ? last6Years.reduce(
-            (s, year) => ({ ...s, [year]: corporate.data[year].total.payment }),
-            {}
-          )
-        : {},
-    [corporate, last6Years]
-  );
-  const generationSum = useMemo(
-    () =>
-      corporate
-        ? last6Years.reduce(
-            (s, year) => ({ ...s, [year]: corporate.data[year].total.sum }),
-            {}
-          )
-        : {},
-    [corporate, last6Years]
-  );
-  const variation = useMemo(
-    () =>
-      corporate
-        ? last5Years.reduce(
-            (v, year) => ({
-              ...v,
-              [year]: {
-                total:
-                  corporate.data[year].total.sum.total -
-                  corporate.data[+year - 1].total.sum.total,
-                youth:
-                  corporate.data[year].total.sum.youth -
-                  corporate.data[+year - 1].total.sum.youth,
-                manhood:
-                  corporate.data[year].total.sum.manhood -
-                  corporate.data[+year - 1].total.sum.manhood,
-              },
-            }),
-            {}
-          )
-        : {},
-    [corporate, last5Years]
-  );
-  const monthCnts = useMemo(
-    () =>
-      corporate
-        ? last6Years.reduce(
-            (s, year) => ({
-              ...s,
-              [year]: corporate.data[year].monthCnt,
-            }),
-            {}
-          )
-        : {},
-    [last6Years, corporate]
-  );
-
   const onItemClick = useCallback(
     (type: string) => dispatch(setType(type)),
     [dispatch]
   );
   useEffect(() => {
     if (!corporate) navigate("/", { replace: true });
-  }, [corporate, navigate]);
+    else dispatch(setData({ last6Years, data: corporate.data }));
+  }, [corporate, navigate, dispatch, last6Years]);
 
-  if (!corporate) return <></>;
+  const { data } = useAppSelector((state) => state.calculator);
+  if (!Object.keys(Object.values(data.generationSum)).length)
+    return <>loading...</>;
   return (
     <StyledCalculator>
       <h1>{corporate.name}</h1>
       <div className="info">
         <Variation
-          monthCnts={monthCnts}
           last5Years={last5Years}
           last6Years={last6Years}
-          sum={generationSum}
-          variation={variation}
+          data={data}
         />
         <Controller type={type} onItemClick={onItemClick} />
       </div>
@@ -111,11 +55,7 @@ const Calculator = () => {
         (type === "social" ? (
           <>
             <Code />
-            <SocialInsurance
-              last5Years={last5Years}
-              data={{ paymentSum, generationSum, variation }}
-              monthCnts={monthCnts}
-            />
+            <SocialInsurance last5Years={last5Years} data={data} />
           </>
         ) : (
           <div>고용증대</div>

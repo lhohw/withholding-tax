@@ -10,25 +10,14 @@ import colors from "constants/colors";
 import { TiTimes, TiDivide, TiEquals } from "react-icons/ti";
 
 import { parseMoney, roundOff, getSocialInsuranceRate } from "lib/utils";
+import { CalculatorState } from "../calculatorSlice";
 
 type SocialInsuranceProps = {
   last5Years: string[];
-  data: Record<
-    "paymentSum" | "generationSum" | "variation",
-    {
-      [year: string]: Record<"total" | "youth" | "manhood", number>;
-    }
-  >;
-  monthCnts: {
-    [year: string]: number;
-  };
+  data: CalculatorState["data"];
 };
-const SocialInsurance = ({
-  last5Years,
-  data,
-  monthCnts,
-}: SocialInsuranceProps) => {
-  const { paymentSum, generationSum, variation } = data;
+const SocialInsurance = ({ last5Years, data }: SocialInsuranceProps) => {
+  const { paymentSum, generationSum, variation, monthCnts } = data;
   const { code } = useAppSelector((state) => state.calculator);
   return (
     <SocialInsuranceContainer>
