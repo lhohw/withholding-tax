@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import colors from "constants/colors";
 
 import {
@@ -24,6 +24,8 @@ const Corporate = ({ data, year, RN }: CorporateProps) => {
 
   const corporates = useAppSelector((state) => state.corporate);
   const corporate = corporates[RN]?.data;
+
+  const [isExpand, setIsExpand] = useState(false);
 
   const onToggle = useCallback(
     (id: string) => {
@@ -53,6 +55,7 @@ const Corporate = ({ data, year, RN }: CorporateProps) => {
     manhood: sum.manhood - (corporate[+year - 1]?.total.sum.manhood || 0),
     total: sum.total - (corporate[+year - 1]?.total.sum.total || 0),
   };
+
   return (
     <CorporateContainer>
       <CorporateHeader
@@ -63,12 +66,14 @@ const Corporate = ({ data, year, RN }: CorporateProps) => {
         RN={RN}
       />
       <CorporateRow
+        isExpand={isExpand}
+        setIsExpand={setIsExpand}
         isHeading
         type={"heading"}
         payments={paymentTitle}
         generations={generationTitle}
       />
-      <CorporateList>
+      <CorporateList isExpand={isExpand} maxLen={Object.keys(personnel).length}>
         {Object.entries(personnel).map(
           ([id, { info, payment, generation }]) => {
             return (
@@ -99,14 +104,15 @@ const Corporate = ({ data, year, RN }: CorporateProps) => {
   );
 };
 
-const CorporateList = styled.ul`
+const CorporateList = styled.ul<{ isExpand: boolean; maxLen: number }>`
   display: flex;
   flex-direction: column;
-  max-height: auto;
-  max-height: 420px;
+  max-height: ${(props) =>
+    props.isExpand ? props.maxLen * 40 + 1 + "px" : "420px"};
   width: 1175px;
   overflow-y: scroll;
   border-bottom: 1px dotted ${colors.main};
+  transition: all 0.4s ease-in-out;
 `;
 
 export default React.memo(

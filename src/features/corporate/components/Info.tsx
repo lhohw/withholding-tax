@@ -6,6 +6,8 @@ import CheckBox from "components/CheckBox";
 import Item from "components/Item";
 import { CorporateState } from "features/corporate/corporateSlice";
 
+import { AiOutlineExpandAlt, AiOutlineShrink } from "react-icons/ai";
+
 export type InfoProps = {
   id: string;
   info: CorporateState[string]["data"][string]["personnel"][string]["info"];
@@ -39,22 +41,50 @@ const Info = ({ id, info, onToggle }: InfoProps) => {
   );
 };
 
+type InfoHeadingProps = {
+  data?: string[];
+  isExpand?: boolean;
+  setIsExpand?: (isExpand: boolean) => void;
+};
 export const InfoHeading = React.memo(
-  ({ data = ["이름", "입사", "퇴사", "생년월일"] }: { data?: string[] }) => (
+  ({
+    data = ["", "이름", "입사", "퇴사", "생년월일"],
+    isExpand,
+    setIsExpand,
+  }: InfoHeadingProps) => (
     <InfoContainer>
       {[50, 60, 80, 80, 100].map((width, idx) => (
         <Item
           key={idx}
           css={css`
             width: ${width}px;
+            cursor: ${idx === 0 && setIsExpand ? "pointer" : "default"};
           `}
+          onClick={
+            setIsExpand && isExpand === false
+              ? () => setIsExpand(true)
+              : setIsExpand && isExpand === true
+              ? () => setIsExpand(false)
+              : () => {}
+          }
         >
-          {5 - data.length <= idx ? data[idx - (5 - data.length)] : ""}
+          {idx === 0 ? (
+            isExpand === undefined ? (
+              ""
+            ) : isExpand === true ? (
+              <AiOutlineShrink size={30} />
+            ) : (
+              <AiOutlineExpandAlt size={30} />
+            )
+          ) : 5 - data.length <= idx ? (
+            data[idx - (5 - data.length)]
+          ) : (
+            ""
+          )}
         </Item>
       ))}
     </InfoContainer>
-  ),
-  () => true
+  )
 );
 
 const InfoContainer = styled.ul`

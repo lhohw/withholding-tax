@@ -18,6 +18,7 @@ const Item = styled.li<ItemProps>`
   padding: 0.5rem;
   white-space: nowrap;
   overflow-x: scroll;
+  transition: color 0.15s ease-in-out;
 `;
 
 export default Item;

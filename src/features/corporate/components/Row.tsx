@@ -47,6 +47,8 @@ type RowProps = {
   info?: CorporateState[string]["data"][string]["personnel"][string]["info"];
   payments: Record<"youth" | "manhood", number>;
   generations: string[];
+  isExpand?: boolean;
+  setIsExpand?: (isExpand: boolean) => void;
 };
 const CorporateRow = ({
   type,
@@ -56,6 +58,8 @@ const CorporateRow = ({
   info,
   payments,
   generations,
+  isExpand,
+  setIsExpand,
 }: RowProps) => {
   const _payments =
     type === undefined || type === "total"
@@ -74,7 +78,7 @@ const CorporateRow = ({
       {info && id && onToggle ? (
         <Info id={id} info={info} onToggle={onToggle} />
       ) : type === "heading" ? (
-        <InfoHeading />
+        <InfoHeading isExpand={isExpand} setIsExpand={setIsExpand} />
       ) : (
         <InfoHeading
           data={[
@@ -113,5 +117,6 @@ export default React.memo(
   (prevProps, nextProps) =>
     prevProps.info === nextProps.info &&
     prevProps.payments === nextProps.payments &&
-    prevProps.generations === nextProps.generations
+    prevProps.generations === nextProps.generations &&
+    prevProps.isExpand === nextProps.isExpand
 );

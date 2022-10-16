@@ -80,4 +80,4 @@ const StyledHeader = styled.header`
   }
 `;
 
-export default CorporateHeader;
+export default React.memo(CorporateHeader);
