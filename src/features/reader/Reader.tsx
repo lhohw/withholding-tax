@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { useAppSelector, useAppDispatch } from "app/hooks";
 
 import { readAsync, select } from "./readerSlice";
+import { setLoading } from "features/loading/loadingSlice";
 
 import { Title, Input, Corporates, Sidebar, Years } from "./components";
 
@@ -11,11 +12,14 @@ const Reader = () => {
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const { files } = e.target;
       if (files && files.length) {
+        dispatch(setLoading(true));
+        const results: any[] = [];
         for (let i = 0; i < files.length; i++) {
           const fReader = new FileReader();
           fReader.readAsArrayBuffer(files[i]);
           fReader.onloadend = async ({ target: { result } }: any) => {
-            await dispatch(readAsync(result));
+            results.push(await dispatch(readAsync(result)));
+            if (results.length === files.length) dispatch(setLoading(false));
           };
         }
       }

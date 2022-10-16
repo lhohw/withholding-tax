@@ -9,12 +9,14 @@ import readerReducer from "features/reader/readerSlice";
 import personReducer from "features/person/personSlice";
 import corporateReducer from "features/corporate/corporateSlice";
 import calculatorReducer from "features/calculator/calculatorSlice";
+import loadingReducer from "features/loading/loadingSlice";
 
 const rootReducer = combineReducers({
   reader: readerReducer,
   person: personReducer,
   corporate: corporateReducer,
   calculator: calculatorReducer,
+  loading: loadingReducer,
 });
 
 export const store = configureStore({
