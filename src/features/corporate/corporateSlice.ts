@@ -12,6 +12,7 @@ import type { ReaderState } from "features/reader/readerSlice";
 export type CorporateState = {
   [RN: string]: {
     name: string;
+    address: string;
     data: {
       [year: string]: {
         personnel: {
@@ -55,6 +56,7 @@ export const corporateSlice = createSlice({
       action: PayloadAction<{
         data: {
           name: string;
+          address: string;
           personnel: ReaderState["list"][string]["personnel"];
         };
         RN: string;
@@ -63,12 +65,13 @@ export const corporateSlice = createSlice({
       const years = getLastYears(6);
 
       const {
-        data: { name, personnel },
+        data: { name, personnel, address },
         RN,
       } = action.payload;
       if (!state[RN])
         state[RN] = {
           name,
+          address,
           data: {},
         };
       const corporate = state[RN];

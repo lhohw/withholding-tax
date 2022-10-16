@@ -11,6 +11,7 @@ export type ReaderState = {
   list: {
     [key: string]: {
       name: string;
+      address: string;
       personnel: {
         [key: string]: Person;
       };
@@ -73,7 +74,7 @@ export const readerSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(readAsync.fulfilled, (state, action) => {
       for (const { year, personStr } of action.payload.data) {
-        const person = JSON.parse(personStr);
+        const person: Person = JSON.parse(personStr);
         const {
           corporate: { RN },
           id,
@@ -90,11 +91,14 @@ export const readerSlice = createSlice({
         if (!state.list[RN]) {
           state.list[RN] = {
             name: person.corporate.name,
+            address: person.corporate.address,
             personnel: {
               [id]: person,
             },
           };
         } else if (!exist) {
+          if (!state.list[RN].address)
+            state.list[RN].address = person.corporate.address;
           state.list[RN].personnel[id] = person;
         } else {
           const p = state.list[RN].personnel[exist[0]];

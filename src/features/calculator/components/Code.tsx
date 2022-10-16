@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { useAppDispatch, useAppSelector } from "app/hooks";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 
 import { exceptNumberRegex } from "constants/regex";
 import { setCode } from "../calculatorSlice";
@@ -20,16 +20,11 @@ const Code = () => {
     },
     [dispatch]
   );
-  useEffect(() => {
-    return () => {
-      dispatch(setCode(""));
-    };
-  }, [dispatch]);
   return (
     <div
       css={css`
         display: flex;
-        margin: 1rem 0 0 2rem;
+        margin-left: 1rem;
       `}
     >
       <input

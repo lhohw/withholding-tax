@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 
 import { roundOff } from "lib/utils";
@@ -33,17 +34,11 @@ const Variation = ({ last5Years, last6Years, data }: VariationProps) => {
   );
 };
 
-const VariationContainer = ({ children }: { children: React.ReactNode }) => (
-  <div
-    css={css`
-      display: flex;
-      flex-direction: column;
-      padding: 1rem;
-    `}
-  >
-    {children}
-  </div>
-);
+const VariationContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+`;
 
 type VariationItemProps = {
   year?: string | number;
@@ -55,7 +50,7 @@ const VariationItem = ({ year, monthCnt, data }: VariationItemProps) => (
     css={css`
       display: flex;
       flex-direction: column;
-      width: 100px;
+      width: 170px;
       font-size: ${font.size.medium};
       & > li {
         display: flex;
@@ -75,7 +70,7 @@ const VariationItem = ({ year, monthCnt, data }: VariationItemProps) => (
         {year}
       </li>
     )}
-    {Object.keys(data).map((category) => (
+    {["total", "youth", "manhood"].map((category) => (
       <li
         key={category}
         css={css`
@@ -113,6 +108,8 @@ const VariationList = ({
       display: flex;
       flex-direction: row;
       margin-top: ${type === "variation" ? "1rem" : 0};
+      border-top: 1px dotted ${colors.black300};
+      border-bottom: 1px dotted ${colors.black300};
     `}
   >
     <VariationHeadingItem type={type} />
@@ -135,10 +132,10 @@ const VariationHeadingItem = ({ type }: VariationHeadingItemProps) => (
     css={css`
       display: flex;
       flex-direction: column;
-      width: 100px;
+      width: 120px;
       font-size: ${font.size.medium};
       font-weight: ${font.weight.bold};
-      margin-right: ${type === "variation" ? "100px" : 0};
+      margin-right: ${type === "variation" ? 170 : 0}px;
       & > li {
         display: flex;
         align-items: center;

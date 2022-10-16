@@ -50,6 +50,7 @@ const SocialInsuranceContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1rem;
+  min-width: 1000px;
 `;
 type RowProps = {
   year?: string;

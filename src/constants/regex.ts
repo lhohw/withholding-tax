@@ -54,3 +54,5 @@ export const taxLoveMonthlyStatementRegex = (year: number) =>
   );
 
 export const exceptNumberRegex = /[^\d+]/g;
+
+export const capitalRegex = /경기|인천|서울/g;
