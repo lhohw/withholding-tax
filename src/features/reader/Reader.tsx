@@ -4,7 +4,14 @@ import { useAppSelector, useAppDispatch } from "app/hooks";
 import { readAsync, select } from "./readerSlice";
 import { setLoading } from "features/loading/loadingSlice";
 
-import { Title, Input, Corporates, Sidebar, Years } from "./components";
+import {
+  Title,
+  Input,
+  Corporates,
+  Sidebar,
+  Years,
+  Printer,
+} from "./components";
 
 const Reader = () => {
   const dispatch = useAppDispatch();
@@ -49,6 +56,7 @@ const Reader = () => {
     <Sidebar>
       <div className="column">
         <Title />
+        <Printer />
         <Input onClick={onInputClick} onFileChange={onFileChange} />
       </div>
       {corporate && <Years onSelect={onSelect} selectedYear={year} />}
