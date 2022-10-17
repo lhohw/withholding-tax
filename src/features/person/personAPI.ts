@@ -31,11 +31,8 @@ export class Person {
   earnedIncomeWithholdingDepartment: {
     [year: string]: MonthlyStatementOfPaymentOfWageAndSalary[];
   } = {};
-  date: PersonDate = {
-    start: null!,
-    retirement: null!,
-    birth: null!,
-  };
+  birth: string = "";
+  date: PersonDate = {};
   payment: PersonPayment = {};
   constructor({
     data,
@@ -86,18 +83,20 @@ export class Person {
       address: address[0].replace(addressRegex, ""),
     };
     this.date = {
-      start: startDate[0]
-        .replace(dateRegex.start, "")
-        .split(/[가-힣]+/g)
-        .slice(0, 3)
-        .join(".") as YYYYMMDD,
-      retirement: retirementDate[0]
-        .replace(dateRegex.retirement, "")
-        .split(/[가-힣]+/g)
-        .slice(0, 3)
-        .join(".") as YYYYMMDD,
-      birth: getBirthCentury(this.RRN) + this.RRN.slice(0, 8),
+      [year]: {
+        start: startDate[0]
+          .replace(dateRegex.start, "")
+          .split(/[가-힣]+/g)
+          .slice(0, 3)
+          .join(".") as YYYYMMDD,
+        retirement: retirementDate[0]
+          .replace(dateRegex.retirement, "")
+          .split(/[가-힣]+/g)
+          .slice(0, 3)
+          .join(".") as YYYYMMDD,
+      },
     };
+    this.birth = getBirthCentury(this.RRN) + this.RRN.slice(0, 8);
     this.earnedIncomeWithholdingDepartment[year] = createStatement(
       earnedIncomeWithholdingDepartment,
       left,
@@ -280,8 +279,11 @@ export type PaymentDate = `${number}/${
   | "종전"
   | "납세"}`;
 export type YYYYMMDD = `${number}.${number}.${number}`;
-export type PersonDate = Record<"start" | "retirement", YYYYMMDD> & {
-  birth: string;
+// export type PersonDate = Record<"start" | "retirement", YYYYMMDD> & {
+//   birth: string;
+// };
+export type PersonDate = {
+  [year: string]: Record<"start" | "retirement", YYYYMMDD>;
 };
 export type PersonCorporate = Record<"name" | "RN" | "address", string>;
 export type PersonPayment = {

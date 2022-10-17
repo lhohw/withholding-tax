@@ -7,7 +7,7 @@ import {
   CorporateRow,
 } from "./components";
 
-import { setPersonnel, toggle } from "./corporateSlice";
+import { setPersonnel, toggle, toggleItem } from "./corporateSlice";
 import { useAppDispatch, useAppSelector } from "app/hooks";
 import { ReaderState } from "features/reader/readerSlice";
 import styled from "@emotion/styled";
@@ -32,6 +32,12 @@ const Corporate = ({ data, year, RN }: CorporateProps) => {
       dispatch(toggle({ id, year, RN }));
     },
     [dispatch, year, RN]
+  );
+  const onToggleItem = useCallback(
+    (id: string, idx: number, content: "청년" | "장년" | "-" | "퇴사") => {
+      dispatch(toggleItem({ id, year, RN, idx, content }));
+    },
+    [RN, dispatch, year]
   );
 
   useEffect(() => {
@@ -81,6 +87,7 @@ const Corporate = ({ data, year, RN }: CorporateProps) => {
                 key={id}
                 info={info}
                 id={id}
+                onToggleItem={onToggleItem}
                 onToggle={onToggle}
                 payments={payment}
                 generations={generation}

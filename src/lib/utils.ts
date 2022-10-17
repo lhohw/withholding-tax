@@ -11,7 +11,7 @@ export const getSocialInsuranceRate = (year: string, code: string) =>
       1e5
   ) / 1e7;
 
-const getDays = (year: number, month: number) =>
+export const getDays = (year: number, month: number) =>
   [
     31,
     28 + ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 1 : 0),

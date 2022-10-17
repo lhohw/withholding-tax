@@ -5,7 +5,13 @@ import {
   getDefaultPayment,
   getLastYears,
 } from "lib/values";
-import { getWorkingDays, isRetired, lessThan28Days } from "lib/utils";
+import {
+  getWorkingDays,
+  isRetired,
+  lessThan28Days,
+  getDays,
+  isYouth,
+} from "lib/utils";
 
 import type { ReaderState } from "features/reader/readerSlice";
 
@@ -18,9 +24,10 @@ export type CorporateState = {
         personnel: {
           [id: string]: {
             info: {
-              checked: boolean;
+              checked: boolean[];
               name: Person["name"];
-              date: Person["date"];
+              birth: Person["birth"];
+              date: Person["date"][string];
               workingDays?: number;
             };
             payment: PersonPayment[string];
@@ -97,18 +104,23 @@ export const corporateSlice = createSlice({
         const { total, personnel: p } = yearData;
         Object.entries(personnel).forEach(([id, person]) => {
           const existPerson = corporate.data[year]?.personnel[id];
-          const { name, date, earnedIncomeWithholdingDepartment: ei } = person;
+          const {
+            name,
+            date,
+            earnedIncomeWithholdingDepartment: ei,
+            birth,
+          } = person;
           if (existPerson && !ei[year]) {
             p[id] = existPerson;
           } else {
             p[id] = {} as typeof yearData.personnel[string];
             p[id].info = {
-              checked: existPerson?.info.checked || false,
+              checked: existPerson?.info.checked || new Array(12).fill(false),
               name,
+              birth,
               date: {
-                start: date.start.slice(2) as YYYYMMDD,
-                retirement: date.retirement.slice(2) as YYYYMMDD,
-                birth: date.birth,
+                start: (date[year]?.start.slice(2) as YYYYMMDD) || "",
+                retirement: (date[year]?.retirement.slice(2) as YYYYMMDD) || "",
               },
             };
             p[id].payment = getDefaultPayment();
@@ -124,28 +136,70 @@ export const corporateSlice = createSlice({
 
               // 급여 없음
               if (flag === "-") {
+                const monthsLastDay = `${year}.${(idx + 1)
+                  .toString()
+                  .padStart(2, "0")}.${getDays(+year, idx)}`;
+                if (
+                  date[year]?.start &&
+                  Date.parse(date[year].start) <= Date.parse(monthsLastDay) &&
+                  (!date[year].retirement ||
+                    (Date.parse(monthsLastDay) <=
+                      Date.parse(date[year].retirement) &&
+                      !isRetired(date[year].retirement, year, idx + 1)))
+                ) {
+                  const checked = p[id].info.checked[idx];
+                  total.generation.total[idx] += checked ? 0 : 1;
+                  const flag2 = isYouth(
+                    person.RRN,
+                    `${year}/${(idx + 1).toString().padStart(2, "0")}` as any
+                  )
+                    ? "청년"
+                    : "장년";
+                  if (flag2 === "청년") {
+                    total.generation["youth"][idx] += checked ? 0 : 1;
+                    total.sum.total += checked ? 0 : 1;
+                    total.sum.youth += checked ? 0 : 1;
+                  } else {
+                    total.generation["manhood"][idx] += checked ? 0 : 1;
+                    total.sum.total += checked ? 0 : 1;
+                    total.sum.manhood += checked ? 0 : 1;
+                  }
+                  p[id].generation[idx] = flag2;
+                  p[id].info.checked[idx] = existPerson?.info
+                    ? existPerson.info.checked[idx]
+                    : true;
+                } else if (
+                  date[year]?.retirement &&
+                  isRetired(date[year].retirement, year, idx + 1)
+                ) {
+                  p[id].generation[idx] = "퇴사" as any;
+                }
                 return;
               }
               // 퇴사일 확인
-              if (date.retirement.trim()) {
-                if (lessThan28Days(date.start, date.retirement)) return;
+              if (date[year]?.retirement.trim()) {
+                if (lessThan28Days(date[year]?.start, date[year]?.retirement))
+                  return;
                 // if (lessThanAMonth(date))
-                if (getWorkingDays(date.start, date.retirement) <= 31)
+                if (
+                  getWorkingDays(date[year]?.start, date[year]?.retirement) <=
+                  31
+                )
                   p[id].info.workingDays = getWorkingDays(
-                    date.start,
-                    date.retirement
+                    date[year]?.start,
+                    date[year]?.retirement
                   );
-                if (isRetired(date.retirement, year, idx + 1)) {
+                if (isRetired(date[year]?.retirement, year, idx + 1)) {
                   p[id].payment.youth += payment.youth;
                   p[id].payment.manhood += payment.manhood;
-                  const checked = p[id].info.checked;
+                  const checked = p[id].info.checked[idx];
                   total.payment.youth += checked ? 0 : payment.youth;
                   total.payment.manhood += checked ? 0 : payment.manhood;
                   p[id].generation[idx] = "퇴사" as any;
                   return;
                 }
               }
-              const checked = p[id].info.checked;
+              const checked = p[id].info.checked[idx];
               p[id].payment.youth += payment.youth;
               p[id].payment.manhood += payment.manhood;
               total.generation.total[idx] += checked ? 0 : 1;
@@ -178,23 +232,49 @@ export const corporateSlice = createSlice({
 
       const { total, personnel } = data[year];
       const person = personnel[id];
-      person.info.checked = !person.info.checked;
-      const flag = personnel[id].info.checked ? -1 : 1;
-      total.payment.youth += person.payment.youth * flag;
-      total.payment.manhood += person.payment.manhood * flag;
-      person.generation.forEach((f, idx) => {
-        // @ts-ignore
-        if (f === "-" || f === "퇴사") return;
-        total.generation.total[idx] += flag;
-        total.sum.total += flag;
-        if (f === "청년") {
-          total.generation.youth[idx] += flag;
-          total.sum.youth += flag;
-        } else {
-          total.generation.manhood[idx] += flag;
-          total.sum.manhood += flag;
-        }
+      const notChecked: number[] = [];
+      person.info.checked.forEach((checked, idx) => {
+        if (!checked) notChecked.push(idx);
       });
+      if (notChecked.length) {
+        for (const idx of notChecked) {
+          person.info.checked[idx] = true;
+          const flag = -1;
+          const f = person.generation[idx];
+          // @ts-ignore
+          if (f === "-" || f === "퇴사") continue;
+          total.generation.total[idx] += flag;
+          total.sum.total += flag;
+          if (f === "청년") {
+            total.generation.youth[idx] += flag;
+            total.sum.youth += flag;
+          } else {
+            total.generation.manhood[idx] += flag;
+            total.sum.manhood += flag;
+          }
+        }
+        total.payment.youth -= person.payment.youth;
+        total.payment.manhood -= person.payment.manhood;
+      } else {
+        for (let idx = 0; idx < 12; idx++) {
+          person.info.checked[idx] = false;
+          const flag = 1;
+          const f = person.generation[idx];
+          // @ts-ignore
+          if (f === "-" || f === "퇴사") continue;
+          total.generation.total[idx] += flag;
+          total.sum.total += flag;
+          if (f === "청년") {
+            total.generation.youth[idx] += flag;
+            total.sum.youth += flag;
+          } else {
+            total.generation.manhood[idx] += flag;
+            total.sum.manhood += flag;
+          }
+        }
+        total.payment.youth += person.payment.youth;
+        total.payment.manhood += person.payment.manhood;
+      }
     },
     setMonthCnt: (
       state,
@@ -203,22 +283,37 @@ export const corporateSlice = createSlice({
       const { monthCnt, year, RN } = action.payload;
       state[RN].data[year].monthCnt = monthCnt;
     },
-    setChecked: (
+    toggleItem: (
       state,
       action: PayloadAction<{
         id: string;
-        checked: boolean;
         RN: string;
         year: string;
+        idx: number;
+        content: "청년" | "장년" | "-" | "퇴사";
       }>
     ) => {
-      const { id, checked, RN, year } = action.payload;
-      state[RN].data[year].personnel[id].info.checked = checked;
+      const { id, RN, year, idx, content } = action.payload;
+      const yearData = state[RN].data[year];
+      const person = state[RN].data[year].personnel[id];
+      const nextChecked = !person.info.checked[idx];
+      person.info.checked[idx] = nextChecked;
+      if (content === "-" || content === "퇴사") return;
+      const flag = nextChecked ? -1 : 1;
+      if (content === "청년") {
+        yearData.total.generation.youth[idx] += flag;
+        yearData.total.sum.youth += flag;
+      } else {
+        yearData.total.generation.manhood[idx] += flag;
+        yearData.total.sum.manhood += flag;
+      }
+      yearData.total.generation.total[idx] += flag;
+      yearData.total.sum.total += flag;
     },
   },
 });
 
-export const { setPersonnel, toggle, setMonthCnt, setChecked } =
+export const { setPersonnel, toggle, setMonthCnt, toggleItem } =
   corporateSlice.actions;
 
 export default corporateSlice.reducer;

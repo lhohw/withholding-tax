@@ -76,13 +76,15 @@ export const readerSlice = createSlice({
       for (const { year, personStr } of action.payload.data) {
         const person: Person = JSON.parse(personStr);
         const {
-          corporate: { RN },
           id,
-          date: { start, retirement, birth },
-          earnedIncomeWithholdingDepartment: ei,
-          payment,
           RRN,
+          corporate,
+          earnedIncomeWithholdingDepartment: ei,
+          date,
+          birth,
+          payment,
         } = person;
+        const { RN } = corporate;
         const exist =
           state.list[RN] &&
           Object.entries(state.list[RN].personnel).find(
@@ -99,14 +101,14 @@ export const readerSlice = createSlice({
         } else if (!exist) {
           if (!state.list[RN].address)
             state.list[RN].address = person.corporate.address;
+          if (!state.list[RN].name) state.list[RN].name = person.corporate.name;
           state.list[RN].personnel[id] = person;
         } else {
           const p = state.list[RN].personnel[exist[0]];
           p.earnedIncomeWithholdingDepartment[year] = ei[year];
           p.payment[year] = payment[year];
-          if (!p.date.start && start) p.date.start = start;
-          if (!p.date.retirement && retirement) p.date.retirement = retirement;
-          if (!p.date.birth && birth) p.date.birth = birth;
+          p.date[year] = date[year];
+          if (!p.birth && birth) p.birth = birth;
         }
       }
     });

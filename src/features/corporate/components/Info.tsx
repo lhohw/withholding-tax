@@ -18,7 +18,8 @@ const Info = ({ id, info, onToggle }: InfoProps) => {
   const {
     name,
     checked,
-    date: { start, retirement, birth },
+    birth,
+    date: { start, retirement },
   } = info;
   return (
     <InfoContainer>
@@ -61,9 +62,11 @@ export const InfoHeading = React.memo(
             cursor: ${idx === 0 && setIsExpand ? "pointer" : "default"};
           `}
           onClick={
-            setIsExpand && isExpand === false
+            idx !== 0 || !setIsExpand
+              ? () => {}
+              : isExpand === false
               ? () => setIsExpand(true)
-              : setIsExpand && isExpand === true
+              : isExpand === true
               ? () => setIsExpand(false)
               : () => {}
           }

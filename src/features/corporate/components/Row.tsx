@@ -13,20 +13,42 @@ import { CorporateState } from "../corporateSlice";
 type RowItemProps = {
   type: "payment" | "generation";
   contents: string[];
-  checked?: boolean;
+  checked?: boolean[];
+  id?: string;
+  onToggleItem?: RowProps["onToggleItem"];
 };
 const CorporateItem = React.memo(
-  ({ type, contents, checked }: RowItemProps) => (
+  ({ type, contents, checked, id, onToggleItem }: RowItemProps) => (
     <List>
       {contents.map((content, idx) => (
         <Item
           key={type + idx}
           css={css`
             width: ${type === "generation" ? 50 : 200 / contents.length}px;
-            color: ${type === "generation" && content === "청년" && !checked
+            cursor: ${type === "payment" || checked === undefined
+              ? "default"
+              : "pointer"};
+            color: ${type === "payment" || checked === undefined
+              ? "inherit"
+              : checked[idx]
+              ? colors.red600
+              : content === "청년"
               ? colors.main
               : "inherit"};
+            text-decoration: ${type === "generation" && checked && checked[idx]
+              ? "line-through"
+              : "inherit"};
           `}
+          onClick={
+            type === "payment" || checked === undefined || !onToggleItem || !id
+              ? () => {}
+              : () =>
+                  onToggleItem(
+                    id,
+                    idx,
+                    content as "청년" | "장년" | "-" | "퇴사"
+                  )
+          }
         >
           {content}
         </Item>
@@ -41,8 +63,13 @@ const CorporateItem = React.memo(
 type RowProps = {
   type?: string;
   isHeading?: boolean;
-  checked?: boolean;
+  checked?: boolean[];
   id?: string;
+  onToggleItem?: (
+    id: string,
+    idx: number,
+    content: "청년" | "장년" | "-" | "퇴사"
+  ) => void;
   onToggle?: (id: string) => void;
   info?: CorporateState[string]["data"][string]["personnel"][string]["info"];
   payments: Record<"youth" | "manhood", number>;
@@ -54,6 +81,7 @@ const CorporateRow = ({
   type,
   isHeading = false,
   id,
+  onToggleItem,
   onToggle,
   info,
   payments,
@@ -71,12 +99,15 @@ const CorporateRow = ({
     <List
       css={css`
         font-weight: ${isHeading ? font.weight.bold : 400};
-        color: ${info?.workingDays && info?.workingDays <= 30
+        color: ${info?.workingDays && info?.workingDays <= 31
           ? "#b354ee"
-          : info?.checked
+          : info && info.checked.findIndex((e) => e === false) === -1
           ? colors.red600
           : "inherit"};
-        text-decoration: ${info?.checked ? "line-through" : "none"};
+        text-decoration: ${info &&
+        info.checked.findIndex((e) => e === false) === -1
+          ? "line-through"
+          : "none"};
       `}
     >
       {info && id && onToggle ? (
@@ -111,6 +142,8 @@ const CorporateRow = ({
         type="generation"
         contents={generations}
         checked={info?.checked}
+        id={id}
+        onToggleItem={onToggleItem}
       />
     </List>
   );

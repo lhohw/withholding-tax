@@ -4,7 +4,7 @@ import { css } from "@emotion/react";
 
 export type CheckBoxProps = {
   id: string;
-  checked: boolean;
+  checked: boolean[];
   onToggle: (id: string) => void;
 };
 const CheckBox = ({ id, checked, onToggle }: CheckBoxProps) => (
@@ -14,7 +14,7 @@ const CheckBox = ({ id, checked, onToggle }: CheckBoxProps) => (
       /* cursor: pointer; */
     `}
   >
-    {checked ? (
+    {checked.findIndex((e) => e === false) === -1 ? (
       <MdCheckBox
         css={css`
           cursor: pointer;
