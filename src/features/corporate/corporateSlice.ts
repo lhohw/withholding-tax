@@ -5,7 +5,7 @@ import {
   getDefaultPayment,
   getLastYears,
 } from "lib/values";
-import { isRetired, lessThanAMonth } from "lib/utils";
+import { getWorkingDays, isRetired, lessThan28Days } from "lib/utils";
 
 import type { ReaderState } from "features/reader/readerSlice";
 
@@ -21,6 +21,7 @@ export type CorporateState = {
               checked: boolean;
               name: Person["name"];
               date: Person["date"];
+              workingDays?: number;
             };
             payment: PersonPayment[string];
             generation: ("청년" | "장년" | "-")[];
@@ -121,13 +122,29 @@ export const corporateSlice = createSlice({
                 ? "장년"
                 : "-";
 
-              if (
-                flag === "-" ||
-                (date.retirement.trim() &&
-                  (isRetired(date.retirement, year, idx + 1) ||
-                    lessThanAMonth(date)))
-              )
+              // 급여 없음
+              if (flag === "-") {
                 return;
+              }
+              // 퇴사일 확인
+              if (date.retirement.trim()) {
+                if (lessThan28Days(date.start, date.retirement)) return;
+                // if (lessThanAMonth(date))
+                if (getWorkingDays(date.start, date.retirement) <= 31)
+                  p[id].info.workingDays = getWorkingDays(
+                    date.start,
+                    date.retirement
+                  );
+                if (isRetired(date.retirement, year, idx + 1)) {
+                  p[id].payment.youth += payment.youth;
+                  p[id].payment.manhood += payment.manhood;
+                  const checked = p[id].info.checked;
+                  total.payment.youth += checked ? 0 : payment.youth;
+                  total.payment.manhood += checked ? 0 : payment.manhood;
+                  p[id].generation[idx] = "퇴사" as any;
+                  return;
+                }
+              }
               const checked = p[id].info.checked;
               p[id].payment.youth += payment.youth;
               p[id].payment.manhood += payment.manhood;
@@ -166,7 +183,8 @@ export const corporateSlice = createSlice({
       total.payment.youth += person.payment.youth * flag;
       total.payment.manhood += person.payment.manhood * flag;
       person.generation.forEach((f, idx) => {
-        if (f === "-") return;
+        // @ts-ignore
+        if (f === "-" || f === "퇴사") return;
         total.generation.total[idx] += flag;
         total.sum.total += flag;
         if (f === "청년") {

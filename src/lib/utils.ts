@@ -113,5 +113,11 @@ export const lessThanAMonth = (date: {
   return ret < limit;
 };
 
+export const getWorkingDays = (startDate: string, retirementDate: string) =>
+  (Date.parse(retirementDate) - Date.parse(startDate)) / 1000 / 60 / 60 / 24;
+
+export const lessThan28Days = (startDate: string, retirementDate: string) =>
+  getWorkingDays(startDate, retirementDate) <= 27;
+
 export const roundOff = (x: number) =>
   (x < 0 ? Math.ceil(x * 100) : Math.floor(x * 100)) / 100;

@@ -71,7 +71,11 @@ const CorporateRow = ({
     <List
       css={css`
         font-weight: ${isHeading ? font.weight.bold : 400};
-        color: ${info?.checked ? colors.red600 : "inherit"};
+        color: ${info?.workingDays && info?.workingDays <= 30
+          ? "#b354ee"
+          : info?.checked
+          ? colors.red600
+          : "inherit"};
         text-decoration: ${info?.checked ? "line-through" : "none"};
       `}
     >
