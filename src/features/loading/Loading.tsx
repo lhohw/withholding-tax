@@ -2,6 +2,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import { keyframes } from "@emotion/react";
 
+import { degToRad } from "lib/utils";
 import colors from "constants/colors";
 
 const opacityAnim = keyframes`
@@ -24,7 +25,6 @@ const Loading = () => {
     </LoadingContainer>
   );
 };
-const degToRad = (deg: number) => (deg / 180) * Math.PI;
 
 const SpinnerItem = styled.div<{ idx: number }>(
   {
@@ -62,4 +62,4 @@ const Spinner = styled.div`
   border-radius: 50%;
   transform: translate(-50%, -50%);
 `;
-export default Loading;
+export default React.memo(Loading);

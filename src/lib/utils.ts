@@ -5,6 +5,8 @@ import {
   industrialAccidentRate as IAR,
 } from "constants/law";
 
+export const degToRad = (deg: number) => (deg / 180) * Math.PI;
+
 export const getSocialInsuranceRate = (year: string, code: string) =>
   Math.floor(
     (Object.values(SIR[year]).reduce((x, y) => x + y) + IAR[year][code] / 10) *
