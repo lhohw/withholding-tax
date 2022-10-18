@@ -22,6 +22,7 @@ import Variation from "./components/Variation";
 import Controller from "./components/Controller";
 import SocialInsurance from "./components/SocialInsurance";
 import EmploymentIncrease from "./components/EmploymentIncrease";
+import Loading from "features/loading/Loading";
 
 const Calculator = () => {
   const navigate = useNavigate();
@@ -61,7 +62,7 @@ const Calculator = () => {
 
   const { data } = useAppSelector((state) => state.calculator);
   if (!Object.keys(Object.values(data.generationSum)).length)
-    return <div>loading...</div>;
+    return <Loading />;
   return (
     <StyledCalculator>
       <div className="header">

@@ -69,4 +69,4 @@ const Reader = () => {
   );
 };
 
-export default Reader;
+export default React.memo(Reader);

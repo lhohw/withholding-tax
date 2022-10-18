@@ -296,6 +296,9 @@ export const corporateSlice = createSlice({
       const { id, RN, year, idx, content } = action.payload;
       const yearData = state[RN].data[year];
       const person = state[RN].data[year].personnel[id];
+      const isAllChecked =
+        person.info.checked.findIndex((e) => e === false) === -1;
+
       const nextChecked = !person.info.checked[idx];
       person.info.checked[idx] = nextChecked;
       if (content === "-" || content === "퇴사") return;
@@ -309,6 +312,13 @@ export const corporateSlice = createSlice({
       }
       yearData.total.generation.total[idx] += flag;
       yearData.total.sum.total += flag;
+      if (isAllChecked) {
+        yearData.total.payment.youth += person.payment.youth;
+        yearData.total.payment.manhood += person.payment.manhood;
+      } else if (person.info.checked.findIndex((e) => e === false) === -1) {
+        yearData.total.payment.youth -= person.payment.youth;
+        yearData.total.payment.manhood -= person.payment.manhood;
+      }
     },
   },
 });

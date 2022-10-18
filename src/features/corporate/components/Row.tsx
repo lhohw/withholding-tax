@@ -149,11 +149,4 @@ const CorporateRow = ({
   );
 };
 
-export default React.memo(
-  CorporateRow,
-  (prevProps, nextProps) =>
-    prevProps.info === nextProps.info &&
-    prevProps.payments === nextProps.payments &&
-    prevProps.generations === nextProps.generations &&
-    prevProps.isExpand === nextProps.isExpand
-);
+export default React.memo(CorporateRow);

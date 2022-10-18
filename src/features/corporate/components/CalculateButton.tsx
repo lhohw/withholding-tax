@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import { css } from "@emotion/react";
 import * as font from "constants/font";
@@ -40,4 +41,4 @@ const CalculateButton = ({ RN }: CalculateButtonProps) => (
   </Link>
 );
 
-export default CalculateButton;
+export default React.memo(CalculateButton);
