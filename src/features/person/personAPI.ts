@@ -112,8 +112,10 @@ const findPositionForParsingStatement = (x: number, isTaxLove: boolean) => {
   const _range = isTaxLove ? taxLoveRange : range;
   let i = 0;
   while (i < _range.length && x > _range[i]) i++;
-  if (i === _range.length)
-    throw new Error("Can not find position for statement");
+  if (i === _range.length) {
+    console.log("Can not find position for statement", x);
+    return titles[0];
+  }
   return titles[i];
 };
 
@@ -136,6 +138,7 @@ const createMonthlyStatement = (
     const char = line[i];
     if (!char.trim()) continue;
     let x = left[startIndex + i];
+    console.log(char, x);
     if (x === -1) {
       if (i !== 0 && !line[i - 1].trim()) {
         let tmp = 1;
@@ -226,7 +229,7 @@ const createStatement = (
     }
     while (parseInt(tag) !== expectedMonth && expectedMonth <= 12) {
       if (parseInt(tag) < expectedMonth)
-        throw new Error("invalRRN month, check pdf and reader.");
+        throw new Error("invalid month, check pdf and reader.");
       const monthlyStatement = createMonthlyStatement(
         "",
         left,
