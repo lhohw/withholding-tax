@@ -16,10 +16,11 @@ const App = () => {
   return (
     <div style={{ paddingBottom: "1rem" }}>
       <Reader />
-      {year && corporate && (
+      {loading ? (
+        <Loading />
+      ) : year && corporate ? (
         <Corporate RN={corporate} year={year} data={list[corporate]} />
-      )}
-      {loading && <Loading />}
+      ) : null}
     </div>
   );
 };
