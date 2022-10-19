@@ -75,7 +75,7 @@ const CorporateRoll = ({
         // @ts-ignore
         <List
           width={1175}
-          height={datas.length * 40 + 1}
+          height={isExpand ? datas.length * 40 + 1 : 421}
           rowCount={datas.length}
           rowHeight={40}
           rowRenderer={rowRenderer}
