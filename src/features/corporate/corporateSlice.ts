@@ -147,14 +147,18 @@ export const corporateSlice = createSlice({
                       Date.parse(date[year].retirement) &&
                       !isRetired(date[year].retirement, year, idx + 1)))
                 ) {
-                  const checked = p[id].info.checked[idx];
-                  total.generation.total[idx] += checked ? 0 : 1;
                   const flag2 = isYouth(
                     person.RRN,
                     `${year}/${(idx + 1).toString().padStart(2, "0")}` as any
                   )
                     ? "청년"
                     : "장년";
+                  p[id].info.checked[idx] =
+                    existPerson?.info && existPerson.generation[idx] === flag2
+                      ? existPerson.info.checked[idx]
+                      : true;
+                  const checked = p[id].info.checked[idx];
+                  total.generation.total[idx] += checked ? 0 : 1;
                   if (flag2 === "청년") {
                     total.generation["youth"][idx] += checked ? 0 : 1;
                     total.sum.total += checked ? 0 : 1;
@@ -165,9 +169,6 @@ export const corporateSlice = createSlice({
                     total.sum.manhood += checked ? 0 : 1;
                   }
                   p[id].generation[idx] = flag2;
-                  p[id].info.checked[idx] = existPerson?.info
-                    ? existPerson.info.checked[idx]
-                    : true;
                 } else if (
                   date[year]?.retirement &&
                   isRetired(date[year].retirement, year, idx + 1)
