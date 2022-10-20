@@ -57,32 +57,16 @@ const CorporateRoll = ({
         payments={paymentTitle}
         generations={generationTitle}
       />
-      {datas.length < 10 ? (
-        datas.map(([id, { info, payment, generation }]) => {
-          return (
-            <CorporateRow
-              key={id}
-              info={info}
-              id={id}
-              onToggleItem={onToggleItem}
-              onToggle={onToggle}
-              payments={payment}
-              generations={generation}
-            />
-          );
-        })
-      ) : (
-        // @ts-ignore
-        <List
-          width={1175}
-          height={isExpand ? datas.length * 40 + 1 : 421}
-          rowCount={datas.length}
-          rowHeight={40}
-          rowRenderer={rowRenderer}
-          list={datas}
-          style={{ overflowY: "scroll" }}
-        />
-      )}
+      {/*@ts-ignore*/}
+      <List
+        width={1175}
+        height={isExpand ? datas.length * 40 : Math.min(datas.length * 40, 420)}
+        rowCount={datas.length}
+        rowHeight={40}
+        rowRenderer={rowRenderer}
+        list={datas}
+        style={{ overflowY: "scroll", transition: "all 0.4s ease-in-out" }}
+      />
     </CorporateRollContainer>
   );
 };
@@ -90,12 +74,9 @@ const CorporateRoll = ({
 const CorporateRollContainer = styled.ul<{ isExpand: boolean; maxLen: number }>`
   display: flex;
   flex-direction: column;
-  max-height: ${(props) =>
-    props.isExpand ? (props.maxLen + 1) * 40 + 1 + "px" : "420px"};
   width: 1175px;
   overflow-y: scroll;
   border-bottom: 1px dotted ${colors.main};
-  transition: all 0.4s ease-in-out;
 `;
 
 export default React.memo(CorporateRoll);

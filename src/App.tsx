@@ -14,7 +14,7 @@ const App = () => {
   const { year, corporate } = selected;
 
   return (
-    <div style={{ paddingBottom: "1rem" }}>
+    <div>
       <Reader />
       {loading ? (
         <Loading />

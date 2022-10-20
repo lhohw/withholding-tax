@@ -138,7 +138,6 @@ const createMonthlyStatement = (
     const char = line[i];
     if (!char.trim()) continue;
     let x = left[startIndex + i];
-    console.log(char, x);
     if (x === -1) {
       if (i !== 0 && !line[i - 1].trim()) {
         let tmp = 1;
