@@ -114,7 +114,7 @@ const findPositionForParsingStatement = (x: number, isTaxLove: boolean) => {
   while (i < _range.length && x > _range[i]) i++;
   if (i === _range.length) {
     console.log("Can not find position for statement", x);
-    return titles[0];
+    i--;
   }
   return titles[i];
 };

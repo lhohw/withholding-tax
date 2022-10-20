@@ -38,7 +38,7 @@ const CorporateItem = React.memo(
             text-decoration: ${type === "generation" && checked && checked[idx]
               ? "line-through"
               : "inherit"};
-            align-items: flex-start;
+            align-items: ${content.length >= 13 ? "flex-start" : "center"};
           `}
           onClick={
             type === "payment" || checked === undefined || !onToggleItem || !id

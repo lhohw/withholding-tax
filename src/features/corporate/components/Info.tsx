@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 
@@ -13,7 +13,6 @@ export type InfoProps = {
   info: CorporateState[string]["data"][string]["personnel"][string]["info"];
   onToggle: (id: string) => void;
 };
-const sizes = [60, 80, 80, 100];
 const Info = ({ id, info, onToggle }: InfoProps) => {
   const {
     name,
@@ -21,6 +20,7 @@ const Info = ({ id, info, onToggle }: InfoProps) => {
     birth,
     date: { start, retirement },
   } = info;
+  const sizes = useMemo(() => [60, 80, 80, 100], []);
   return (
     <InfoContainer>
       <CheckBox id={id} checked={checked} onToggle={onToggle} />

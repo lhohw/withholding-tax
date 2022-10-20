@@ -242,8 +242,7 @@ export const corporateSlice = createSlice({
           person.info.checked[idx] = true;
           const flag = -1;
           const f = person.generation[idx];
-          // @ts-ignore
-          if (f === "-" || f === "퇴사") continue;
+          if (!(f === "장년" || f === "청년")) continue;
           total.generation.total[idx] += flag;
           total.sum.total += flag;
           if (f === "청년") {
@@ -261,8 +260,7 @@ export const corporateSlice = createSlice({
           person.info.checked[idx] = false;
           const flag = 1;
           const f = person.generation[idx];
-          // @ts-ignore
-          if (f === "-" || f === "퇴사") continue;
+          if (!(f === "장년" || f === "청년")) continue;
           total.generation.total[idx] += flag;
           total.sum.total += flag;
           if (f === "청년") {
