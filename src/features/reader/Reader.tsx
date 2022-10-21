@@ -12,6 +12,7 @@ import {
   Years,
   Printer,
 } from "./components";
+import DarkMode from "features/darkMode/DarkMode";
 
 const Reader = () => {
   const dispatch = useAppDispatch();
@@ -57,6 +58,7 @@ const Reader = () => {
       <div className="column">
         <Title />
         <Printer />
+        <DarkMode />
         <Input onClick={onInputClick} onFileChange={onFileChange} />
       </div>
       {corporate && <Years onSelect={onSelect} selectedYear={year} />}

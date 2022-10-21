@@ -1,7 +1,5 @@
-import React from "react";
 import { css } from "@emotion/react";
 
-import colors from "constants/colors";
 import * as font from "constants/font";
 
 import { AiFillPrinter } from "react-icons/ai";
@@ -12,11 +10,12 @@ const Printer = () => {
       css={css`
         display: flex;
         padding: 0.3rem;
-        margin: 0.5rem 2rem;
+        margin: 1rem 2rem;
         align-items: center;
         justify-content: center;
-        border: 1px solid ${colors.black600};
+        border: 0.5px solid var(--text);
         border-radius: 6px;
+        box-shadow: 1px 1px 2px var(--text);
         cursor: pointer;
       `}
       onClick={() => window.print()}

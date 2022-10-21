@@ -194,7 +194,7 @@ const Item = React.memo(({ heading, children }: ItemProps) => (
         justify-content: space-around;
         color: ${typeof children === "number" && children < 0
           ? colors.red600
-          : colors.base};
+          : "inherit"};
       `}
     >
       {children}

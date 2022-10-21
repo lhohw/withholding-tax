@@ -1,5 +1,6 @@
 import React from "react";
 import { getLastYears } from "lib/values";
+import { useAppSelector } from "app/hooks";
 
 import * as font from "constants/font";
 import colors from "constants/colors";
@@ -9,20 +10,24 @@ type YearsProps = {
   selectedYear: string;
   onSelect: (props: { type: "corporate" | "year"; data: string }) => void;
 };
-const Years = ({ selectedYear, onSelect }: YearsProps) => (
-  <StyledYears>
-    {getLastYears(6).map((year) => (
-      <StyledYear
-        key={year}
-        year={year}
-        selectedYear={selectedYear}
-        onClick={() => onSelect({ type: "year", data: year })}
-      >
-        {year}
-      </StyledYear>
-    ))}
-  </StyledYears>
-);
+const Years = ({ selectedYear, onSelect }: YearsProps) => {
+  const { theme } = useAppSelector((state) => state.darkMode);
+  return (
+    <StyledYears>
+      {getLastYears(6).map((year) => (
+        <StyledYear
+          key={year}
+          year={year}
+          theme={theme}
+          selectedYear={selectedYear}
+          onClick={() => onSelect({ type: "year", data: year })}
+        >
+          {year}
+        </StyledYear>
+      ))}
+    </StyledYears>
+  );
+};
 
 const StyledYears = styled.ul`
   display: flex;
@@ -45,7 +50,9 @@ const StyledYear = React.memo(
         ? font.weight.bold
         : font.weight.medium};
     color: ${(props) =>
-      props.year === props.selectedYear ? colors.main : colors.base};
+      props.year === props.selectedYear
+        ? colors.main
+        : colors.placeholder[props.theme as "dark" | "light"]};
   `,
   (prevProps, nextProps) =>
     (prevProps.selectedYear === prevProps.year) ===

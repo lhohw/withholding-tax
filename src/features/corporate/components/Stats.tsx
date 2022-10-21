@@ -5,6 +5,7 @@ import { css } from "@emotion/react";
 import * as font from "constants/font";
 import colors from "constants/colors";
 
+import { useAppSelector } from "app/hooks";
 import { roundOff } from "lib/utils";
 
 import styled from "@emotion/styled";
@@ -17,6 +18,7 @@ const MonthHandler = ({
   monthCnt = 12,
   onMonthCntChange,
 }: MonthHandlerProps) => {
+  const { theme } = useAppSelector((state) => state.darkMode);
   return (
     <div
       css={css`
@@ -32,17 +34,18 @@ const MonthHandler = ({
       <input
         css={css`
           margin: 0 0.6rem;
-          border: 0.5px solid ${colors.black400};
           width: 50px;
           text-align: center;
           padding: 0.5rem;
           font-size: ${font.size.large};
           border: none;
           outline: none;
-          border-bottom: 1px solid ${colors.black600};
-          transition: all 0.3s ease-in-out;
+          border-bottom: 1px solid ${colors.text[theme]};
+          transition: all 0.125s ease-in-out;
+          background-color: var(--background);
+          color: var(--text);
           &:focus {
-            border-color: ${colors.main};
+            border-bottom: 2px solid ${colors.main};
           }
         `}
         type="text"
@@ -80,7 +83,7 @@ const StatData = ({ title, data, monthCnt = 12 }: StatDataType) => (
     <span
       css={css`
         margin-left: 1rem;
-        color: ${data < 0 ? colors.red600 : colors.base};
+        color: ${data < 0 ? colors.red600 : "inherit"};
       `}
     >{`${roundOff(data / Math.max(1, monthCnt))} [${data}]`}</span>
   </div>

@@ -1,4 +1,5 @@
 import type { ReaderState } from "../readerSlice";
+import { useAppSelector } from "app/hooks";
 
 import Item from "components/Item";
 import * as font from "constants/font";
@@ -14,20 +15,24 @@ const Corporates = ({
   corporates,
   selectedCorporate,
   onSelect,
-}: CorporatesProps) => (
-  <StyledCorporates>
-    {Object.entries(corporates).map(([key, value]) => (
-      <StyledCorporateItem
-        key={key}
-        RN={key}
-        selectedCorporate={selectedCorporate}
-        onClick={() => onSelect({ type: "corporate", data: key })}
-      >
-        {value.name}
-      </StyledCorporateItem>
-    ))}
-  </StyledCorporates>
-);
+}: CorporatesProps) => {
+  const { theme } = useAppSelector((state) => state.darkMode);
+  return (
+    <StyledCorporates>
+      {Object.entries(corporates).map(([key, value]) => (
+        <StyledCorporateItem
+          key={key}
+          RN={key}
+          theme={theme}
+          selectedCorporate={selectedCorporate}
+          onClick={() => onSelect({ type: "corporate", data: key })}
+        >
+          {value.name}
+        </StyledCorporateItem>
+      ))}
+    </StyledCorporates>
+  );
+};
 
 const StyledCorporates = styled.ul`
   padding: 1rem;
@@ -42,8 +47,19 @@ type CorporateItemProps = {
 };
 const StyledCorporateItem = styled(Item)<CorporateItemProps>`
   color: ${(props) =>
-    props.RN === props.selectedCorporate ? colors.main : colors.black400};
-  border: 1px solid ${colors.main};
+    props.RN === props.selectedCorporate
+      ? colors.main
+      : colors.placeholder[props.theme as "dark" | "light"]};
+  border: ${(props) =>
+    props.RN === props.selectedCorporate
+      ? `1px solid ${colors.main}`
+      : `1px solid ${colors.placeholder[props.theme as "dark" | "light"]}`};
+  box-shadow: ${(props) =>
+    `1px 1px 2px ${
+      props.RN === props.selectedCorporate
+        ? colors.main
+        : colors.placeholder[props.theme as "dark" | "light"]
+    }`};
   border-radius: 6px;
   cursor: pointer;
   & + li {

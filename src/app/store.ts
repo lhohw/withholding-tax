@@ -10,6 +10,7 @@ import personReducer from "features/person/personSlice";
 import corporateReducer from "features/corporate/corporateSlice";
 import calculatorReducer from "features/calculator/calculatorSlice";
 import loadingReducer from "features/loading/loadingSlice";
+import darkModeReducer from "features/darkMode/darkModeSlice";
 
 const rootReducer = combineReducers({
   reader: readerReducer,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   corporate: corporateReducer,
   calculator: calculatorReducer,
   loading: loadingReducer,
+  darkMode: darkModeReducer,
 });
 
 export const store = configureStore({

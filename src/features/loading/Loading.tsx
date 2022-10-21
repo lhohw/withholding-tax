@@ -2,6 +2,8 @@ import React from "react";
 import styled from "@emotion/styled";
 import { keyframes } from "@emotion/react";
 
+import { useAppSelector } from "app/hooks";
+
 import { degToRad } from "lib/utils";
 import colors from "constants/colors";
 
@@ -15,8 +17,9 @@ const opacityAnim = keyframes`
 `;
 
 const Loading = () => {
+  const { theme } = useAppSelector((state) => state.darkMode);
   return (
-    <LoadingContainer>
+    <LoadingContainer theme={theme}>
       <Spinner>
         {new Array(12).fill(0).map((_, i) => (
           <SpinnerItem key={i} idx={i} />
@@ -49,7 +52,8 @@ const LoadingContainer = styled.div`
   height: 100vh;
   top: 0;
   left: 0;
-  background: ${colors.black300};
+  background: ${(props) =>
+    props.theme === "dark" ? "#0a0a3d9b" : colors.black400};
   opacity: 0.7;
   z-index: 20;
 `;

@@ -1,8 +1,18 @@
 const colors = {
-  background: "#fefefe",
   main: "#3258a8",
   sub: "#6886be",
-  base: "#202020",
+  background: {
+    light: "#fefefe",
+    dark: "#121212",
+  },
+  text: {
+    light: "#202020",
+    dark: "#d1d1d1",
+  },
+  placeholder: {
+    light: "#959596",
+    dark: "#d1d1d180",
+  },
 
   black100: "#fbfbff",
   black200: "#d8d8db",

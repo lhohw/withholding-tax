@@ -15,7 +15,7 @@ const CalculateButton = ({ RN }: CalculateButtonProps) => (
       flex-direction: column;
       align-items: center;
       justify-content: space-around;
-      border: 0.5px solid ${colors.black600};
+      border: 0.5px solid ${colors.main};
       border-radius: 10px;
       cursor: pointer;
       padding: 0.5rem 1rem;

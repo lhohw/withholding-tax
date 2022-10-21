@@ -4,10 +4,6 @@ import Loading from "features/loading/Loading";
 
 import { useAppSelector } from "app/hooks";
 
-document
-  .querySelector("body")!
-  .addEventListener("selectstart", (e) => e.preventDefault());
-
 const App = () => {
   const { loading } = useAppSelector((state) => state.loading);
   const { list, selected } = useAppSelector((state) => state.reader);

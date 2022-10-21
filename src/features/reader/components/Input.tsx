@@ -1,6 +1,4 @@
 import { css } from "@emotion/react";
-
-import colors from "constants/colors";
 import * as font from "constants/font";
 
 type InputProps = {
@@ -11,14 +9,13 @@ const Input = ({ onClick, onFileChange }: InputProps) => (
   <div
     css={css`
       display: flex;
-      /* width: 100px; */
       padding: 0.5rem 0.5rem;
       margin: 2rem 1rem;
       align-items: center;
       justify-content: center;
-      border: 1px solid ${colors.black600};
+      border: 0.5px solid var(--text);
       border-radius: 6px;
-      /* position: relative; */
+      box-shadow: 1px 1px 2px var(--text);
       font-size: ${font.size.medium};
       cursor: pointer;
     `}

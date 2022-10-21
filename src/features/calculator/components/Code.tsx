@@ -29,16 +29,18 @@ const Code = () => {
     >
       <input
         css={css`
-          /* width: 200px; */
           text-align: center;
           padding: 0.5rem;
           border: none;
-          border-bottom: 0.5px solid ${colors.base};
+          border-bottom: 0.5px solid var(--text);
           outline: none;
+          background: var(--background);
+          color: var(--text);
           font-size: ${font.size.large};
           font-weight: ${font.weight.semibold};
           &:focus {
-            border-bottom-color: ${colors.main};
+            border-bottom: 2px solid ${colors.main};
+            transform: translateY(1px);
           }
         `}
         onChange={onCodeChange}

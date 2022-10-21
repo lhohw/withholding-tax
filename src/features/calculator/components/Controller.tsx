@@ -31,16 +31,19 @@ const Controller = ({ type, onItemClick }: ControllerType) => {
   const { businessScale, isCapital } = useAppSelector(
     (state) => state.calculator
   );
+  const { theme } = useAppSelector((state) => state.darkMode);
   return (
     <ControllerContainer>
       <LinkContainer>
         <StyledButton
+          theme={theme}
           isActive={type === "social"}
           onClick={() => onItemClick("social")}
         >
           사회보험
         </StyledButton>
         <StyledButton
+          theme={theme}
           isActive={type === "employment"}
           onClick={() => onItemClick("employment")}
         >
@@ -61,17 +64,19 @@ const Controller = ({ type, onItemClick }: ControllerType) => {
   );
 };
 
-export const StyledButton = styled.button<{ isActive: boolean }>`
+export const StyledButton = styled.button<{
+  isActive: boolean;
+}>`
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0.5rem;
   font-size: ${font.size.large};
   text-decoration: none;
-  color: ${colors.black400};
-  border: 1px solid ${colors.base};
+  border: 1px solid var(--text);
   border-radius: 5px;
-  background-color: ${colors.background};
+  box-shadow: 0px 1px 2px var(--text);
+  background-color: var(--background);
   min-width: 100px;
   height: 50px;
   cursor: pointer;
@@ -84,7 +89,9 @@ export const StyledButton = styled.button<{ isActive: boolean }>`
           fontWeight: font.weight.bold,
           color: colors.main,
         }
-      : {}}
+      : {
+          color: colors.placeholder[props.theme as "dark" | "light"],
+        }};
 `;
 
 export const LinkContainer = styled.div`
@@ -99,7 +106,7 @@ const ControllerContainer = styled.div`
   flex-direction: row;
   flex: 1;
   padding: 1rem;
-  border-left: 2px dotted ${colors.base};
+  border-left: 2px dotted var(--text);
 `;
 
 export default Controller;

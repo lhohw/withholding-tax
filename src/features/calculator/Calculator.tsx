@@ -49,7 +49,10 @@ const Calculator = () => {
     else {
       dispatch(setData({ last6Years, data: corporate.data }));
       if (corporate.address) {
-        dispatch(setIsCapital(corporate.address.match(capitalRegex) !== null));
+        dispatch(
+          setIsCapital(corporate.address.match(capitalRegex) !== null) ||
+            corporate.address.startsWith("경기")
+        );
       }
     }
     return () => {

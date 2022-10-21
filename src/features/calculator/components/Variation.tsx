@@ -76,7 +76,7 @@ const VariationItem = ({ year, monthCnt, data }: VariationItemProps) => (
         css={css`
           color: ${data[category as keyof typeof data] < 0
             ? colors.red600
-            : colors.base};
+            : "inherit"};
         `}
       >
         {`${roundOff(data[category as keyof typeof data] / monthCnt)} [${
