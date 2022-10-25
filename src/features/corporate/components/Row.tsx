@@ -110,6 +110,13 @@ const CorporateRow = ({
           ? "line-through"
           : "none"};
       `}
+      title={
+        info?.workingDays && info?.workingDays <= 31
+          ? "급여 및 인원 포함. 근무일 27일 초과 31일 이하"
+          : info && info.checked.findIndex((e) => e === false) === -1
+          ? "삭제됨. 급여 및 인원 미포함"
+          : ""
+      }
     >
       {info && id && onToggle ? (
         <Info id={id} info={info} onToggle={onToggle} />
