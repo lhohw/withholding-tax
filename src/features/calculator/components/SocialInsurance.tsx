@@ -180,7 +180,7 @@ const Item = React.memo(({ heading, children }: ItemProps) => (
         align-items: center;
         justify-content: center;
         font-weight: ${font.weight.semibold};
-        border-bottom: ${heading ? "1px solid black" : "none"};
+        border-bottom: ${heading ? "1px solid var(--text)" : "none"};
         width: 100%;
       `}
     >
