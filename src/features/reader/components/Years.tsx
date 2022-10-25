@@ -16,11 +16,15 @@ const Years = ({ selectedYear, onSelect }: YearsProps) => {
     <StyledYears>
       {getLastYears(6).map((year) => (
         <StyledYear
+          tabIndex={0}
           key={year}
           year={year}
           theme={theme}
           selectedYear={selectedYear}
           onClick={() => onSelect({ type: "year", data: year })}
+          onKeyDown={(e) => {
+            if (e.code === "Enter") onSelect({ type: "year", data: year });
+          }}
         >
           {year}
         </StyledYear>
@@ -56,7 +60,8 @@ const StyledYear = React.memo(
   `,
   (prevProps, nextProps) =>
     (prevProps.selectedYear === prevProps.year) ===
-    (nextProps.selectedYear === nextProps.year)
+      (nextProps.selectedYear === nextProps.year) &&
+    prevProps.theme === nextProps.theme
 );
 
 export default React.memo(

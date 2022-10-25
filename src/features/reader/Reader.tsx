@@ -35,9 +35,9 @@ const Reader = () => {
     [dispatch]
   );
   const onInputClick = useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       // @ts-ignore
-      if (e.target.tagName === "DIV") {
+      if (e.target.tagName === "BUTTON") {
         const input = document.querySelector("#reader") as HTMLInputElement;
         input.click();
         e.stopPropagation();
@@ -62,11 +62,13 @@ const Reader = () => {
         <Input onClick={onInputClick} onFileChange={onFileChange} />
       </div>
       {corporate && <Years onSelect={onSelect} selectedYear={year} />}
-      <Corporates
-        corporates={list}
-        onSelect={onSelect}
-        selectedCorporate={corporate}
-      />
+      {Object.entries(list).length !== 0 && (
+        <Corporates
+          corporates={list}
+          onSelect={onSelect}
+          selectedCorporate={corporate}
+        />
+      )}
     </Sidebar>
   );
 };

@@ -1,3 +1,4 @@
+import React, { useCallback } from "react";
 import { css } from "@emotion/react";
 
 import * as font from "constants/font";
@@ -5,21 +6,9 @@ import * as font from "constants/font";
 import { AiFillPrinter } from "react-icons/ai";
 
 const Printer = () => {
+  const onPrint = useCallback(() => window.print(), []);
   return (
-    <div
-      css={css`
-        display: flex;
-        padding: 0.3rem;
-        margin: 1rem 2rem;
-        align-items: center;
-        justify-content: center;
-        border: 0.5px solid var(--text);
-        border-radius: 6px;
-        box-shadow: 1px 1px 2px var(--text);
-        cursor: pointer;
-      `}
-      onClick={() => window.print()}
-    >
+    <button onClick={onPrint}>
       <AiFillPrinter size={20} />
       <span
         css={css`
@@ -30,8 +19,8 @@ const Printer = () => {
       >
         print
       </span>
-    </div>
+    </button>
   );
 };
 
-export default Printer;
+export default React.memo(Printer);

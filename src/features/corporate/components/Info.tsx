@@ -61,15 +61,17 @@ export const InfoHeading = React.memo(
             width: ${width}px;
             cursor: ${idx === 0 && setIsExpand ? "pointer" : "default"};
           `}
-          onClick={
-            idx !== 0 || !setIsExpand
-              ? () => {}
-              : isExpand === false
-              ? () => setIsExpand(true)
-              : isExpand === true
-              ? () => setIsExpand(false)
-              : () => {}
-          }
+          tabIndex={idx === 0 && setIsExpand ? 0 : undefined}
+          onClick={() => {
+            if (idx === 0 && setIsExpand) {
+              setIsExpand(!isExpand);
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.code === "Enter" && idx === 0 && setIsExpand) {
+              setIsExpand(!isExpand);
+            }
+          }}
         >
           {idx === 0 ? (
             isExpand === undefined ? (

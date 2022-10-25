@@ -21,11 +21,15 @@ const Corporates = ({
     <StyledCorporates>
       {Object.entries(corporates).map(([key, value]) => (
         <StyledCorporateItem
+          tabIndex={0}
           key={key}
           RN={key}
           theme={theme}
           selectedCorporate={selectedCorporate}
           onClick={() => onSelect({ type: "corporate", data: key })}
+          onKeyDown={(e) => {
+            if (e.code === "Enter") onSelect({ type: "corporate", data: key });
+          }}
         >
           {value.name}
         </StyledCorporateItem>
