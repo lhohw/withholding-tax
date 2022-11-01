@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": "src",
     "paths": {
       "components/*": [
         "components/*"
@@ -15,9 +16,6 @@
       ],
       "features/*": [
         "features/*"
-      ],
-      "stores/*": [
-        "stores/*"
       ],
       "app/*": [
         "app/*"

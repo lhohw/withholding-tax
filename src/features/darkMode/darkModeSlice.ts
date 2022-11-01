@@ -5,9 +5,11 @@ type DarkModeState = {
   theme: "dark" | "light";
 };
 const initialState: DarkModeState = {
-  theme: window.matchMedia("(prefers-color-scheme: dark").matches
-    ? "dark"
-    : "light",
+  theme:
+    window.matchMedia &&
+    window.matchMedia("(prefers-color-scheme: dark").matches
+      ? "dark"
+      : "light",
 };
 
 export const darkModeSlice = createSlice({

@@ -23,7 +23,13 @@ const CorporateRoll = ({
 }: CorporateRollProps) => {
   const [isExpand, setIsExpand] = useState(false);
 
-  const datas = useMemo(() => Object.entries(personnel), [personnel]);
+  const datas = useMemo(() => {
+    const p = Object.entries(personnel);
+    return [
+      ...p.filter((person) => !!person[1].info.date.start),
+      ...p.filter((person) => !person[1].info.date.start),
+    ];
+  }, [personnel]);
   const paymentTitle = useMemo(() => ({ youth: -1, manhood: -1 }), []);
   const generationTitle = useMemo(
     () => new Array(12).fill(0).map((_, i) => `${i + 1}월`),
@@ -75,7 +81,7 @@ const CorporateRollContainer = styled.ul<{ isExpand: boolean; maxLen: number }>`
   display: flex;
   flex-direction: column;
   width: 1175px;
-  overflow-y: scroll;
+  overflow-y: hidden;
   border-bottom: 1px dotted ${colors.main};
 `;
 

@@ -3,6 +3,7 @@ import {
   ThunkAction,
   Action,
   combineReducers,
+  PreloadedState,
 } from "@reduxjs/toolkit";
 
 import readerReducer from "features/reader/readerSlice";
@@ -25,6 +26,13 @@ export const store = configureStore({
   reducer: rootReducer,
 });
 
+export const setupStore = (preloadedState?: PreloadedState<RootState>) =>
+  configureStore({
+    reducer: rootReducer,
+    preloadedState,
+  });
+
+export type AppStore = ReturnType<typeof setupStore>;
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof rootReducer>;
 export type AppThunk<ReturnType = void> = ThunkAction<

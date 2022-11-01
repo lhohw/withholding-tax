@@ -1,6 +1,4 @@
-const cracoAlias = require("craco-alias");
-// const path = require("path");
-// const CopyWebpackPlugin = require("copy-webpack-plugin");
+const path = require("path/posix");
 
 module.exports = {
   babel: {
@@ -15,14 +13,27 @@ module.exports = {
       ],
     ],
   },
-  plugins: [
-    {
-      plugin: cracoAlias,
-      options: {
-        source: "tsconfig",
-        baseUrl: "src",
-        tsConfigPath: "./tsconfig.paths.json",
+  webpack: {
+    alias: {
+      components: path.resolve(__dirname, "src/components"),
+      constants: path.resolve(__dirname, "src/constants"),
+      styles: path.resolve(__dirname, "src/styles"),
+      lib: path.resolve(__dirname, "src/lib"),
+      features: path.resolve(__dirname, "src/features"),
+      app: path.resolve(__dirname, "src/app"),
+    },
+  },
+  jest: {
+    configure: {
+      moduleNameMapper: {
+        "^components/(.*)": "<rootDir>/src/components/$1",
+        "^constants/(.*)": "<rootDir>/src/constants/$1",
+        "^styles/(.*)": "<rootDir>/src/styles/$1",
+        "^lib/(.*)": "<rootDir>/src/lib/$1",
+        "^features/(.*)": "<rootDir>/src/features/$1",
+        "^app/(.*)": "<rootDir>/src/app/$1",
       },
     },
-  ],
+    transform: {},
+  },
 };
