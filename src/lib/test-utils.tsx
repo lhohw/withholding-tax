@@ -3,6 +3,7 @@ import { render } from "@testing-library/react";
 import type { RenderOptions } from "@testing-library/react";
 import type { PreloadedState } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
 
 import { setupStore } from "app/store";
 import type { RootState, AppStore } from "app/store";
@@ -21,7 +22,11 @@ export function renderWithProviders(
   }: ExtendedRenderOptions = {}
 ) {
   function Wrapper({ children }: PropsWithChildren<{}>): JSX.Element {
-    return <Provider store={store}>{children}</Provider>;
+    return (
+      <BrowserRouter>
+        <Provider store={store}>{children}</Provider>
+      </BrowserRouter>
+    );
   }
   return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
 }
