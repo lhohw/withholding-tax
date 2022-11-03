@@ -4,7 +4,7 @@
   box-sizing: inherit;
 }
 :root {
-  --text: #121212;
+  --text: #202020;
   --background: #fefefe;
 }
 @media (prefers-color-scheme: dark) {
