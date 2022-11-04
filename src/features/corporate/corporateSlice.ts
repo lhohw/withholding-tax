@@ -15,6 +15,7 @@ import {
 
 import type { ReaderState } from "features/reader/readerSlice";
 
+export type Generation = "청년" | "장년" | "-" | "퇴사";
 export type CorporateState = {
   [RN: string]: {
     name: string;
@@ -31,7 +32,7 @@ export type CorporateState = {
               workingDays?: number;
             };
             payment: PersonPayment[string];
-            generation: ("청년" | "장년" | "-")[];
+            generation: Generation[];
           };
         };
         total: {
@@ -128,7 +129,7 @@ export const corporateSlice = createSlice({
           }
           if (ei[year]) {
             ei[year].slice(0, 12).forEach(({ payment }, idx) => {
-              const flag = payment.youth
+              const flag: Generation = payment.youth
                 ? "청년"
                 : payment.manhood
                 ? "장년"
@@ -173,7 +174,7 @@ export const corporateSlice = createSlice({
                   date[year]?.retirement &&
                   isRetired(date[year].retirement, year, idx + 1)
                 ) {
-                  p[id].generation[idx] = "퇴사" as any;
+                  p[id].generation[idx] = "퇴사";
                 }
                 return;
               }
@@ -196,7 +197,7 @@ export const corporateSlice = createSlice({
                   const checked = p[id].info.checked[idx];
                   total.payment.youth += checked ? 0 : payment.youth;
                   total.payment.manhood += checked ? 0 : payment.manhood;
-                  p[id].generation[idx] = "퇴사" as any;
+                  p[id].generation[idx] = "퇴사";
                   return;
                 }
               }
@@ -289,7 +290,7 @@ export const corporateSlice = createSlice({
         RN: string;
         year: string;
         idx: number;
-        content: "청년" | "장년" | "-" | "퇴사";
+        content: Generation; // "청년" | "장년" | "-" | "퇴사";
       }>
     ) => {
       const { id, RN, year, idx, content } = action.payload;
