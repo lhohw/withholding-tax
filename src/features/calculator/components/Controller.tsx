@@ -75,7 +75,7 @@ export const StyledButton = styled.button<{
   text-decoration: none;
   border: 1px solid var(--text);
   border-radius: 5px;
-  box-shadow: 0px 1px 2px var(--text);
+  box-shadow: ${(props) => `0px 1px ${props.isActive ? 3 : 1}px var(--text)`};
   background-color: var(--background);
   min-width: 100px;
   height: 50px;
