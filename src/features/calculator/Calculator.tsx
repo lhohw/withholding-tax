@@ -22,6 +22,7 @@ import Variation from "./components/Variation";
 import Controller from "./components/Controller";
 import SocialInsurance from "./components/SocialInsurance";
 import EmploymentIncrease from "./components/EmploymentIncrease";
+import ErrorBoundary from "components/ErrorBoundary";
 import Loading from "features/loading/Loading";
 
 const Calculator = () => {
@@ -69,30 +70,32 @@ const Calculator = () => {
   if (!Object.keys(Object.values(data.generationSum)).length)
     return <Loading />;
   return (
-    <StyledCalculator>
-      <div className="header">
-        <div className="info">
-          <h1>{corporate.name}</h1>
-          <span>{corporate.address}</span>
+    <ErrorBoundary>
+      <StyledCalculator>
+        <div className="header">
+          <div className="info">
+            <h1>{corporate.name}</h1>
+            <span>{corporate.address}</span>
+          </div>
+          <Controller type={type} onItemClick={onItemClick} />
         </div>
-        <Controller type={type} onItemClick={onItemClick} />
-      </div>
-      <div className="data">
-        <Variation
-          last5Years={last5Years}
-          last6Years={last6Years}
-          data={data}
-        />
-      </div>
-      <div className="data">
-        {type &&
-          (type === "social" ? (
-            <SocialInsurance last5Years={last5Years} data={data} />
-          ) : (
-            <EmploymentIncrease last5Years={last5Years} />
-          ))}
-      </div>
-    </StyledCalculator>
+        <div className="data">
+          <Variation
+            last5Years={last5Years}
+            last6Years={last6Years}
+            data={data}
+          />
+        </div>
+        <div className="data">
+          {type &&
+            (type === "social" ? (
+              <SocialInsurance last5Years={last5Years} data={data} />
+            ) : (
+              <EmploymentIncrease last5Years={last5Years} />
+            ))}
+        </div>
+      </StyledCalculator>
+    </ErrorBoundary>
   );
 };
 

@@ -1,3 +1,4 @@
+import ErrorBoundary from "components/ErrorBoundary";
 import Reader from "features/reader/Reader";
 import Corporate from "features/corporate/Corporate";
 import Loading from "features/loading/Loading";
@@ -8,16 +9,17 @@ const App = () => {
   const { loading } = useAppSelector((state) => state.loading);
   const { list, selected } = useAppSelector((state) => state.reader);
   const { year, corporate } = selected;
-
   return (
-    <div>
-      <Reader />
-      {loading ? (
-        <Loading />
-      ) : year && corporate ? (
-        <Corporate RN={corporate} year={year} data={list[corporate]} />
-      ) : null}
-    </div>
+    <ErrorBoundary>
+      <div>
+        <Reader />
+        {loading ? (
+          <Loading />
+        ) : year && corporate ? (
+          <Corporate RN={corporate} year={year} data={list[corporate]} />
+        ) : null}
+      </div>
+    </ErrorBoundary>
   );
 };
 
