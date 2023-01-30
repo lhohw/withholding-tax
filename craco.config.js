@@ -1,4 +1,5 @@
 const path = require("path/posix");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   babel: {
@@ -22,6 +23,16 @@ module.exports = {
       features: path.resolve(__dirname, "src/features"),
       app: path.resolve(__dirname, "src/app"),
     },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          {
+            from: "node_modules/pdfjs-dist/cmaps/",
+            to: "./cmaps/",
+          },
+        ],
+      }),
+    ],
   },
   jest: {
     configure: {

@@ -11,7 +11,8 @@ pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 const read = async (data: string) => {
   const pdf = await pdfjs.getDocument({
     data,
-    cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
+    // cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
+    cMapUrl: "../../../cmaps/",
     cMapPacked: true,
   }).promise;
   const md = await pdf.getMetadata();
