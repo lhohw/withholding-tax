@@ -23,7 +23,10 @@ const CorporateRoll = ({
 }: CorporateRollProps) => {
   const [isExpand, setIsExpand] = useState(false);
 
-  const datas = useMemo(() => {
+  const datas: [
+    string,
+    CorporateState[string]["data"][string]["personnel"][string]
+  ][] = useMemo(() => {
     const p = Object.entries(personnel);
     return [
       ...p.filter((person) => !!person[1].info.date.start),
@@ -41,6 +44,7 @@ const CorporateRoll = ({
       return (
         <div style={style} key={key}>
           <CorporateRow
+            index={index}
             info={info}
             id={id}
             onToggleItem={onToggleItem}

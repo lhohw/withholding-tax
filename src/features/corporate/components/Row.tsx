@@ -9,6 +9,7 @@ import Info, { InfoHeading } from "./Info";
 import colors from "constants/colors";
 import { parseMoney } from "lib/utils";
 import { CorporateState } from "../corporateSlice";
+import { useAppSelector } from "app/hooks";
 
 type RowItemProps = {
   type: "payment" | "generation";
@@ -68,6 +69,7 @@ type RowProps = {
   isHeading?: boolean;
   checked?: boolean[];
   id?: string;
+  index?: number;
   onToggleItem?: (
     id: string,
     idx: number,
@@ -91,6 +93,7 @@ const CorporateRow = ({
   generations,
   isExpand,
   setIsExpand,
+  index = 0,
 }: RowProps) => {
   const _payments =
     type === undefined || type === "total"
@@ -98,6 +101,7 @@ const CorporateRow = ({
       : type === "youth"
       ? [payments.youth, 0]
       : [0, payments.manhood];
+  const { theme } = useAppSelector((state) => state.darkMode);
   return (
     <List
       css={css`
@@ -107,17 +111,24 @@ const CorporateRow = ({
           : info && info.checked.findIndex((e) => e === false) === -1
           ? colors.red600
           : "inherit"};
+        background-color: ${index % 2
+          ? theme === "dark"
+            ? "#dde1ff10"
+            : "#dde1ff28"
+          : "inherit"};
         text-decoration: ${info &&
         info.checked.findIndex((e) => e === false) === -1
           ? "line-through"
           : "none"};
       `}
       title={
-        info?.workingDays && info?.workingDays <= 31
-          ? "급여 및 인원 포함. 근무일 27일 초과 31일 이하"
-          : info && info.checked.findIndex((e) => e === false) === -1
+        info?.checked.findIndex((e) => e === false) === -1
           ? "삭제됨. 급여 및 인원 미포함"
-          : ""
+          : info?.workingDays && info?.workingDays <= 31
+          ? "급여 및 인원 포함. 근무일 27일 초과 31일 이하"
+          : type
+          ? ""
+          : "급여 및 인원 포함"
       }
     >
       {info && id && onToggle ? (
