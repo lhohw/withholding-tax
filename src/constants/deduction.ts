@@ -55,4 +55,5 @@ export const employmentIncrease: EmploymentIncrease = {
   "2019": _2018,
   "2020": _2018,
   "2021": _2018,
+  "2022": _2018,
 };

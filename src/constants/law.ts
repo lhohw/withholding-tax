@@ -37,6 +37,12 @@ export const socialInsuranceRate: SocialInsuranceRate = {
     nationalPensionInsuranceRate: 4.5,
     employmentInsuranceRate: 1.05,
   },
+  "2022": {
+    healthInsuranceRate: 3.43,
+    longTermCareInsuranceRate: 0.39, //184,
+    nationalPensionInsuranceRate: 4.5,
+    employmentInsuranceRate: 1.05,
+  },
 };
 
 export type IndustrialAccidentRate = {
@@ -238,6 +244,54 @@ export const industrialAccidentRate: IndustrialAccidentRate = {
     "1400": 0.03,
   },
   "2021": {
+    // 1. 광업
+    "100": 186,
+    "103": 58,
+    // 2. 제조업
+    "200": 17,
+    "202": 12,
+    "204": 21,
+    "206": 11,
+    "209": 14,
+    "210": 8,
+    "218": 14,
+    "219": 11,
+    "224": 7,
+    "226": 25,
+    "229": 13,
+    // 3. 전기 가스 증기 및 수도사업
+    "300": 9,
+    // 4. 건설업
+    "400": 37,
+    // 5. 운수, 창고 및 통신업
+    "500": 9,
+    "501": 19,
+    "510": 10,
+    // 6. 임업
+    "600": 59,
+    // 7. 어업
+    "700": 29,
+    // 8. 농업
+    "800": 21,
+    // 9. 기타의 사업
+    "901": 9,
+    "905": 10,
+    "907": 7,
+    "910": 9,
+    "911": 8,
+    "913": 10,
+    // 0. 금융 및 보험업
+    "000": 7,
+    // 11. 해외파견자 보험요율
+    "1100": 15,
+    // 12. 주한미군
+    "1200": 7,
+    // 13. 임금채권부담금
+    "1300": 0.6,
+    // 14. 석면피해구제분담금
+    "1400": 0.03,
+  },
+  "2022": {
     // 1. 광업
     "100": 186,
     "103": 58,
