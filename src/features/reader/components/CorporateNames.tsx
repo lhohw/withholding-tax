@@ -11,7 +11,7 @@ type CorporatesProps = {
   onSelect: (props: { type: "year" | "corporate"; data: string }) => void;
   selectedCorporate: string;
 };
-const Corporates = ({
+const CorporateNames = ({
   corporates,
   selectedCorporate,
   onSelect,
@@ -71,4 +71,4 @@ const StyledCorporateItem = styled(Item)<CorporateItemProps>`
   }
 `;
 
-export default Corporates;
+export default CorporateNames;

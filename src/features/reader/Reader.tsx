@@ -7,7 +7,7 @@ import { setLoading } from "features/loading/loadingSlice";
 import {
   Title,
   Input,
-  Corporates,
+  CorporateNames,
   Sidebar,
   Years,
   Printer,
@@ -63,7 +63,7 @@ const Reader = () => {
       </div>
       {corporate && <Years onSelect={onSelect} selectedYear={year} />}
       {Object.entries(list).length !== 0 && (
-        <Corporates
+        <CorporateNames
           corporates={list}
           onSelect={onSelect}
           selectedCorporate={corporate}
