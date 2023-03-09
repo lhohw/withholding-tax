@@ -6,17 +6,27 @@
 :root {
   --text: #202020;
   --background: #fefefe;
+  
+  --main-gradient: linear-gradient(137deg, rgba(239,239,239,1) 0%, rgba(218,205,206,1) 100%);
+
+  --orange: rgb(254, 132, 100);
+  --yellow: rgb(254, 189, 77);
+  --placeholder: #959596;
+  --black: rgb(60, 57, 49);
 }
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --text: #d1d1d1;
     --background: #121212;
+
+    --main-gradient: linear-gradient(137deg, rgba(218,205,206,1) 0%, rgba(200, 193, 190, 1) 100%);
   }
 }
 html {
   color: var(--text);
   background-color: var(--background);
-}
+  background: var(--main-gradient);
+} */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -26,12 +36,28 @@ body {
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
   transition-property: color, background-color;
-  transition-duration: 0.125s;
+  transition-duration: 1.125s;
   transition-timing-function: ease-in-out;
   color: var(--text);
   background-color: var(--background);
   min-width: 100vw;
   min-height: 100vh;
+  color: var(--text);
+  background-color: var(--background);
+  background: var(--main-gradient);
+}
+
+body[theme="light"] {
+  /* color: rgb(109, 113, 111); */
+  /* background-color: rgb(239,239,239); */
+  background: var(--main-gradient);
+}
+body[theme="dark"] {
+  /* color: rgb(239,239,239); */
+  /* background-color: rgb(218,205,206); */
+  background: linear-gradient(137deg, rgba(218,205,206,1) 0%, rgba(200, 193, 190, 1) 100%);
+  --background: rgb(235, 230, 230);
+  --text: #373737;
 }
 
 ul, li {
