@@ -24,3 +24,12 @@ export const orangeGradient = css`
     rgba(249, 85, 49, 1) 100%
   );
 `;
+
+export const whiteGradient2 = css`
+  background: rgb(231, 224, 217);
+  background: linear-gradient(
+    137deg,
+    rgba(231, 224, 217, 1) 0%,
+    rgba(254, 254, 254, 1) 100%
+  );
+`;
