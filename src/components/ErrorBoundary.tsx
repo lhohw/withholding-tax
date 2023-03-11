@@ -1,11 +1,8 @@
-import type { DarkModeState } from "features/darkMode/darkModeSlice";
 import React from "react";
 import { css } from "@emotion/react";
-import colors from "constants/colors";
-import { useAppSelector } from "app/hooks";
+import { whiteGradient2 } from "styles/gradient";
 
 export type ErrorBoundaryProps = {
-  theme: DarkModeState["theme"];
   children: string | React.ReactNode;
 };
 export type ErrorBoundaryState = {
@@ -40,7 +37,6 @@ class ErrorBoundary extends React.Component<
   }
   render() {
     if (this.state.hasError) {
-      const { theme } = this.props;
       return (
         <div
           css={css`
@@ -56,24 +52,26 @@ class ErrorBoundary extends React.Component<
               display: flex;
               flex-direction: column;
               padding: 1rem;
-              background-color: ${colors.background[theme]};
-              border: 2px solid ${colors.text[theme]};
               align-items: center;
-              border-radius: 12px;
               max-width: 500px;
+              border: 2px solid var(--orange);
+              border-radius: 12px;
+              background: ${whiteGradient2};
+              box-shadow: 27px 27px 54px #8a8989, -27px -27px 54px #ffffff;
+
+              color: var(--orange);
+              text-shadow: 1px 1px 1px var(--placeholder);
             `}
           >
             <h3
               css={css`
                 padding: 0.5rem 0;
                 margin: 0;
-                color: ${colors.main};
                 font-size: 30px;
                 & > p {
                   padding: 0;
                   margin: 1rem 0;
-                  font-size: 22px;
-                  color: ${colors.text[theme]};
+                  font-size: 24px;
                 }
               `}
             >
@@ -85,14 +83,21 @@ class ErrorBoundary extends React.Component<
               css={css`
                 margin: 1rem;
                 padding: 0.5rem 1rem;
-                background-color: ${colors.background[theme]};
-                color: ${colors.text[theme]};
                 display: flex;
-                box-shadow: 0 0 3px ${colors.main};
-                border: 1px solid ${colors.text[theme]};
-                border-radius: 6px;
                 font-size: 17px;
+                font-weight: bold;
+                background-color: inherit;
+                border: none;
+                border: 2px solid var(--light-orange);
+                border-radius: 8px;
+                background: ${whiteGradient2};
                 cursor: pointer;
+                color: var(--black);
+                position: relative;
+                transition: 0.4s color ease-in-out;
+                &:hover {
+                  color: var(--light-orange);
+                }
               `}
               onClick={() => {
                 if (!window) return;
@@ -109,9 +114,4 @@ class ErrorBoundary extends React.Component<
   }
 }
 
-const ErrorBoundaryWithTheme = (props: Omit<ErrorBoundaryProps, "theme">) => {
-  const { theme } = useAppSelector((state) => state.darkMode);
-  return <ErrorBoundary theme={theme} {...props} />;
-};
-
-export default ErrorBoundaryWithTheme;
+export default ErrorBoundary;
