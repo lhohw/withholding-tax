@@ -27,29 +27,32 @@ export const taxLoveWithholdingTaxRegex = new RegExp(
   "g"
 );
 
-export const yearRegex = /귀속연도\s?/;
-export const RRNRegex = /주민등록번호\s?/;
-export const nameRegex = /성명:\s?/;
-export const corporateRegex = /법인명\(상호\)\s?/;
-export const RNRegex = /사업자등록번호\s?/;
-export const addressRegex = /근무처\s?/;
+export const yearRegex = /귀속\s*연도\s*/;
+export const RRNRegex = /주민\s*등록\s*번호\s*/;
+export const nameRegex = /성\s*명\s*(:)?\s*/;
+export const corporateRegex = /법\s*인\s*명(\(상호\))?\s*/;
+export const RNRegex = /사업자\s*등록\s*번호\s*/;
+export const addressRegex = /근무처\s*/;
 export const dateRegex = {
-  start: /입사일\s?/,
-  retirement: /퇴사일\s?/,
+  start: /입사일\s*/,
+  resign: /퇴사일\s*/,
 };
-export const monthlyStatementRegex = new RegExp(
-  new Array(12)
-    .fill(0)
-    .map((_, i) => i + 1 + "월")
-    .join("|") + "|연말|종전|납세|소",
-  "g"
-);
+export const monthlyStatementRegex = (isTaxLove: boolean) => {
+  if (isTaxLove) return taxLoveMonthlyStatementRegex();
+  return new RegExp(
+    new Array(12)
+      .fill(0)
+      .map((_, i) => i + 1 + "월")
+      .join("|") + "|연말|종전|납세|소",
+    "g"
+  );
+};
 
-export const taxLoveMonthlyStatementRegex = (year: number) =>
+const taxLoveMonthlyStatementRegex = () =>
   new RegExp(
     new Array(12)
       .fill(0)
-      .map((_, i) => `${year}/${(i + 1).toString().padStart(2, "0")}`)
+      .map((_, i) => `\\d{2,4}/${(i + 1).toString().padStart(2, "0")}`)
       .join("|") + "|연말|계",
     "g"
   );

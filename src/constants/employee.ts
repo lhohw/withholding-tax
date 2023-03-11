@@ -1,7 +1,7 @@
-const defaultStatement = {
+export const defaultStatement = () => ({
   tag: "",
-  paymentDate: "",
-  pay: "",
+  salaryDate: "",
+  salary: "",
   bonus: "",
   recognitionBonus: "",
   profitFromExerciseOfStockOption: "",
@@ -10,12 +10,12 @@ const defaultStatement = {
   22: "",
   29: "",
   total: "",
-  payRange: "",
+  salaryRange: "",
   incomeTax: "",
   externalIncomeTax: "",
   totalIncomeTax: "",
   localIncomeTax: "",
-};
+});
 
 /*
  * 월별 ~205.128
@@ -79,5 +79,3 @@ export const titles = [
   "totalIncomeTax",
   "localIncomeTax",
 ];
-
-export const getDefaultStatement = () => ({ ...defaultStatement });

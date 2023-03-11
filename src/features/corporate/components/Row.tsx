@@ -76,7 +76,7 @@ type RowProps = {
     content: "청년" | "장년" | "-" | "퇴사"
   ) => void;
   onToggle?: (id: string) => void;
-  info?: CorporateState[string]["data"][string]["personnel"][string]["info"];
+  info?: CorporateState[string]["data"][string]["employees"][string]["info"];
   payments: Record<"youth" | "manhood", number>;
   generations: string[];
   isExpand?: boolean;

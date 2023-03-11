@@ -1,10 +1,20 @@
 import { useState } from "react";
-import { getLastYears } from "lib/values";
+import { useRecoilState, useRecoilValue } from "recoil";
+
+import {
+  selectedYearIndexState,
+  yearsState,
+  selectedYearState,
+} from "recoil/year";
 
 const useYear = () => {
   const [isYearListOpen, setIsYearListOpen] = useState(false);
-  const [years] = useState<string[]>(getLastYears(6));
-  const [selectedYearIndex, setSelectedYearIndex] = useState(-1);
+
+  const [selectedYearIndex, setSelectedYearIndex] = useRecoilState(
+    selectedYearIndexState
+  );
+  const [years] = useRecoilState(yearsState);
+  const selectedYear = useRecoilValue(selectedYearState);
 
   const toggleYearListOpen = () => setIsYearListOpen(!isYearListOpen);
   return {
@@ -13,6 +23,7 @@ const useYear = () => {
     setSelectedYearIndex,
     isYearListOpen,
     toggleYearListOpen,
+    selectedYear,
   };
 };
 

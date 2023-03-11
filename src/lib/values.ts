@@ -2,7 +2,9 @@ export const getBirthCentury = (RRN: string) => {
   const [front, rear] = RRN.split("-");
   const firstRearDigit = rear[0];
   if (firstRearDigit === "*")
-    return 19 + Number(parseInt(front.slice(0, 2)) - (getThisYear() % 100) < 0);
+    return (
+      19 + Number(parseInt(front.slice(0, 2)) - (getThisYear() % 100) < 0)
+    ).toString();
   return (
     19 +
     Number(

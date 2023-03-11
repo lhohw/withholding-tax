@@ -10,7 +10,7 @@ import { AiOutlineExpandAlt, AiOutlineShrink } from "react-icons/ai";
 
 export type InfoProps = {
   id: string;
-  info: CorporateState[string]["data"][string]["personnel"][string]["info"];
+  info: CorporateState[string]["data"][string]["employees"][string]["info"];
   onToggle: (id: string) => void;
 };
 const Info = ({ id, info, onToggle }: InfoProps) => {
@@ -18,13 +18,13 @@ const Info = ({ id, info, onToggle }: InfoProps) => {
     name,
     checked,
     birth,
-    date: { start, retirement },
+    date: { start, resign },
   } = info;
   const sizes = useMemo(() => [60, 80, 80, 100], []);
   return (
     <InfoContainer>
       <CheckBox id={id} checked={checked} onToggle={onToggle} />
-      {[name, start, retirement, birth].map((d, i) => (
+      {[name, start, resign, birth].map((d, i) => (
         <Item
           key={i}
           css={css`

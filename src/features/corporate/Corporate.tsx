@@ -1,3 +1,7 @@
+// import type { Corporates } from "recoil/corporates/atom";
+// @ts-ignore
+import type Corporate from "models/Corporate";
+
 import React, { useCallback, useEffect } from "react";
 
 import {
@@ -9,14 +13,12 @@ import {
 
 import { setPersonnel, toggle, toggleItem } from "./corporateSlice";
 import { useAppDispatch, useAppSelector } from "app/hooks";
-import { ReaderState } from "features/reader/readerSlice";
 
 export type CorporateProps = {
-  data: ReaderState["list"][string];
+  data: Corporate;
   year: string;
   RN: string;
 };
-
 const Corporate = ({ data, year, RN }: CorporateProps) => {
   const dispatch = useAppDispatch();
   const { name } = data;
@@ -44,8 +46,8 @@ const Corporate = ({ data, year, RN }: CorporateProps) => {
   if (!corporate || !corporate[year]) return <div>loading...</div>;
 
   const {
-    personnel,
-    total: { payment, generation, sum },
+    employees,
+    total: { salary, generation, sum },
   } = corporate[year];
   const variation = {
     youth: sum.youth - (corporate[+year - 1]?.total.sum.youth || 0),
@@ -65,9 +67,9 @@ const Corporate = ({ data, year, RN }: CorporateProps) => {
       <CorporateRoll
         onToggle={onToggle}
         onToggleItem={onToggleItem}
-        personnel={personnel}
+        employees={employees}
       />
-      <CorporateResult payment={payment} generation={generation} />
+      <CorporateResult salary={salary} generation={generation} />
     </CorporateContainer>
   );
 };

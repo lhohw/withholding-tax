@@ -41,11 +41,11 @@ describe("corporate reducer", () => {
       year = last6Years[0],
       RN = "000-00-00000";
     const actual = corporateReducer(preloadedState, toggle({ id, year, RN }));
-    expect(actual[RN].data[year]["personnel"][id].info.checked).toEqual(
+    expect(actual[RN].data[year]["employees"][id].info.checked).toEqual(
       new Array(12).fill(true)
     );
-    const { payment, generation, sum } = actual[RN].data[year].total;
-    expect(payment).toEqual({ youth: 0, manhood: 0 });
+    const { salary, generation, sum } = actual[RN].data[year].total;
+    expect(salary).toEqual({ youth: 0, manhood: 0 });
     expect(generation).toEqual({
       youth: new Array(12).fill(0),
       manhood: new Array(12).fill(0),
@@ -63,7 +63,7 @@ describe("corporate reducer", () => {
       preloadedState,
       toggleItem({ id, year, RN, idx, content })
     );
-    expect(actual[RN].data[year].personnel[id].info.checked).toEqual(
+    expect(actual[RN].data[year].employees[id].info.checked).toEqual(
       new Array(12).fill(undefined).map((_, i) => (i === idx ? true : false))
     );
     const { generation, sum } = actual[RN].data[year].total;

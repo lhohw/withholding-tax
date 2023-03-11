@@ -1,4 +1,4 @@
-import { PaymentDate, YYYYMMDD } from "../features/person/personAPI";
+import type { YYYYMMDD } from "models/Employee";
 import { getBirthCentury } from "./values";
 import {
   socialInsuranceRate as SIR,
@@ -29,16 +29,10 @@ export const getDays = (year: number, month: number) =>
     31,
   ][month];
 
-export const isYouth = (RRN: string, date: PaymentDate) => {
-  const [year, month] = date.split("/").map(Number);
+export const isYouth = (birth: string, date: number) => {
+  const [year, month] = birth.split(".").map(Number);
   const limit = new Date(year - 30, month - 1, getDays(year, month - 1));
-  const [f] = RRN.split("-");
-  const prefix = getBirthCentury(RRN);
-  const y = parseInt(prefix + f.slice(0, 2));
-  const m = parseInt(f.slice(2, 4));
-  const d = parseInt(f.slice(4, 6));
-  const birth = new Date(y, m - 1, d);
-  return birth > limit;
+  return new Date(birth) > limit;
 };
 
 export const isRetired = (
@@ -72,6 +66,7 @@ const numToStr = (x: number) => {
     i -= 3;
   }
   return (minus ? "-" : "") + ret.slice(1);
+  // for under decimal
   // const minus = x < 0;
   // let str = minus ? x.toString().slice(1) : x.toString();
   // let underDecimalPoint = "";
@@ -90,6 +85,10 @@ const numToStr = (x: number) => {
   //   (underDecimalPoint ? `.${underDecimalPoint.slice(0, 2)}` : "")
   // );
 };
+
+export const dateToNumber = (date: string) => new Date(date).getTime();
+export const numberToDate = (num: number) =>
+  new Date(num).toLocaleDateString().split(". ");
 
 export function parseMoney<T extends string | number>(
   x: T

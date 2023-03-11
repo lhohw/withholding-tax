@@ -14,33 +14,33 @@ type CorporateRollProps = {
     idx: number,
     content: "청년" | "장년" | "-" | "퇴사"
   ) => void;
-  personnel: CorporateState[string]["data"][string]["personnel"];
+  employees: CorporateState[string]["data"][string]["employees"];
 };
 const CorporateRoll = ({
   onToggle,
   onToggleItem,
-  personnel,
+  employees,
 }: CorporateRollProps) => {
   const [isExpand, setIsExpand] = useState(false);
 
   const datas: [
     string,
-    CorporateState[string]["data"][string]["personnel"][string]
+    CorporateState[string]["data"][string]["employees"][string]
   ][] = useMemo(() => {
-    const p = Object.entries(personnel);
+    const p = Object.entries(employees);
     return [
       ...p.filter((person) => !!person[1].info.date.start),
       ...p.filter((person) => !person[1].info.date.start),
     ];
-  }, [personnel]);
-  const paymentTitle = useMemo(() => ({ youth: -1, manhood: -1 }), []);
+  }, [employees]);
+  const salaryTitle = useMemo(() => ({ youth: -1, manhood: -1 }), []);
   const generationTitle = useMemo(
     () => new Array(12).fill(0).map((_, i) => `${i + 1}월`),
     []
   );
   const rowRenderer: ListRowRenderer = useCallback(
     ({ index, key, style }) => {
-      const [id, { info, payment, generation }] = datas[index];
+      const [id, { info, salary, generation }] = datas[index];
       return (
         <div style={style} key={key}>
           <CorporateRow
@@ -49,7 +49,7 @@ const CorporateRoll = ({
             id={id}
             onToggleItem={onToggleItem}
             onToggle={onToggle}
-            payments={payment}
+            payments={salary}
             generations={generation}
           />
         </div>
@@ -64,7 +64,7 @@ const CorporateRoll = ({
         setIsExpand={setIsExpand}
         isHeading
         type={"heading"}
-        payments={paymentTitle}
+        payments={salaryTitle}
         generations={generationTitle}
       />
       {/*@ts-ignore*/}
