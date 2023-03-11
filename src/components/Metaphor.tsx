@@ -19,9 +19,10 @@ const Metaphor = ({ title, children, onClick }: MetaphorProps) => {
         justify-content: center;
         color: var(--orange);
         cursor: pointer;
-        transition: 0.4s transform ease-in-out, 0.4s border-color ease-in-out;
+        transition: 0.25s transform ease-in-out, 0.4s border-color ease-in-out;
         border: 1px solid transparent;
         ${whiteNeumorphism()}
+        background-color: var(--background);
         &:hover {
           transform: scale(1.1);
           border-color: var(--orange);

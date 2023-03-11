@@ -19,6 +19,7 @@ export type CorporateProps = {
   year: string;
   RN: string;
 };
+// eslint-disable-next-line @typescript-eslint/no-redeclare
 const Corporate = ({ data, year, RN }: CorporateProps) => {
   const dispatch = useAppDispatch();
   const { name } = data;
