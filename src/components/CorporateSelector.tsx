@@ -1,16 +1,16 @@
 import type { AccordianProps } from "./Accordian";
 
-import useCorporate from "hooks/useCorporate";
 import { useCallback } from "react";
+import useCorporate from "hooks/useCorporate";
 import Accordian from "./Accordian";
 
 const CorporateSelector = () => {
   const {
-    corporates,
     selectedCorporateIndex,
     setSelectedCorporateIndex,
     isCorporateListOpen,
     toggleCorporateList,
+    corporateNames,
   } = useCorporate();
 
   const onSelect = useCallback<AccordianProps["onSelect"]>(
@@ -20,10 +20,12 @@ const CorporateSelector = () => {
     },
     [isCorporateListOpen, setSelectedCorporateIndex, toggleCorporateList]
   );
+
   return (
     <Accordian
+      width="200px"
       isOpen={isCorporateListOpen}
-      options={corporates}
+      options={corporateNames}
       selected={selectedCorporateIndex}
       placeholder="CORPORATE"
       toggle={toggleCorporateList}

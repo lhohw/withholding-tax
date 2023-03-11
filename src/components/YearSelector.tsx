@@ -22,6 +22,7 @@ const YearSelector = () => {
   );
   return (
     <Accordian
+      width="130px"
       isOpen={isYearListOpen}
       options={years}
       selected={selectedYearIndex}

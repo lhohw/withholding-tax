@@ -3,6 +3,7 @@ import { BiChevronDown } from "react-icons/bi";
 import { whiteNeumorphism } from "styles/neumorphism";
 
 export type AccordianProps = {
+  width?: string;
   isOpen: boolean;
   options: string[];
   selected: number;
@@ -11,6 +12,7 @@ export type AccordianProps = {
   onSelect: (idx: number) => void;
 };
 const Accordian = ({
+  width,
   isOpen,
   options,
   selected,
@@ -37,19 +39,23 @@ const Accordian = ({
           0.8s border-color ease-in-out, 0.125s background-color ease-in-out;
         border-radius: ${isOpen ? "8px 8px 0 0" : "8px"};
         background-color: var(--background);
-        &:hover {
-          border-color: var(--orange);
-        }
+        width: ${width};
       `}
       onMouseLeave={() => isOpen && toggle()}
     >
-      <div
+      <button
         css={css`
           min-height: 40px;
           width: 100%;
           border-radius: 8px;
           margin: 0 1rem;
+          padding: 0;
+          border: none;
           color: var(--orange);
+          cursor: pointer;
+          font-weight: bold;
+          font-family: inherit;
+          background-color: inherit;
         `}
         onClick={toggle}
       >
@@ -60,6 +66,7 @@ const Accordian = ({
             justify-content: center;
             height: 40px;
             padding-right: calc(0.5rem + 25px);
+            font-size: ${options[selected]?.length >= 11 ? "0.8rem" : "1rem"};
           `}
         >
           {options[selected] || placeholder}
@@ -73,7 +80,7 @@ const Accordian = ({
             transform: translateY(-50%);
           `}
         />
-      </div>
+      </button>
       <ul
         css={css`
           position: absolute;
@@ -101,6 +108,7 @@ const Accordian = ({
               align-items: center;
               justify-content: center;
               color: var(--placeholder);
+              font-size: ${option.length >= 11 ? "0.8rem" : "1rem"};
               &:hover {
                 background-color: var(--yellow);
                 color: white;
