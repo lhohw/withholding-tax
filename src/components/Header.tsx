@@ -15,7 +15,18 @@ const HeaderWrapper = styled.div`
   padding: 1rem;
   flex-wrap: wrap;
   @media print {
-    display: none;
+    flex-wrap: nowrap;
+    padding: 0;
+    & > h1 {
+      color: black;
+    }
+    & > div {
+      flex-wrap: nowrap;
+      margin-right: 0;
+      & > div:nth-of-type(3) {
+        display: none;
+      }
+    }
   }
 `;
 const Header = () => {
