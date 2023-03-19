@@ -7,7 +7,7 @@ export const toggleState = atomFamily({
 
 export type AccordianState = {
   idx: number;
-  selected: any;
+  selected: string;
 };
 export const accordianState = atomFamily<AccordianState, string>({
   key: "AccordianState",

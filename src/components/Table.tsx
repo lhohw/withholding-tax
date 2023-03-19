@@ -6,10 +6,12 @@ import TableResult from "./TableResult";
 
 import useYear from "hooks/useYear";
 import useCorporate from "hooks/useCorporate";
+import useCorporates from "hooks/useCorporates";
 
 const Table = () => {
   const { selectedYear } = useYear();
   const { selectedCorporate } = useCorporate();
+  const { corporates } = useCorporates();
 
   return (
     <TableWrapper>
@@ -27,8 +29,8 @@ const Table = () => {
       ) : (
         <>
           <TableHeading />
-          <TableData corporate={selectedCorporate.selected} />
-          <TableResult corporate={selectedCorporate.selected} />
+          <TableData corporate={corporates[selectedCorporate.selected]} />
+          <TableResult corporate={corporates[selectedCorporate.selected]} />
         </>
       )}
     </TableWrapper>

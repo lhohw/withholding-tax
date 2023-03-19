@@ -18,7 +18,10 @@ const CorporateAccordian = () => {
 
   const onSelect = useCallback<AccordianProps["onSelect"]>(
     (idx) => {
-      setSelectedCorporate({ idx, selected: Object.values(corporates)[idx] });
+      setSelectedCorporate({
+        idx,
+        selected: Object.values(corporates)[idx].RN,
+      });
       if (isCorporateListOpen) toggleCorporateList();
     },
     [isCorporateListOpen, corporates, setSelectedCorporate, toggleCorporateList]
