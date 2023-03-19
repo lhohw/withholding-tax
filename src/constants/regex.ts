@@ -57,6 +57,7 @@ const taxLoveMonthlyStatementRegex = () =>
     "g"
   );
 
+export const incomeEarnerRegex = /소\s*득\s*자\s*/;
 export const exceptNumberRegex = /[^\d+]/g;
 
 export const capitalRegex = /경기도|인천|서울/g;

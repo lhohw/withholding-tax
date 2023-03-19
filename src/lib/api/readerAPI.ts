@@ -1,9 +1,12 @@
-import type {
-  EmployeeT,
-  MonthlyStatementOfPaymentOfWageAndSalary,
-} from "models/Employee";
+import type { MonthlyStatementOfPaymentOfWageAndSalary } from "models/Employee";
 
-import * as pdfjs from "pdfjs-dist";
+import {
+  GlobalWorkerOptions,
+  getDocument,
+  PDFPageProxy,
+  PDFDocumentProxy,
+  Util,
+} from "pdfjs-dist";
 // @ts-ignore
 import * as pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 
@@ -26,30 +29,85 @@ import {
   addressRegex,
   dateRegex,
   monthlyStatementRegex,
+  incomeEarnerRegex,
 } from "constants/regex";
 import { dateToNumber, parseMoney, isYouth } from "lib/utils";
+import produce from "immer";
 
-pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-export type ExtractTextAndOffsetXFromPage = (props: {
-  pdf: pdfjs.PDFDocumentProxy;
-  pageNumber: number;
-}) => Promise<{ text: string; offsetX: number[] }>;
-const extractTextAndOffsetXFromPage: ExtractTextAndOffsetXFromPage = async ({
-  pdf,
-  pageNumber,
-}) => {
-  const page = await pdf.getPage(pageNumber);
+export const read = async (data: string) => {
+  const employeeInfo = await readPDF(data);
+  const result: Employee[] = [];
+  for (const {
+    year,
+    name,
+    RRN,
+    corporate,
+    date,
+    earnedIncomeWithholdingDepartment,
+  } of employeeInfo) {
+    const id = getId(RRN);
+    const birth = getBirth(RRN);
+    const employee = new Employee(
+      id,
+      birth,
+      name,
+      corporate,
+      date,
+      earnedIncomeWithholdingDepartment,
+      year
+    );
+    result.push(employee);
+  }
+  return result;
+};
+
+const readPDF = async (data: string) => {
+  const pdf = await getPDFDocumentFrom(data);
+  const _isTaxLove = await isTaxLove(pdf);
+  const pdfData = await getPDFDataFrom(pdf, _isTaxLove);
+
+  const employeeInfo = createEmployeeInfo(pdfData, _isTaxLove);
+  return employeeInfo;
+};
+
+const getPDFDocumentFrom = async (data: string) => {
+  return await getDocument({
+    data,
+    cMapUrl: "../../../cmaps/",
+    cMapPacked: true,
+  }).promise;
+};
+
+const isTaxLove = async (pdf: PDFDocumentProxy) => {
+  const md = await pdf.getMetadata();
+  // @ts-ignore
+  const isTaxLove = md?.info?.Creator === "세무사랑 Pro";
+  return isTaxLove;
+};
+
+const getPDFDataFrom = async (pdf: PDFDocumentProxy, isTaxLove = false) => {
+  const pdfData: { data: WithholdingTaxData; offsetX: number[] }[] = [];
+  const totalPage = pdf.numPages;
+  for (let pageNumber = 1; pageNumber <= totalPage; pageNumber++) {
+    const page = await pdf.getPage(pageNumber);
+    const { text, offsetX } = await extractTextAndOffsetXFromPage(page);
+    const pageData = createWithholdingTaxData({ text, isTaxLove })!;
+    if (pageData) pdfData.push({ data: pageData, offsetX });
+  }
+  return pdfData;
+};
+
+const extractTextAndOffsetXFromPage = async (page: PDFPageProxy) => {
   const viewport = page.getViewport({ scale: 3 });
-  const textContent = await page.getTextContent();
-
-  const { items } = textContent;
+  const { items } = await page.getTextContent();
   let text = "";
   const offsetX: number[] = [];
   for (const item of items) {
     if ("str" in item && "transform" in item) {
-      const t = pdfjs.Util.transform(viewport.transform, item.transform);
-      const tx = pdfjs.Util.transform(t, [1, 0, 0, -1, 0, 0]);
+      const t = Util.transform(viewport.transform, item.transform);
+      const tx = Util.transform(t, [1, 0, 0, -1, 0, 0]);
       text += item.str;
       if (item.str) {
         offsetX.push(tx[4]);
@@ -61,7 +119,7 @@ const extractTextAndOffsetXFromPage: ExtractTextAndOffsetXFromPage = async ({
 };
 
 export type WithholdingTaxData = Pick<
-  EmployeeT,
+  Employee,
   "corporate" | "name" | "date"
 > & {
   data: string;
@@ -70,12 +128,12 @@ export type WithholdingTaxData = Pick<
   RRN: string;
 };
 export type CreateWithholdingTaxData = (props: {
-  isTaxLove: boolean;
   text: string;
+  isTaxLove: boolean;
 }) => WithholdingTaxData | null;
 const createWithholdingTaxData: CreateWithholdingTaxData = ({
-  isTaxLove,
   text,
+  isTaxLove,
 }) => {
   const withholdingTaxData: WithholdingTaxData = {} as WithholdingTaxData;
   let match;
@@ -92,9 +150,9 @@ const createWithholdingTaxData: CreateWithholdingTaxData = ({
       str = str.slice(2);
       match.index += 2;
     }
-    let data = parseData(str, withholdingTaxData);
-    let key = Object.keys(data)[0];
-    if (key === "data") withholdingTaxData["index"] = match.index;
+    const data = parseData(str, withholdingTaxData);
+    const key = Object.keys(data)[0];
+    if (key === "data") withholdingTaxData.index = match.index;
     setData(withholdingTaxData, data, key);
   }
   if (!isWithholdingTax) return null;
@@ -106,58 +164,73 @@ const parseData = (
   withholdingTaxData: WithholdingTaxData
 ): Partial<Pick<WithholdingTaxData, keyof WithholdingTaxData>> => {
   const year = withholdingTaxData.year;
-  if (str.match(yearRegex)) return { year: str.replace(yearRegex, "") };
+  if (str.match(yearRegex)) return createDataObject(str, ["year"], yearRegex);
   if (str.match(corporateRegex))
-    return { corporate: { name: str.replace(corporateRegex, "") } } as Pick<
-      EmployeeT,
-      "corporate"
-    >;
-  if (str.match(RRNRegex)) return { RRN: str.replace(RRNRegex, "") };
+    return createDataObject(str, ["corporate", "name"], corporateRegex);
+  if (str.match(RRNRegex)) return createDataObject(str, ["RRN"], RRNRegex);
   if (str.match(addressRegex)) {
-    str = str.replace(/소\s*득\s*자\s*/, "");
-    return { corporate: { address: str.replace(addressRegex, "") } } as Pick<
-      EmployeeT,
-      "corporate"
-    >;
+    return createDataObject(
+      removeKeyFromRegex(str, incomeEarnerRegex),
+      ["corporate", "address"],
+      addressRegex
+    );
   }
-  if (str.match(nameRegex)) return { name: str.replace(nameRegex, "") };
+  if (str.match(nameRegex)) return createDataObject(str, ["name"], nameRegex);
   if (str.match(RNRegex))
-    return { corporate: { RN: str.replace(RNRegex, "") } } as Pick<
-      EmployeeT,
-      "corporate"
-    >;
+    return createDataObject(str, ["corporate", "RN"], RNRegex);
   if (str.match(dateRegex.start)) {
-    str = str.replace(dateRegex.start, "");
+    str = removeKeyFromRegex(str, dateRegex.start);
     if (str.match(/\//)) str = str.replace(/\//g, ".");
     else if (str.match(/\d+년\d+월\d+일/))
       str = str.replace(/[년|월|일]/g, (matched) =>
         matched === "일" ? "" : "."
       );
-    return {
-      date: {
-        [year]: {
-          start: str || "",
-        },
-      },
-    } as Pick<EmployeeT, "date">;
+    return createDataObject(
+      str || "",
+      ["date", year, "start"],
+      dateRegex.start
+    );
   }
   if (str.match(dateRegex.resign)) {
-    str = str.replace(dateRegex.resign, "");
+    str = removeKeyFromRegex(str, dateRegex.resign);
     if (str.match(/\//)) str = str.replace(/\//g, ".");
     else if (str.match(/\d+년\d+월\d+일/))
       str = str.replace(/[년|월|일]/g, (matched) =>
         matched === "일" ? "" : "."
       );
-    return {
-      date: {
-        [year]: {
-          resign: str || "",
-        },
-      },
-    } as Pick<EmployeeT, "date">;
+    return createDataObject(
+      str || "",
+      ["date", year, "resign"],
+      dateRegex.resign
+    );
   }
   return { data: str };
 };
+
+const createDataObject = <T extends { [key: string]: any }>(
+  str: string,
+  breadcrumb: string[],
+  regex?: RegExp
+) => {
+  if (!breadcrumb.length)
+    throw new Error("Breadcrumb for data oject is required");
+  if (regex) str = removeKeyFromRegex(str, regex);
+
+  const obj = produce({} as T, (draft) => {
+    for (let i = 0; i < breadcrumb.length - 1; i++) {
+      const key = breadcrumb[i];
+      // @ts-ignore
+      if (!draft[key]) draft[key] = {};
+      draft = draft[key];
+    }
+    // @ts-ignore
+    draft[breadcrumb[breadcrumb.length - 1]] = str;
+  });
+  return obj;
+};
+
+const removeKeyFromRegex = (str: string, regex: RegExp) =>
+  str.replace(regex, "");
 
 const setData = (
   here: { [key: string]: any },
@@ -173,14 +246,27 @@ const setData = (
   here[key] = data[key];
 };
 
-const isTaxLove = async (pdf: pdfjs.PDFDocumentProxy) => {
-  const md = await pdf.getMetadata();
-  // @ts-ignore
-  const isTaxLove = md?.info?.Creator === "세무사랑 Pro";
-  return isTaxLove;
+const createEmployeeInfo = (
+  pdfData: Awaited<ReturnType<typeof getPDFDataFrom>>,
+  isTaxLove = false
+) => {
+  const employeeInfo = pdfData.map(({ data, offsetX }) => {
+    const statement = createStatement(data, offsetX, isTaxLove);
+    const { year, name, RRN, corporate, date } = data;
+    return {
+      year,
+      name,
+      RRN,
+      corporate,
+      date,
+      earnedIncomeWithholdingDepartment: {
+        [year]: statement,
+      },
+    };
+  });
+  return employeeInfo;
 };
 
-// For parsing salary data
 const createStatement = (
   data: WithholdingTaxData,
   offsetX: number[],
@@ -190,7 +276,7 @@ const createStatement = (
   let match;
   let here = -1;
   const statement: MonthlyStatementOfPaymentOfWageAndSalary[] = [];
-  const salary: EmployeeT["salary"] = {};
+  const salary: Employee["salary"] = {};
 
   salary[year] = { youth: 0, manhood: 0 };
   let tag = "";
@@ -294,115 +380,76 @@ const createMonthlyStatement = (
     const title = findPositionForParsingStatement(x, _range);
     obj[title as keyof typeof obj] += char;
   }
+  const monthlyStatement = createMonthlyStatementByObject(
+    obj,
+    dateToNumber(`${yearPrefix}/${tag}`),
+    isTaxLove
+  );
 
-  const monthlyStatement: MonthlyStatementOfPaymentOfWageAndSalary = {
-    salary: {
-      youth: 0,
-      manhood: 0,
-    },
-    salaryDate: dateToNumber(`${yearPrefix}/${tag}`),
-    totalSalary: {
-      salary: parseMoney(obj.salary),
-      bonus: parseMoney(obj.bonus),
-      recognitionBonus: parseMoney(obj.recognitionBonus),
-      profitFromExerciseOfStockOption: parseMoney(
-        obj.profitFromExerciseOfStockOption
-      ),
-      withdrawalFromOurEmployeeStockOwnershipAssociation: parseMoney(
-        obj.withdrawalFromOurEmployeeStockOwnershipAssociation
-      ),
-      exceedingTheLimitOnTheAmountOfIncomeForExecutiveRetirement: parseMoney(
-        obj.exceedingTheLimitOnTheAmountOfIncomeForExecutiveRetirement
-      ),
-      total: parseMoney(obj.total),
-    },
-    theAmountOfTaxCollected: {
-      simplifiedTaxAmountApplicable: {
-        salaryRange: !obj.salaryRange
-          ? [0, 0]
-          : isTaxLove
-          ? (obj.salaryRange
-              .split(/이상\s*|미만\s*/g)
-              .slice(0, 2)
-              .map(parseMoney) as [number, number])
-          : (obj.salaryRange.split("~").map(parseMoney) as [number, number]),
-        incomeTax: parseMoney(obj.incomeTax),
-      },
-      etc: {
-        incomeTax: parseMoney(obj.externalIncomeTax),
-      },
-      totalIncomeTax: parseMoney(obj.totalIncomeTax),
-      localIncomeTax: parseMoney(obj.localIncomeTax),
-    },
-  };
   if (isYouth(RRN, monthlyStatement.salaryDate))
     monthlyStatement.salary.youth = monthlyStatement.totalSalary.total;
   else monthlyStatement.salary.manhood = monthlyStatement.totalSalary.total;
   return monthlyStatement;
 };
 
-const readPDF = async (data: string) => {
-  const pdf = await pdfjs.getDocument({
-    data,
-    cMapUrl: "../../../cmaps/",
-    cMapPacked: true,
-  }).promise;
-  const totalPage = pdf.numPages;
-  const _isTaxLove = await isTaxLove(pdf);
-  const pdfData: { data: WithholdingTaxData; offsetX: number[] }[] = [];
-  for (let pageNumber = 1; pageNumber <= totalPage; pageNumber++) {
-    const { text, offsetX } = await extractTextAndOffsetXFromPage({
-      pdf,
-      pageNumber,
-    });
-    const pageData = createWithholdingTaxData({ isTaxLove: _isTaxLove, text })!;
-    if (pageData) pdfData.push({ data: pageData, offsetX });
-  }
-
-  const employeeInfo = pdfData.map(({ data, offsetX }) => {
-    const statement = createStatement(data, offsetX, _isTaxLove);
-    const { year, name, RRN, corporate, date } = data;
-    return {
-      year,
-      name,
-      RRN,
-      corporate,
-      date,
-      earnedIncomeWithholdingDepartment: {
-        [year]: statement,
+const createMonthlyStatementByObject = (
+  obj: ReturnType<typeof defaultStatement>,
+  salaryDate: number,
+  isTaxLove = false
+) => {
+  const {
+    salary,
+    bonus,
+    recognitionBonus,
+    profitFromExerciseOfStockOption,
+    withdrawalFromOurEmployeeStockOwnershipAssociation,
+    exceedingTheLimitOnTheAmountOfIncomeForExecutiveRetirement,
+    total,
+    salaryRange,
+    incomeTax,
+    externalIncomeTax,
+    totalIncomeTax,
+    localIncomeTax,
+  } = obj;
+  const monthlyStatement: MonthlyStatementOfPaymentOfWageAndSalary = {
+    salary: {
+      youth: 0,
+      manhood: 0,
+    },
+    salaryDate,
+    totalSalary: {
+      salary: parseMoney(salary),
+      bonus: parseMoney(bonus),
+      recognitionBonus: parseMoney(recognitionBonus),
+      profitFromExerciseOfStockOption: parseMoney(
+        profitFromExerciseOfStockOption
+      ),
+      withdrawalFromOurEmployeeStockOwnershipAssociation: parseMoney(
+        withdrawalFromOurEmployeeStockOwnershipAssociation
+      ),
+      exceedingTheLimitOnTheAmountOfIncomeForExecutiveRetirement: parseMoney(
+        exceedingTheLimitOnTheAmountOfIncomeForExecutiveRetirement
+      ),
+      total: parseMoney(total),
+    },
+    theAmountOfTaxCollected: {
+      simplifiedTaxAmountApplicable: {
+        salaryRange: !salaryRange
+          ? [0, 0]
+          : isTaxLove
+          ? (salaryRange
+              .split(/이상\s*|미만\s*/g)
+              .slice(0, 2)
+              .map(parseMoney) as [number, number])
+          : (salaryRange.split("~").map(parseMoney) as [number, number]),
+        incomeTax: parseMoney(incomeTax),
       },
-    };
-  });
-  return employeeInfo;
-};
-
-export const read = async (data: string) => {
-  try {
-    const employeeInfo = await readPDF(data);
-    const result: Employee[] = [];
-    for (const {
-      year,
-      name,
-      RRN,
-      corporate,
-      date,
-      earnedIncomeWithholdingDepartment,
-    } of employeeInfo) {
-      const id = getId(RRN);
-      const birth = getBirth(RRN);
-      const employee = new Employee(
-        id,
-        birth,
-        name,
-        corporate,
-        date,
-        earnedIncomeWithholdingDepartment,
-        year
-      );
-      result.push(employee);
-    }
-    return result;
-  } catch (e: any) {
-    console.log(e);
-  }
+      etc: {
+        incomeTax: parseMoney(externalIncomeTax),
+      },
+      totalIncomeTax: parseMoney(totalIncomeTax),
+      localIncomeTax: parseMoney(localIncomeTax),
+    },
+  };
+  return monthlyStatement;
 };
