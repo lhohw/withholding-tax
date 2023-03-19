@@ -94,7 +94,7 @@ class ErrorBoundary extends React.Component<
                 cursor: pointer;
                 color: var(--black);
                 position: relative;
-                transition: 0.4s color ease-in-out;
+                transition: 0.25s color ease-in-out;
                 &:hover {
                   color: var(--light-orange);
                 }

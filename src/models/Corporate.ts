@@ -1,22 +1,13 @@
 import Employee from "./Employee";
 
-export type CorporateT = {
-  RN: string;
-  name: string;
-  address: string;
-  employees: {
-    [id: string]: Employee;
-  };
-};
-
-class Corporate implements CorporateT {
+class Corporate {
   public RN: string;
   public name: string;
   public address: string;
   public employees: {
     [id: string]: Employee;
   };
-  constructor(props: CorporateT) {
+  constructor(props: Corporate) {
     const { RN, name, address, employees } = props;
     this.RN = RN;
     this.name = name;

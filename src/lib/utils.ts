@@ -1,9 +1,10 @@
 import type { YYYYMMDD } from "models/Employee";
-import { getBirthCentury } from "./values";
+
 import {
   socialInsuranceRate as SIR,
   industrialAccidentRate as IAR,
 } from "constants/law";
+import { getBirth } from "./api/employeeAPI";
 
 export const degToRad = (deg: number) => (deg / 180) * Math.PI;
 
@@ -29,10 +30,11 @@ export const getDays = (year: number, month: number) =>
     31,
   ][month];
 
-export const isYouth = (birth: string, date: number) => {
-  const [year, month] = birth.split(".").map(Number);
+export const isYouth = (RRN: string, date: number) => {
+  const [year, month] = numberToDate(date).map(Number);
   const limit = new Date(year - 30, month - 1, getDays(year, month - 1));
-  return new Date(birth) > limit;
+  const birth = new Date(getBirth(RRN));
+  return birth > limit;
 };
 
 export const isRetired = (
@@ -66,24 +68,6 @@ const numToStr = (x: number) => {
     i -= 3;
   }
   return (minus ? "-" : "") + ret.slice(1);
-  // for under decimal
-  // const minus = x < 0;
-  // let str = minus ? x.toString().slice(1) : x.toString();
-  // let underDecimalPoint = "";
-  // if (str.indexOf(".") !== -1) {
-  //   [str, underDecimalPoint] = str.split(".");
-  // }
-  // let i = str.length;
-  // let ret = "";
-  // while (i > 0) {
-  //   ret = "," + str.slice(Math.max(0, i - 3), i) + ret;
-  //   i -= 3;
-  // }
-  // return (
-  //   (minus ? "-" : "") +
-  //   ret.slice(1) +
-  //   (underDecimalPoint ? `.${underDecimalPoint.slice(0, 2)}` : "")
-  // );
 };
 
 export const dateToNumber = (date: string) => new Date(date).getTime();

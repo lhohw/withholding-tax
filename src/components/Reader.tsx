@@ -18,8 +18,8 @@ const Reader = () => {
       for (let i = 0; i < files.length; i++) {
         const fReader = new FileReader();
         fReader.readAsArrayBuffer(files[i]);
-        fReader.onloadend = async ({ target: { result } }: any) => {
-          const employees = (await read(result))!;
+        fReader.onloadend = async ({ target: { result: data } }: any) => {
+          const employees = (await read(data))!;
           res.push(employees);
           if (res.length === files.length) {
             addEmployees(
