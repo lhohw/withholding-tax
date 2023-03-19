@@ -1,45 +1,35 @@
-import { useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 
-import {
-  corporatesState,
-  selectedCorporateIndexState,
-  corporateNamesState,
-  selectedCorporateState,
-} from "recoil/corporates";
 import Corporate from "models/Corporate";
 import Employee from "models/Employee";
+import { accordianState } from "recoil/base";
+import useCorporates from "./useCorporates";
 
 const useCorporate = () => {
-  const [isCorporateListOpen, setIsCorporateListOpen] = useState(false);
-
-  const [corporates, setCorporates] = useRecoilState(corporatesState);
-  const [selectedCorporateIndex, setSelectedCorporateIndex] = useRecoilState(
-    selectedCorporateIndexState
+  const [selectedCorporate, setSelectedCorporate] = useRecoilState(
+    accordianState("corporate")
   );
-  const corporateNames = useRecoilValue(corporateNamesState);
-  const selectedCorporate = useRecoilValue(selectedCorporateState);
-
-  const toggleCorporateList = () =>
-    setIsCorporateListOpen(!isCorporateListOpen);
+  const { corporates, setCorporates } = useCorporates();
 
   const addEmployees = async (employees: Employee[]) => {
     const nextCorporates = { ...corporates };
     for (const employee of employees) {
       const {
-        corporate,
         id,
+        birth,
+        corporate,
         year,
         earnedIncomeWithholdingDepartment,
         date,
-        birth,
         salary,
       } = employee;
       const { RN } = corporate;
       if (!nextCorporates[RN]) {
         nextCorporates[RN] = new Corporate({
           ...corporate,
-          employees: { [id]: employee },
+          employees: {
+            [id]: employee,
+          },
         });
       } else if (!nextCorporates[RN].employees[id]) {
         nextCorporates[RN] = {
@@ -56,39 +46,45 @@ const useCorporate = () => {
           ...nextCorporates[RN],
           employees: {
             ...nextCorporates[RN].employees,
-            [id]: {
-              ...nextCorporates[RN].employees[id],
-              earnedIncomeWithholdingDepartment: {
+            [id]: new Employee(
+              nextCorporates[RN].employees[id].id,
+              nextCorporates[RN].employees[id].birth || birth,
+              nextCorporates[RN].employees[id].name,
+              nextCorporates[RN].employees[id].corporate,
+              {
+                ...nextCorporates[RN].employees[id].date,
+                [year]: date[year],
+              },
+              {
                 ...nextCorporates[RN].employees[id]
                   .earnedIncomeWithholdingDepartment,
                 [year]: earnedIncomeWithholdingDepartment[year],
               },
-              salary: {
+              year,
+              {
                 ...nextCorporates[RN].employees[id].salary,
                 [year]: salary[year],
-              },
-              date: {
-                ...nextCorporates[RN].employees[id].date,
-                [year]: date[year],
-              },
-              birth: nextCorporates[RN].employees[id].birth || birth,
-            },
+              }
+            ),
           },
         };
       }
     }
     setCorporates(nextCorporates);
   };
+
+  const filterEmployees = (employees: Corporate["employees"], year: string) => {
+    const employeesArr = Object.values(employees) as Employee[];
+    return [
+      ...employeesArr.filter((employee) => !!employee.date[year]),
+      ...employeesArr.filter((employee) => !employee.date[year]),
+    ];
+  };
   return {
-    selectedCorporateIndex,
-    setSelectedCorporateIndex,
-    isCorporateListOpen,
-    toggleCorporateList,
-    addEmployees,
-    corporates,
-    setCorporates,
-    corporateNames,
     selectedCorporate,
+    setSelectedCorporate,
+    addEmployees,
+    filterEmployees,
   };
 };
 

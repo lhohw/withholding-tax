@@ -1,2 +1,2 @@
-export { corporatesState, selectedCorporateIndexState } from "./atom";
-export { corporateNamesState, selectedCorporateState } from "./selector";
+export { corporatesState } from "./atom";
+export { corporateNamesState } from "./selector";

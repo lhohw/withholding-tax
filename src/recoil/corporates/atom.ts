@@ -1,5 +1,6 @@
-import Corporate from "models/Corporate";
 import { atom } from "recoil";
+
+import Corporate from "models/Corporate";
 
 export type Corporates = {
   [RN: string]: Corporate;
@@ -7,9 +8,4 @@ export type Corporates = {
 export const corporatesState = atom<Corporates>({
   key: "CorporatesState",
   default: {},
-});
-
-export const selectedCorporateIndexState = atom<number>({
-  key: "SelectedCorporateIndexState",
-  default: -1,
 });
