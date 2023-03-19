@@ -35,11 +35,14 @@ export const resultState = atomFamily<ResultState, ResultProps>({
           youth: new Array(14).fill(0),
           manhood: new Array(14).fill(0),
         };
+
         const PADDING = 2;
+
         for (const {
           salary,
           earnedIncomeWithholdingDepartment,
         } of Object.values(employees)) {
+          if (!(year in salary)) continue;
           const { youth, manhood } = salary[year];
           const monthlyData = earnedIncomeWithholdingDepartment[year];
           ret.total[1] += youth + manhood;
