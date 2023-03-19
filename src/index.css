@@ -6,7 +6,7 @@
 :root {
   --text: #202020;
   --background: #fefefe;
-  --main-gradient: linear-gradient(137deg, rgba(239,239,239,1) 0%, rgba(218,205,206,1) 100%);  
+  --main-gradient: linear-gradient(137deg, rgba(239,239,239,1) 0%, rgba(218,205,206,1) 100%);
 
   --white: rgb(239, 239, 239);
   --orange: rgb(254, 132, 100);
@@ -14,6 +14,8 @@
   --yellow: rgb(254, 189, 77);
   --placeholder: #959596;
   --black: rgb(60, 57, 49);
+  --navy: rgb(0, 0, 128);
+  --blue: rgb(65, 65, 221);
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -21,6 +23,9 @@
     --background: rgb(235, 230, 230);
     --main-gradient: linear-gradient(137deg, rgba(218,205,206,1) 0%, rgba(200, 193, 190, 1) 100%);
   }
+}
+html {
+  background-color: rgb(220,213,214);
 }
 body {
   margin: 0;
@@ -40,6 +45,8 @@ body {
   color: var(--text);
   background-color: var(--background);
   background: var(--main-gradient);
+  overflow-x: scroll;
+  min-width: 1420px;
 }
 
 body[theme="light"] {
