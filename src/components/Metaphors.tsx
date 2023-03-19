@@ -15,9 +15,9 @@ const Metaphors = () => {
         }
       `}
     >
-      <Printer />
-      <Darkmode />
       <Reader />
+      <Darkmode />
+      <Printer />
     </div>
   );
 };
