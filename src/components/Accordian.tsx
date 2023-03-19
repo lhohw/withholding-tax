@@ -51,7 +51,7 @@ const Accordian = ({
           margin: 0 1rem;
           padding: 0;
           border: none;
-          color: var(--orange);
+          color: ${selected === -1 ? "var(--placeholder)" : "var(--orange)"};
           cursor: pointer;
           font-weight: bold;
           font-family: inherit;
@@ -93,6 +93,7 @@ const Accordian = ({
           border-radius: 0 0 8px 8px;
           transition: 0.4s all ease-in-out;
           overflow: hidden;
+          z-index: 2;
         `}
       >
         {options.map((option, idx) => (

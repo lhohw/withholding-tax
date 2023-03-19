@@ -2,23 +2,26 @@ import type { AccordianProps } from "./Accordian";
 
 import { useCallback } from "react";
 import useCorporate from "hooks/useCorporate";
+import useCorporates from "hooks/useCorporates";
+
 import Accordian from "./Accordian";
 
-const CorporateSelector = () => {
+const CorporateAccordian = () => {
+  const { selectedCorporate, setSelectedCorporate } = useCorporate();
+
   const {
-    selectedCorporateIndex,
-    setSelectedCorporateIndex,
     isCorporateListOpen,
     toggleCorporateList,
     corporateNames,
-  } = useCorporate();
+    corporates,
+  } = useCorporates();
 
   const onSelect = useCallback<AccordianProps["onSelect"]>(
     (idx) => {
-      setSelectedCorporateIndex(idx);
+      setSelectedCorporate({ idx, selected: Object.values(corporates)[idx] });
       if (isCorporateListOpen) toggleCorporateList();
     },
-    [isCorporateListOpen, setSelectedCorporateIndex, toggleCorporateList]
+    [isCorporateListOpen, corporates, setSelectedCorporate, toggleCorporateList]
   );
 
   return (
@@ -26,7 +29,7 @@ const CorporateSelector = () => {
       width="200px"
       isOpen={isCorporateListOpen}
       options={corporateNames}
-      selected={selectedCorporateIndex}
+      selected={selectedCorporate.idx}
       placeholder="CORPORATE"
       toggle={toggleCorporateList}
       onSelect={onSelect}
@@ -34,4 +37,4 @@ const CorporateSelector = () => {
   );
 };
 
-export default CorporateSelector;
+export default CorporateAccordian;

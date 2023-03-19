@@ -3,14 +3,15 @@ import styled from "@emotion/styled";
 import Metaphors from "./Metaphors";
 
 import Logo from "./Logo";
-import CorporateSelector from "./CorporateSelector";
-import YearSelector from "./YearSelector";
+import CorporateAccordian from "./CorporateAccordian";
+import YearAccordian from "./YearAccordian";
 
 const HeaderWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: 100vw;
+  width: 100%;
+  min-width: 1420px;
   border-bottom: 1px solid var(--yellow);
   padding: 1rem;
   flex-wrap: wrap;
@@ -43,8 +44,8 @@ const Header = () => {
           flex-wrap: wrap-reverse;
         `}
       >
-        <CorporateSelector />
-        <YearSelector />
+        <CorporateAccordian />
+        <YearAccordian />
         <Metaphors />
       </div>
     </HeaderWrapper>

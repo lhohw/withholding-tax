@@ -4,28 +4,28 @@ import useYear from "hooks/useYear";
 import { useCallback } from "react";
 import Accordian from "./Accordian";
 
-const YearSelector = () => {
+const YearAccordian = () => {
   const {
     years,
-    selectedYearIndex,
-    setSelectedYearIndex,
+    selectedYear,
+    setSelectedYear,
     isYearListOpen,
     toggleYearListOpen,
   } = useYear();
 
   const onSelect = useCallback<AccordianProps["onSelect"]>(
     (idx) => {
-      setSelectedYearIndex(idx);
+      setSelectedYear({ idx, selected: years[idx] });
       if (isYearListOpen) toggleYearListOpen();
     },
-    [isYearListOpen, setSelectedYearIndex, toggleYearListOpen]
+    [isYearListOpen, years, setSelectedYear, toggleYearListOpen]
   );
   return (
     <Accordian
       width="130px"
       isOpen={isYearListOpen}
       options={years}
-      selected={selectedYearIndex}
+      selected={selectedYear.idx}
       placeholder="YEAR"
       toggle={toggleYearListOpen}
       onSelect={onSelect}
@@ -33,4 +33,4 @@ const YearSelector = () => {
   );
 };
 
-export default YearSelector;
+export default YearAccordian;
