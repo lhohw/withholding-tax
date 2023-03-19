@@ -36,7 +36,7 @@ const Row = ({
         flex-direction: column;
         align-items: center;
         background-color: rgba(254, 254, 254, 0.376);
-        transition: color 0.25s ease-in-out;
+        transition: color 0.15s ease-in-out;
         &:nth-of-type(even) {
           background: linear-gradient(
             113deg,
