@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { YYYYMMDD } from "models/Employee";
 import type { CorporateProps } from "features/corporate/Corporate";
 import { CorporateState, Generation } from "features/corporate/corporateSlice";

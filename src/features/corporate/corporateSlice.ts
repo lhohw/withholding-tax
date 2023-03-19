@@ -14,6 +14,7 @@ import {
   lessThan28Days,
   getDays,
   isYouth,
+  dateToNumber,
 } from "lib/utils";
 
 export type Generation = "청년" | "장년" | "-" | "퇴사";
@@ -147,7 +148,9 @@ export const corporateSlice = createSlice({
                 ) {
                   const flag2 = isYouth(
                     person.birth,
-                    `${year}/${(idx + 1).toString().padStart(2, "0")}` as any
+                    dateToNumber(
+                      `${year}/${(idx + 1).toString().padStart(2, "0")}`
+                    )
                   )
                     ? "청년"
                     : "장년";

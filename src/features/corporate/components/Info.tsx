@@ -23,7 +23,9 @@ const Info = ({ id, info, onToggle }: InfoProps) => {
   const sizes = useMemo(() => [60, 80, 80, 100], []);
   return (
     <InfoContainer>
-      <CheckBox id={id} checked={checked} onToggle={onToggle} />
+      {/* will remove */}
+      {/* <CheckBox id={id} checked={checked} onToggle={onToggle} /> */}
+      <CheckBox id={id} checked={checked} onToggle={() => null} />
       {[name, start, resign, birth].map((d, i) => (
         <Item
           key={i}
