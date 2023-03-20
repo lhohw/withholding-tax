@@ -7,6 +7,7 @@ import { getStatisticsData } from "lib/utils";
 
 import Row from "./Row";
 import MonthCounter from "./MonthCounter";
+import CalculatorButton from "./CalculatorButton";
 
 export type StatisticsProps = {
   corporate: Corporate;
@@ -59,6 +60,7 @@ const Statistics = ({ corporate, year }: StatisticsProps) => {
         <Row data={diffData} width={width} />
       </div>
       <MonthCounter year={year} RN={corporate.RN} />
+      <CalculatorButton />
     </div>
   );
 };
