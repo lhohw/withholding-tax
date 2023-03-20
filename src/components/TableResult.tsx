@@ -1,24 +1,24 @@
+import type { GenerationTypes } from "constants/value";
+
+import { useMemo } from "react";
 import { css } from "@emotion/react";
-import { useRecoilState } from "recoil";
-import { accordianState } from "recoil/base";
+
 import useTable from "hooks/useTable";
+import Corporate from "models/Corporate";
+import { parseMoney } from "lib/utils";
+import { generationTypes } from "constants/value";
 
 import Row from "./Row";
-import Corporate from "models/Corporate";
-import { useMemo } from "react";
-import { parseMoney } from "lib/utils";
 
-export type ResultTypes = "total" | "youth" | "manhood";
 export type TableResultProps = {
   corporate: Corporate;
+  year: string;
 };
-const TableResult = ({ corporate }: TableResultProps) => {
-  const types: ResultTypes[] = useMemo(() => ["total", "youth", "manhood"], []);
-  const [{ selected: year }] = useRecoilState(accordianState("year"));
+const TableResult = ({ corporate, year }: TableResultProps) => {
   const { resultData } = useTable({ RN: corporate.RN, year });
   const data = useMemo(
     () =>
-      types.reduce(
+      generationTypes.reduce(
         (acc, type) => ({
           ...acc,
           [type]: [
@@ -29,17 +29,15 @@ const TableResult = ({ corporate }: TableResultProps) => {
         }),
         {}
       ),
-    [types, resultData]
-  ) as {
-    [key in ResultTypes]: string[];
-  };
+    [resultData]
+  ) as Record<GenerationTypes, string[]>;
   return (
     <div
       css={css`
         border-top: 1.3px dashed var(--navy);
       `}
     >
-      {types.map((type) => (
+      {generationTypes.map((type) => (
         <Row
           key={type}
           isHeading
