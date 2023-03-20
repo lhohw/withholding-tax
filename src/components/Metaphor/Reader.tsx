@@ -5,7 +5,7 @@ import { VscBook } from "react-icons/vsc";
 import useCorporate from "hooks/useCorporate";
 import { read } from "lib/api/readerAPI";
 
-import Metaphor from "./Metaphor";
+import Metaphor from ".";
 import Employee from "models/Employee";
 
 const Reader = () => {

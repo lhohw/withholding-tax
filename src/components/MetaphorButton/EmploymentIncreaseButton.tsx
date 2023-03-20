@@ -1,18 +1,18 @@
 import { css } from "@emotion/react";
-import { IoCalculator } from "react-icons/io5";
+import { BsPersonUp } from "react-icons/bs";
 
-import MetaphorButton from "./MetaphorButton";
+import MetaphorButton from ".";
 
-const CalculatorButton = () => {
+const EmploymentIncreaseButton = () => {
   return (
     <MetaphorButton
-      title="세액공제"
-      to={"/calculator"}
+      title="고용증대"
+      to={"/employment"}
       css={css`
         margin-right: 2.5rem;
       `}
     >
-      <IoCalculator
+      <BsPersonUp
         css={css`
           display: flex;
           flex: 1;
@@ -23,4 +23,4 @@ const CalculatorButton = () => {
   );
 };
 
-export default CalculatorButton;
+export default EmploymentIncreaseButton;

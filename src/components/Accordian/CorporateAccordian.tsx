@@ -1,10 +1,10 @@
-import type { AccordianProps } from "./Accordian";
+import type { AccordianProps } from ".";
 
 import { useCallback } from "react";
 import useCorporate from "hooks/useCorporate";
 import useCorporates from "hooks/useCorporates";
 
-import Accordian from "./Accordian";
+import Accordian from ".";
 
 const CorporateAccordian = () => {
   const { selectedCorporate, setSelectedCorporate } = useCorporate();

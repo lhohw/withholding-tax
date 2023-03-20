@@ -1,5 +1,6 @@
 import { css } from "@emotion/react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+
 import { lightOrangeGradient } from "styles/gradient";
 import { whiteNeumorphism } from "styles/neumorphism";
 
@@ -18,6 +19,7 @@ const MetaphorButton = ({
   children,
   onClick,
 }: MetaphorButtonProps) => {
+  const { pathname } = useLocation();
   const Button = (props: any) =>
     to ? <Link to={to} {...props} /> : <button {...props} onClick={onClick} />;
   return (
@@ -29,11 +31,16 @@ const MetaphorButton = ({
         display: flex;
         flex-direction: column;
         justify-content: center;
+        border: 2px solid var(--placeholder);
         margin: 0;
-        border: 1px solid var(--placeholder);
         padding: 0;
         text-decoration: none;
-        color: inherit;
+        color: ${pathname === to ? "var(--light-orange)" : "var(--black)"};
+        transition: border-color 0.25s ease-in-out;
+        cursor: pointer;
+        &:hover {
+          border-color: var(--light-orange);
+        }
       `}
     >
       <div
@@ -55,19 +62,14 @@ const MetaphorButton = ({
       <div
         css={css`
           display: flex;
-          padding: 0.5rem 0;
+          padding: 0.5rem;
+          min-width: 75px;
           flex-direction: row;
           align-items: center;
           justify-content: center;
           background-color: rgba(254, 254, 254, 0.376);
           font-size: 1.5rem;
           border-radius: 0 0 8px 8px;
-          cursor: pointer;
-          transition: color 0.25s ease-in-out;
-          color: var(--black);
-          &:hover {
-            color: var(--light-orange);
-          }
         `}
       >
         {children}

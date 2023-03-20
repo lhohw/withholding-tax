@@ -1,7 +1,8 @@
 import { css } from "@emotion/react";
-import Printer from "./Printer";
-import Darkmode from "./Darkmode";
-import Reader from "./Reader";
+
+import Reader from "./Metaphor/Reader";
+import Darkmode from "./Metaphor/Darkmode";
+import Printer from "./Metaphor/Printer";
 
 const Metaphors = () => {
   return (

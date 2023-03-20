@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import Metaphor from "./Metaphor";
+import Metaphor from ".";
 import useTheme from "hooks/useTheme";
 import { FiMoon, FiSun } from "react-icons/fi";
 

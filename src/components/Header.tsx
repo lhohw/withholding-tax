@@ -1,9 +1,13 @@
 import styled from "@emotion/styled";
 
 import Logo from "./Logo";
-import CalculatorButton from "./CalculatorButton";
-import CorporateAccordian from "./CorporateAccordian";
-import YearAccordian from "./YearAccordian";
+
+import HomeButton from "./MetaphorButton/HomeButton";
+import SocialInsuranceButton from "./MetaphorButton/SocialInsuranceButton";
+import EmploymentIncreaseButton from "./MetaphorButton/EmploymentIncreaseButton";
+
+import CorporateAccordian from "./Accordian/CorporateAccordian";
+import YearAccordian from "./Accordian/YearAccordian";
 import Metaphors from "./Metaphors";
 
 const Header = () => {
@@ -11,7 +15,9 @@ const Header = () => {
     <HeaderWrapper>
       <Logo />
       <ContentWrapper>
-        <CalculatorButton />
+        <HomeButton />
+        <SocialInsuranceButton />
+        <EmploymentIncreaseButton />
         <CorporateAccordian />
         <YearAccordian />
         <Metaphors />

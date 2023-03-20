@@ -1,8 +1,8 @@
-import type { AccordianProps } from "./Accordian";
+import type { AccordianProps } from ".";
 
 import useYear from "hooks/useYear";
 import { useCallback } from "react";
-import Accordian from "./Accordian";
+import Accordian from ".";
 
 const YearAccordian = () => {
   const {

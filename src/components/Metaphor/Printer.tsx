@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import Metaphor from "./Metaphor";
+import Metaphor from ".";
 import { AiFillPrinter } from "react-icons/ai";
 
 const Printer = () => {
