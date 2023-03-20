@@ -18,6 +18,7 @@ export type RowProps = {
   checked?: boolean[];
   handler?: React.ReactNode;
   width?: number[];
+  onToggle?: (idx: number) => void;
 };
 const Row = ({
   style,
@@ -29,6 +30,7 @@ const Row = ({
   checked = null!,
   handler = <Item width={50} />,
   width: w = [80, 80, 80, 80, 130, 130, ...new Array(12).fill(50)],
+  onToggle,
 }: RowProps) => {
   const totalWidth = useMemo(() => w.reduce((x, y) => x + y) + 50, [w]);
   return (
@@ -59,15 +61,20 @@ const Row = ({
               `
             : styled(Item)`
                 color: ${isAllChecked || (i >= 6 && checked[i - 6])
-                  ? "inherit"
+                  ? "var(--orange)"
                   : data[i] === "청년"
                   ? "var(--blue)"
                   : "inherit"};
+                text-decoration: ${isAllChecked || (i >= 6 && checked[i - 6])
+                  ? "line-through"
+                  : "none"};
+                cursor: ${i >= 6 ? "pointer" : "default"};
               `;
           return (
             <Cell
               key={i}
               width={isTotal && i === 4 ? 0 : isTotal && i === 5 ? 260 : w[i]}
+              onClick={onToggle ? () => onToggle(i - 6) : null!}
             >
               {d}
             </Cell>
