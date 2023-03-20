@@ -73,7 +73,7 @@ const MonthCounter = ({ RN, year }: MonthCounterProps) => {
         <input
           css={css`
             display: flex;
-            background-color: rgba(254, 254, 254, 0.376);
+            background: transparent;
             border: none;
             border-bottom: 2px solid var(--black);
             text-align: center;
