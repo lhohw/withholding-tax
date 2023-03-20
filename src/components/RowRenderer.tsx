@@ -6,7 +6,8 @@ import { useRecoilState } from "recoil";
 
 import Employee from "models/Employee";
 import useYear from "hooks/useYear";
-import { employeeCheckedState, resultState } from "recoil/table";
+import useTable from "hooks/useTable";
+import { employeeCheckedState } from "recoil/table";
 
 import Row from "./Row";
 import CheckBox, { CheckBoxProps } from "./CheckBox";
@@ -27,7 +28,7 @@ const RowRenderer = ({ style, employee }: RowRendererProps) => {
   const [checked, setChecked] = useRecoilState(
     employeeCheckedState({ id, year, RN })
   );
-  const [resultData, setResultData] = useRecoilState(resultState({ RN, year }));
+  const { resultData, setResultData } = useTable({ RN, year });
 
   const onToggle: CheckBoxProps["onToggle"] = (idx) => {
     const nextChecked = [...checked];
@@ -98,6 +99,7 @@ const RowRenderer = ({ style, employee }: RowRendererProps) => {
       data={employee.getTableData(year)}
       checked={checked}
       isAllChecked={isAllChecked}
+      onToggle={onToggle}
     />
   );
 };
