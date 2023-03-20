@@ -6,20 +6,16 @@ import { useRecoilState } from "recoil";
 import Corporate from "models/Corporate";
 import { toggleState } from "recoil/base";
 
-import useYear from "hooks/useYear";
 import useCorporate from "hooks/useCorporate";
 
 import RowRenderer from "./RowRenderer";
 
 export type TableDataProps = {
   corporate: Corporate;
+  year: string;
 };
-const TableData = ({ corporate }: TableDataProps) => {
+const TableData = ({ corporate, year }: TableDataProps) => {
   const [isSpread] = useRecoilState(toggleState("spread"));
-
-  const {
-    selectedYear: { selected: year },
-  } = useYear();
 
   const { filterEmployees } = useCorporate();
   const filteredEmployees = filterEmployees(corporate.employees, year);
