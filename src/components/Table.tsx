@@ -25,7 +25,9 @@ const Table = () => {
             text-shadow: 1px 1px 5px var(--placeholder);
           `}
         >
-          {`Please Select ${!selectedCorporate ? "CORPORATE" : "YEAR"}`}
+          {`Please Select ${
+            !selectedCorporate.selected ? "CORPORATE" : "YEAR"
+          }`}
         </div>
       ) : (
         <>
