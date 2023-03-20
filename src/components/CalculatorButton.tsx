@@ -9,17 +9,15 @@ const CalculatorButton = () => {
       title="세액공제"
       to={"/calculator"}
       css={css`
-        margin-left: 2.5rem;
+        margin-right: 2.5rem;
       `}
     >
       <IoCalculator
         css={css`
           display: flex;
           flex: 1;
-          width: 100%;
-          height: 100%;
-          margin: 1.2rem;
         `}
+        size={40}
       />
     </MetaphorButton>
   );

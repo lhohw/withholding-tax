@@ -1,10 +1,24 @@
-import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import Metaphors from "./Metaphors";
 
 import Logo from "./Logo";
+import CalculatorButton from "./CalculatorButton";
 import CorporateAccordian from "./CorporateAccordian";
 import YearAccordian from "./YearAccordian";
+import Metaphors from "./Metaphors";
+
+const Header = () => {
+  return (
+    <HeaderWrapper>
+      <Logo />
+      <ContentWrapper>
+        <CalculatorButton />
+        <CorporateAccordian />
+        <YearAccordian />
+        <Metaphors />
+      </ContentWrapper>
+    </HeaderWrapper>
+  );
+};
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -30,26 +44,12 @@ const HeaderWrapper = styled.div`
     }
   }
 `;
-const Header = () => {
-  return (
-    <HeaderWrapper>
-      <Logo />
-      <div
-        css={css`
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          margin-left: auto;
-          margin-right: 2rem;
-          flex-wrap: wrap-reverse;
-        `}
-      >
-        <CorporateAccordian />
-        <YearAccordian />
-        <Metaphors />
-      </div>
-    </HeaderWrapper>
-  );
-};
 
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: auto;
+  margin-right: 2rem;
+`;
 export default Header;

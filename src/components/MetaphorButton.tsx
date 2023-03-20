@@ -25,10 +25,9 @@ const MetaphorButton = ({
       className={className}
       css={css`
         ${whiteNeumorphism("8px")};
+        background-color: inherit;
         display: flex;
         flex-direction: column;
-        height: 120px;
-        width: 100px;
         justify-content: center;
         margin: 0;
         border: 1px solid var(--placeholder);
@@ -43,12 +42,12 @@ const MetaphorButton = ({
           align-items: center;
           justify-content: center;
           width: 100%;
-          height: 40px;
           border-bottom: 1px dashed var(--navy);
           border-radius: 8px 8px 0 0;
           background: ${lightOrangeGradient};
           font-size: 0.9rem;
           font-weight: bold;
+          padding: 0.3rem 0.8rem;
         `}
       >
         {title}
@@ -56,7 +55,7 @@ const MetaphorButton = ({
       <div
         css={css`
           display: flex;
-          height: 80px;
+          padding: 0.5rem 0;
           flex-direction: row;
           align-items: center;
           justify-content: center;
