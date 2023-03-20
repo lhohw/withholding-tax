@@ -9,11 +9,17 @@ export const whiteGradient = css`
   );
 `;
 export const yellowGradient = css`
-  background: rgb(253, 191, 77);
+  /* background: rgb(253, 191, 77);
   background: linear-gradient(
     137deg,
     rgba(253, 204, 102, 1) 0%,
     rgba(206, 136, 35, 1) 100%
+  ); */
+  background: rgb(253, 191, 75);
+  background: linear-gradient(
+    62deg,
+    rgba(253, 191, 75, 1) 0%,
+    rgba(252, 207, 41, 1) 100%
   );
 `;
 export const orangeGradient = css`
