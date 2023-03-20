@@ -3,6 +3,8 @@ import { css } from "@emotion/react";
 
 import useTable from "hooks/useTable";
 import { exceptNumberRegex } from "constants/regex";
+import { whiteNeumorphism } from "styles/neumorphism";
+import { lightOrangeGradient } from "styles/gradient";
 
 export type MonthCounterProps = {
   RN: string;
@@ -21,14 +23,14 @@ const MonthCounter = ({ RN, year }: MonthCounterProps) => {
   return (
     <div
       css={css`
+        ${whiteNeumorphism("8px")};
         display: flex;
         flex-direction: column;
         height: 120px;
         width: 100px;
         justify-content: center;
-        margin-left: 2rem;
+        margin-left: 3rem;
         border: 1px solid var(--placeholder);
-        border-radius: 8px;
       `}
     >
       <div
@@ -39,11 +41,7 @@ const MonthCounter = ({ RN, year }: MonthCounterProps) => {
           height: 40px;
           border-bottom: 1px dashed var(--navy);
           border-radius: 8px 8px 0 0;
-          background: linear-gradient(
-            113deg,
-            rgb(245, 232, 232) 0%,
-            rgba(255, 143, 118, 0.125) 100%
-          );
+          background: ${lightOrangeGradient};
           font-size: 0.9rem;
           font-weight: bold;
         `}

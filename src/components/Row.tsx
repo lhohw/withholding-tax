@@ -7,6 +7,7 @@ import { weight } from "constants/font";
 
 import List from "./List";
 import Item from "./Item";
+import { darkOrangeGradient, lightOrangeGradient } from "styles/gradient";
 
 export type RowProps = {
   style?: CSSProperties;
@@ -44,11 +45,9 @@ const Row = ({
         background-color: rgba(254, 254, 254, 0.376);
         transition: color 0.15s ease-in-out;
         &:nth-of-type(even) {
-          background: linear-gradient(
-            113deg,
-            rgb(245, 232, 232) 0%,
-            rgba(255, 143, 118, 0.125) 100%
-          );
+          ${isHeading && !(data[3] === "청년")
+            ? darkOrangeGradient
+            : lightOrangeGradient};
         }
       `}
     >

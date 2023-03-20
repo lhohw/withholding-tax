@@ -25,11 +25,29 @@ export const orangeGradient = css`
   );
 `;
 
-export const whiteGradient2 = css`
+export const lightWhiteGradient = css`
   background: rgb(231, 224, 217);
   background: linear-gradient(
     137deg,
     rgba(231, 224, 217, 1) 0%,
     rgba(254, 254, 254, 1) 100%
+  );
+`;
+
+export const lightOrangeGradient = css`
+  background: rgb(245, 232, 232);
+  background: linear-gradient(
+    113deg,
+    rgb(245, 232, 232) 0%,
+    rgba(255, 143, 118, 0.125) 100%
+  );
+`;
+
+export const darkOrangeGradient = css`
+  background: rgb(231, 160, 142);
+  background: linear-gradient(
+    198deg,
+    rgba(231, 160, 142, 0.5130646008403361) 0%,
+    rgba(255, 143, 118, 0.22454919467787116) 100%
   );
 `;

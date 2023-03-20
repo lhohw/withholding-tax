@@ -8,11 +8,6 @@ const TableHeading = () => {
     <Row
       key="heading"
       css={css`
-        background: linear-gradient(
-          113deg,
-          rgb(245, 232, 232) 0%,
-          rgba(255, 143, 118, 0.125) 100%
-        );
         border-bottom: 1.2px dashed var(--navy);
       `}
       handler={<Spreader />}

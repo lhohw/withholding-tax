@@ -1,6 +1,6 @@
 import React from "react";
 import { css } from "@emotion/react";
-import { whiteGradient2 } from "styles/gradient";
+import { lightWhiteGradient } from "styles/gradient";
 
 export type ErrorBoundaryProps = {
   children: string | React.ReactNode;
@@ -56,7 +56,7 @@ class ErrorBoundary extends React.Component<
               max-width: 500px;
               border: 2px solid var(--orange);
               border-radius: 12px;
-              background: ${whiteGradient2};
+              background: ${lightWhiteGradient};
               box-shadow: 27px 27px 54px #8a8989, -27px -27px 54px #ffffff;
 
               color: var(--orange);
@@ -90,7 +90,7 @@ class ErrorBoundary extends React.Component<
                 border: none;
                 border: 2px solid var(--light-orange);
                 border-radius: 8px;
-                background: ${whiteGradient2};
+                background: ${lightWhiteGradient};
                 cursor: pointer;
                 color: var(--black);
                 position: relative;
