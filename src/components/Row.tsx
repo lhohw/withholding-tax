@@ -1,11 +1,12 @@
+import { CSSProperties, useMemo } from "react";
+
 import { css } from "@emotion/react";
+import styled from "@emotion/styled";
+
+import { weight } from "constants/font";
+
 import List from "./List";
 import Item from "./Item";
-import styled from "@emotion/styled";
-import { weight } from "constants/font";
-import { CSSProperties } from "react";
-
-const width = [80, 80, 80, 80, 130, 130, ...new Array(12).fill(50)];
 
 export type RowProps = {
   style?: CSSProperties;
@@ -16,6 +17,7 @@ export type RowProps = {
   isAllChecked?: boolean;
   checked?: boolean[];
   handler?: React.ReactNode;
+  width?: number[];
 };
 const Row = ({
   style,
@@ -26,7 +28,9 @@ const Row = ({
   isAllChecked = false,
   checked = null!,
   handler = <Item width={50} />,
+  width: w = [80, 80, 80, 80, 130, 130, ...new Array(12).fill(50)],
 }: RowProps) => {
+  const totalWidth = useMemo(() => w.reduce((x, y) => x + y) + 50, [w]);
   return (
     <div
       className={className}
@@ -46,9 +50,9 @@ const Row = ({
         }
       `}
     >
-      <List width={1240}>
+      <List width={totalWidth}>
         {handler}
-        {width.map((e, i) => {
+        {data.map((d, i) => {
           const Cell = isHeading
             ? styled(Item)`
                 font-weight: ${weight.semibold};
@@ -63,9 +67,9 @@ const Row = ({
           return (
             <Cell
               key={i}
-              width={isTotal && i === 4 ? 0 : isTotal && i === 5 ? 260 : e}
+              width={isTotal && i === 4 ? 0 : isTotal && i === 5 ? 260 : w[i]}
             >
-              {data[i]}
+              {d}
             </Cell>
           );
         })}
