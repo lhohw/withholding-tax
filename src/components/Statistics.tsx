@@ -16,9 +16,16 @@ const Statistics = ({ corporate, year }: StatisticsProps) => {
   const width = useMemo(() => [50, 150, 150, 150], []);
   const {
     statistics: { sum, diff },
+    month,
   } = useTable({ RN: corporate.RN, year });
-  const sumData = useMemo(() => getStatisticsData("합계", sum, 12), [sum]);
-  const diffData = useMemo(() => getStatisticsData("증감", diff, 12), [diff]);
+  const sumData = useMemo(
+    () => getStatisticsData("합계", sum, month),
+    [sum, month]
+  );
+  const diffData = useMemo(
+    () => getStatisticsData("증감", diff, month),
+    [diff, month]
+  );
   return (
     <div
       css={css`

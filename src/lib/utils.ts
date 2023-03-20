@@ -115,6 +115,6 @@ export const getStatisticsData = (
 ) => [
   title,
   ...generationTypes.map(
-    (type) => `${roundOff(data[type] / monthCnt)} [${data[type]}]`
+    (type) => `${roundOff(data[type] / (monthCnt || 1))} [${data[type]}]`
   ),
 ];
