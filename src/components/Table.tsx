@@ -1,12 +1,13 @@
 import { css } from "@emotion/react";
 
-import TableHeading from "./TableHeading";
-import TableData from "./TableData";
-import TableResult from "./TableResult";
-
 import useYear from "hooks/useYear";
 import useCorporate from "hooks/useCorporate";
 import useCorporates from "hooks/useCorporates";
+
+import TableHeading from "./TableHeading";
+import TableData from "./TableData";
+import TableResult from "./TableResult";
+import Statistics from "./Statistics";
 
 const Table = () => {
   const { selectedYear } = useYear();
@@ -28,9 +29,19 @@ const Table = () => {
         </div>
       ) : (
         <>
+          <Statistics
+            corporate={corporates[selectedCorporate.selected]}
+            year={selectedYear.selected}
+          />
           <TableHeading />
-          <TableData corporate={corporates[selectedCorporate.selected]} />
-          <TableResult corporate={corporates[selectedCorporate.selected]} />
+          <TableData
+            corporate={corporates[selectedCorporate.selected]}
+            year={selectedYear.selected}
+          />
+          <TableResult
+            corporate={corporates[selectedCorporate.selected]}
+            year={selectedYear.selected}
+          />
         </>
       )}
     </TableWrapper>

@@ -5,6 +5,7 @@ import {
   industrialAccidentRate as IAR,
 } from "constants/law";
 import { getBirth } from "./api/employeeAPI";
+import { GenerationTypes, generationTypes } from "constants/value";
 
 export const degToRad = (deg: number) => (deg / 180) * Math.PI;
 
@@ -106,3 +107,14 @@ export const lessThan28Days = (startDate: string, retirementDate: string) =>
 
 export const roundOff = (x: number) =>
   (x < 0 ? Math.ceil(x * 100) : Math.floor(x * 100)) / 100;
+
+export const getStatisticsData = (
+  title: string,
+  data: { [key in GenerationTypes]: number },
+  monthCnt: number
+) => [
+  title,
+  ...generationTypes.map(
+    (type) => `${roundOff(data[type] / monthCnt)} [${data[type]}]`
+  ),
+];

@@ -1,3 +1,5 @@
+import type { GenerationTypes } from "constants/value";
+
 import { atomFamily, selectorFamily } from "recoil";
 import { corporatesState } from "recoil/corporates";
 
@@ -13,11 +15,7 @@ export const employeeCheckedState = atomFamily<boolean[], EmployeeCheckedProps>(
   }
 );
 
-export type ResultState = {
-  total: number[];
-  youth: number[];
-  manhood: number[];
-};
+export type ResultState = Record<GenerationTypes, number[]>;
 export type ResultProps = {
   RN: string;
   year: string;
@@ -62,4 +60,13 @@ export const resultState = atomFamily<ResultState, ResultProps>({
         return ret;
       },
   }),
+});
+
+export type MonthProps = {
+  RN: string;
+  year: string;
+};
+export const monthState = atomFamily<number, MonthProps>({
+  key: "MonthState",
+  default: 12,
 });
