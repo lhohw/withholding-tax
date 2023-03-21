@@ -7,7 +7,7 @@ const EmploymentIncreaseButton = () => {
   return (
     <MetaphorButton
       title="고용증대"
-      to={"/employment"}
+      to={"/employmentIncrease"}
       css={css`
         margin-right: 2.5rem;
       `}

@@ -1,9 +1,11 @@
 // import { useCallback, useEffect, useMemo } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import Table from "pages/Table";
+
 import Main from "pages/Main";
-// import Calculator from "pages/Calculator";
-import Table from "components/Table";
+import SocialInsurance from "pages/SocialInsurance";
+import EmploymentIncrease from "pages/EmploymentIncrease";
 
 const App = () => {
   // const onSelectStart = useCallback((e: Event) => e.preventDefault(), []);
@@ -39,7 +41,8 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Main />}>
           <Route path="/" element={<Table />} />
-          {/* <Route path="/calculator" element={<Calculator />} /> */}
+          <Route path="/socialInsurance" element={<SocialInsurance />} />
+          <Route path="/employmentIncrease" element={<EmploymentIncrease />} />
         </Route>
       </Routes>
     </BrowserRouter>
