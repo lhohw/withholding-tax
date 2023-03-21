@@ -37,7 +37,6 @@ const Fallback = ({ message }: { message: string }) => (
       align-items: center;
       font-size: 2rem;
       color: var(--black);
-      background: var(--main-gradient);
       text-shadow: 1px 1px 5px var(--placeholder);
     `}
   >
