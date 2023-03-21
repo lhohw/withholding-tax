@@ -11,7 +11,7 @@ const useTable = ({ RN, year }: UseTableProps) => {
   const [resultData, setResultData] = useRecoilState(resultState({ RN, year }));
   const statistics = useRecoilValue(statisticsState);
   const [month, setMonth] = useRecoilState(
-    inputState({ RN, year, key: "month" })
+    inputState({ RN, year, stateKey: "month" })
   );
 
   return {

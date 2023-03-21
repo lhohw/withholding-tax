@@ -22,8 +22,8 @@ export type InputStateProps = {
 };
 export const inputState = atomFamily<string, InputStateProps>({
   key: "InputState",
-  default: ({ key }) => {
-    if (key === "month") return "12";
+  default: ({ stateKey }) => {
+    if (stateKey === "month") return "12";
     return "";
   },
 });
