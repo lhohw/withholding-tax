@@ -1,4 +1,4 @@
-import type { GenerationTypes } from "constants/value";
+import { GenerationTypes } from "constants/value";
 
 import { atomFamily, selectorFamily } from "recoil";
 import { corporatesState } from "recoil/corporates";
@@ -28,7 +28,7 @@ export const resultState = atomFamily<ResultState, ResultProps>({
       ({ RN, year }) =>
       ({ get }) => {
         const corporate = get(corporatesState)[RN];
-        const ret = corporate.getTableResult(year);
+        const ret = corporate.getYearlyTableResult(year);
         return ret;
       },
   }),
