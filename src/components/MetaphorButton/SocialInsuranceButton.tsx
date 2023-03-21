@@ -7,7 +7,7 @@ const SocialInsuranceButton = () => {
   return (
     <MetaphorButton
       title="사회보험"
-      to={"/calculator"}
+      to={"/socialInsurance"}
       css={css`
         margin-right: 2.5rem;
       `}
