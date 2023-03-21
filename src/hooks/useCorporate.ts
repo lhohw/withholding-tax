@@ -12,7 +12,9 @@ const useCorporate = () => {
   const { corporates, setCorporates } = useCorporates();
 
   const addEmployees = async (employees: Employee[]) => {
-    const nextCorporates = { ...corporates };
+    const nextCorporates: {
+      [RN: string]: InstanceType<typeof Corporate>;
+    } = { ...corporates };
     for (const employee of employees) {
       const {
         id,
@@ -32,7 +34,7 @@ const useCorporate = () => {
           },
         });
       } else if (!nextCorporates[RN].employees[id]) {
-        nextCorporates[RN] = {
+        nextCorporates[RN] = new Corporate({
           ...nextCorporates[RN],
           address: nextCorporates[RN].address || corporate.address,
           name: nextCorporates[RN].name || corporate.name,
@@ -40,9 +42,9 @@ const useCorporate = () => {
             ...nextCorporates[RN].employees,
             [id]: employee,
           },
-        };
+        });
       } else {
-        nextCorporates[RN] = {
+        nextCorporates[RN] = new Corporate({
           ...nextCorporates[RN],
           employees: {
             ...nextCorporates[RN].employees,
@@ -67,7 +69,7 @@ const useCorporate = () => {
               }
             ),
           },
-        };
+        });
       }
     }
     setCorporates(nextCorporates);
