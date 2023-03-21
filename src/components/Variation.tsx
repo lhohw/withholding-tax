@@ -14,7 +14,7 @@ const Variation = () => {
     selectedCorporate: { selected: RN },
   } = useCorporate();
   const last6Years = useMemo(() => getLastYears(6), []);
-  const width = useMemo(() => new Array(7).fill(120), []);
+  const width = useMemo(() => [80, 120, 120, 120, 120, 120, 120], []);
   const { resultSum, resultDiff } = useCalculator({ RN });
   const shiftedResultDiff = useMemo(
     () => resultDiff.map((row) => [row[0], "", ...row.slice(1)]),
