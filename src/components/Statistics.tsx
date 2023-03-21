@@ -6,7 +6,9 @@ import Corporate from "models/Corporate";
 import { getStatisticsData } from "lib/utils";
 
 import Row from "./Row";
+
 import MonthCounter from "./MonthCounter";
+import Heading from "./Row/Heading";
 
 export type StatisticsProps = {
   corporate: Corporate;
@@ -42,20 +44,7 @@ const Statistics = ({ corporate, year }: StatisticsProps) => {
           align-items: flex-start;
         `}
       >
-        <Dummy />
-        <Row
-          isHeading
-          data={["", "전체", "청년", "장년"]}
-          css={css`
-            background: linear-gradient(
-              113deg,
-              rgb(245, 232, 232) 0%,
-              rgba(255, 143, 118, 0.125) 100%
-            );
-            border-bottom: 1.2px dashed var(--navy);
-          `}
-          width={width}
-        />
+        <Heading data={["", "전체", "청년", "장년"]} width={width} />
         <Row data={sumData} width={width} />
         <Row data={diffData} width={width} />
       </div>
@@ -64,12 +53,4 @@ const Statistics = ({ corporate, year }: StatisticsProps) => {
   );
 };
 
-const Dummy = () => (
-  <Row
-    css={css`
-      display: none;
-    `}
-    data={[]}
-  />
-);
 export default Statistics;

@@ -5,9 +5,9 @@ import styled from "@emotion/styled";
 
 import { weight } from "constants/font";
 
-import List from "./List";
-import Item from "./Item";
-import { darkOrangeGradient, lightOrangeGradient } from "styles/gradient";
+import List from "../List";
+import Item from "../Item";
+import { lightOrangeGradient } from "styles/gradient";
 
 export type RowProps = {
   style?: CSSProperties;
@@ -44,10 +44,8 @@ const Row = ({
         align-items: center;
         background-color: rgba(254, 254, 254, 0.376);
         transition: color 0.15s ease-in-out;
-        &:nth-of-type(even) {
-          ${isHeading && !(data[3] === "청년")
-            ? darkOrangeGradient
-            : lightOrangeGradient};
+        &:nth-of-type(odd) {
+          ${!isHeading && lightOrangeGradient};
         }
       `}
     >
@@ -59,12 +57,15 @@ const Row = ({
                 font-weight: ${weight.semibold};
               `
             : styled(Item)`
-                color: ${isAllChecked || (i >= 6 && checked[i - 6])
+                color: ${isAllChecked || (i >= 6 && checked && checked[i - 6])
                   ? "var(--orange)"
                   : data[i] === "청년"
-                  ? "var(--blue)"
+                  ? i >= 6
+                    ? "var(--blue)"
+                    : "inherit"
                   : "inherit"};
-                text-decoration: ${isAllChecked || (i >= 6 && checked[i - 6])
+                text-decoration: ${isAllChecked ||
+                (i >= 6 && checked && checked[i - 6])
                   ? "line-through"
                   : "none"};
                 cursor: ${i >= 6 ? "pointer" : "default"};

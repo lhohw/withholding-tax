@@ -10,6 +10,8 @@ import { generationTypes } from "constants/value";
 
 import Row from "./Row";
 
+import { weight } from "constants/font";
+
 export type TableResultProps = {
   corporate: Corporate;
   year: string;
@@ -35,15 +37,11 @@ const TableResult = ({ corporate, year }: TableResultProps) => {
     <div
       css={css`
         border-top: 1.3px dashed var(--navy);
+        font-weight: ${weight.semibold};
       `}
     >
       {generationTypes.map((type) => (
-        <Row
-          key={type}
-          isHeading
-          isTotal={type === "total"}
-          data={data[type]}
-        />
+        <Row key={type} isTotal={type === "total"} data={data[type]} />
       ))}
     </div>
   );

@@ -8,7 +8,7 @@ import { toggleState } from "recoil/base";
 
 import useCorporate from "hooks/useCorporate";
 
-import RowRenderer from "./RowRenderer";
+import RowRenderer from "./Row/RowRenderer";
 
 export type TableDataProps = {
   corporate: Corporate;

@@ -9,8 +9,8 @@ import useYear from "hooks/useYear";
 import useTable from "hooks/useTable";
 import { employeeCheckedState } from "recoil/table";
 
-import Row from "./Row";
-import CheckBox, { CheckBoxProps } from "./CheckBox";
+import Row from ".";
+import CheckBox, { CheckBoxProps } from "../CheckBox";
 
 export type RowRendererProps = {
   style: React.CSSProperties;

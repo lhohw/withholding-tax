@@ -1,17 +1,11 @@
-import { css } from "@emotion/react";
-
-import Row from "./Row";
+import Heading from "./Row/Heading";
 import Spreader from "./Spreader";
 
 const TableHeading = () => {
   return (
-    <Row
+    <Heading
       key="heading"
-      css={css`
-        border-bottom: 1.2px dashed var(--navy);
-      `}
       handler={<Spreader />}
-      isHeading
       data={[
         "이름",
         "생년월일",
