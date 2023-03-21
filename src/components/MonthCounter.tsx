@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { css } from "@emotion/react";
 
 import useTable from "hooks/useTable";
+
 import { exceptNumberRegex } from "constants/regex";
 import { lightOrangeGradient } from "styles/gradient";
 
@@ -15,7 +16,7 @@ const MonthCounter = ({ RN, year }: MonthCounterProps) => {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const { value } = e.target;
       if (exceptNumberRegex.exec(value) || isNaN(Number(value))) return;
-      setMonth(Math.min(12, Math.max(0, +value)));
+      setMonth(Math.min(12, Math.max(0, +value)).toString());
     },
     [setMonth]
   );
@@ -83,8 +84,8 @@ const MonthInput = ({
   month,
   onMonthChange,
 }: {
-  month: any;
-  onMonthChange: any;
+  month: string;
+  onMonthChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => (
   <input
     css={css`

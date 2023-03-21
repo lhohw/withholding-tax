@@ -19,11 +19,11 @@ const Statistics = ({ corporate, year }: StatisticsProps) => {
     month,
   } = useTable({ RN: corporate.RN, year });
   const sumData = useMemo(
-    () => getStatisticsData("합계", sum, month),
+    () => getStatisticsData("합계", sum, +month),
     [sum, month]
   );
   const diffData = useMemo(
-    () => getStatisticsData("증감", diff, month),
+    () => getStatisticsData("증감", diff, +month),
     [diff, month]
   );
   return (

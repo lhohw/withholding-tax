@@ -16,3 +16,14 @@ export const accordianState = atomFamily<AccordianState, string>({
     selected: null!,
   },
 });
+
+export type InputStateProps = {
+  [key: string]: string;
+};
+export const inputState = atomFamily<string, InputStateProps>({
+  key: "InputState",
+  default: ({ key }) => {
+    if (key === "month") return "12";
+    return "";
+  },
+});

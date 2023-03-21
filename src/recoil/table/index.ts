@@ -1,10 +1,5 @@
-export type {
-  ResultState,
-  ResultProps,
-  EmployeeCheckedProps,
-  MonthProps,
-} from "./atom";
+export type { ResultState, ResultProps, EmployeeCheckedProps } from "./atom";
 export type { StatisticsState } from "./selector";
 
-export { employeeCheckedState, resultState, monthState } from "./atom";
+export { employeeCheckedState, resultState } from "./atom";
 export { statisticsState } from "./selector";

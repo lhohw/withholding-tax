@@ -33,12 +33,3 @@ export const resultState = atomFamily<ResultState, ResultProps>({
       },
   }),
 });
-
-export type MonthProps = {
-  RN: string;
-  year: string;
-};
-export const monthState = atomFamily<number, MonthProps>({
-  key: "MonthState",
-  default: 12,
-});

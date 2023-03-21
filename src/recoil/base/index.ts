@@ -1,1 +1,1 @@
-export { toggleState, accordianState } from "./atom";
+export { toggleState, accordianState, inputState } from "./atom";
