@@ -1,3 +1,5 @@
+import { GenerationTypes, generationTypes } from "constants/value";
+import { getGenerationSum } from "lib/utils";
 import Employee from "./Employee";
 
 export type CorporateProps = {
@@ -19,7 +21,7 @@ class Corporate {
     this.address = address;
     this.employees = employees;
   }
-  getTableResult(year: string) {
+  getYearlyTableResult(year: string): Record<GenerationTypes, number[]> {
     const { employees } = this;
     const ret = {
       total: new Array(14).fill(0),
@@ -50,6 +52,16 @@ class Corporate {
       }
     }
     return ret;
+  }
+  getYealryTableResultGenerationSum(year: string) {
+    const data = this.getYearlyTableResult(year);
+    return generationTypes.reduce(
+      (acc, type) => ({
+        ...acc,
+        [type]: getGenerationSum(data[type]),
+      }),
+      {}
+    ) as Record<GenerationTypes, number>;
   }
 }
 
