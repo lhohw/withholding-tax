@@ -4,6 +4,8 @@ import { selector } from "recoil";
 import { accordianState } from "recoil/base";
 import { resultState } from "./atom";
 
+import { getGenerationSum } from "lib/utils";
+
 export type StatisticsState = {
   sum: Record<GenerationTypes, number>;
   diff: Record<GenerationTypes, number>;
@@ -35,5 +37,4 @@ export const statisticsState = selector<StatisticsState>({
 });
 
 const calculate = (current: number[], prev?: number[]) =>
-  dataReduce(current) - (prev ? dataReduce(prev) : 0);
-const dataReduce = (data: number[]) => data.slice(2).reduce((x, y) => x + y);
+  getGenerationSum(current) - (prev ? getGenerationSum(prev) : 0);

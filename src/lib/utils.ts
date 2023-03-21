@@ -118,3 +118,6 @@ export const getStatisticsData = (
     (type) => `${roundOff(data[type] / (monthCnt || 1))} [${data[type]}]`
   ),
 ];
+
+export const getGenerationSum = (data: number[]) =>
+  data.slice(2).reduce((x, y) => x + y);
