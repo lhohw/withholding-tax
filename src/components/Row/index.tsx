@@ -68,7 +68,7 @@ const Row = ({
                 (i >= 6 && checked && checked[i - 6])
                   ? "line-through"
                   : "none"};
-                cursor: ${i >= 6 ? "pointer" : "default"};
+                cursor: ${onToggle && i >= 6 ? "pointer" : "default"};
               `;
           return (
             <Cell
