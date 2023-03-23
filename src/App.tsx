@@ -1,11 +1,12 @@
 // import { useCallback, useEffect, useMemo } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 
 import Table from "pages/Table";
-
 import Main from "pages/Main";
 import SocialInsurance from "pages/SocialInsurance";
 import EmploymentIncrease from "pages/EmploymentIncrease";
+
+import Variation from "components/Variation";
 
 const App = () => {
   // const onSelectStart = useCallback((e: Event) => e.preventDefault(), []);
@@ -41,12 +42,20 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Main />}>
           <Route path="/" element={<Table />} />
-          <Route path="/socialInsurance" element={<SocialInsurance />} />
-          <Route path="/employmentIncrease" element={<EmploymentIncrease />} />
+          <Route path="/" element={<VariationWithOutlet />}>
+            <Route path="socialInsurance" element={<SocialInsurance />} />
+            <Route path="employmentIncrease" element={<EmploymentIncrease />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
   );
 };
 
+const VariationWithOutlet = () => (
+  <>
+    <Variation />
+    <Outlet />
+  </>
+);
 export default App;

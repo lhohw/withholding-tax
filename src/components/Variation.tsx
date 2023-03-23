@@ -2,14 +2,16 @@ import { useMemo } from "react";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 
+import { whiteNeumorphism } from "styles/neumorphism";
+
 import useCorporate from "hooks/useCorporate";
-
-import Row from "./Row";
-
-import Heading from "./Row/Heading";
 import useCalculator from "hooks/useCalculator";
+
 import { getLastYears } from "lib/values";
 import { withDividedByMonth } from "lib/utils";
+
+import Row from "./Row";
+import Heading from "./Row/Heading";
 
 const Variation = () => {
   const {
@@ -72,6 +74,7 @@ const VariationWrapper = styled.div<{ width: number[] }>`
   display: flex;
   flex-direction: column;
   width: ${(props) => props.width.reduce((x, y) => x + y) + 50}px;
-  margin-top: 2rem;
+  margin: 2rem;
+  ${whiteNeumorphism("0")}
 `;
 export default Variation;
