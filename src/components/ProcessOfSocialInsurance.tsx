@@ -7,6 +7,7 @@ import * as font from "constants/font";
 import Fraction from "./Fraction";
 import BigText from "./BigText";
 import { orangeGradient } from "styles/gradient";
+import TextFallback from "./TextFallback";
 
 export type ProcessOfSocialInsuranceProps = {
   year?: string;
@@ -19,15 +20,72 @@ export type ProcessOfSocialInsuranceProps = {
 };
 const ProcessOfSocialInsurance = ({
   year,
-  type,
+  ...props
+}: ProcessOfSocialInsuranceProps) => (
+  <ProcessOfSocialInsuranceWrapper>
+    <ProcessOfSocialInsuranceTitle year={year} />
+    {props.socialInsuranceRate === "0" ? (
+      <TextFallback
+        css={css`
+          margin: 0;
+          padding: 0;
+          font-size: ${font.size.big};
+          color: var(--navy);
+          text-shadow: 1px 3px 10px #9dafff;
+          ${props.type === "youth" &&
+          css`
+            display: none;
+          `}
+        `}
+        message="사회보험요율이 존재하지 않습니다. 해당 연도와 코드의 사회보험요율 추가가 필요합니다."
+      />
+    ) : (
+      <ProcessOfSocialInsuranceBody {...props} />
+    )}
+  </ProcessOfSocialInsuranceWrapper>
+);
+
+const ProcessOfSocialInsuranceWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+  position: relative;
+  padding: 2rem 0 1rem 0;
+  & > div:first-of-type {
+    min-width: 50px;
+    font-size: 2rem;
+    position: absolute;
+    top: -1rem;
+    left: -2rem;
+    ${orangeGradient};
+    color: transparent;
+    background-clip: text;
+    text-shadow: 1px 3px 3px var(--yellow);
+    & > div:first-of-type {
+      border: none;
+    }
+  }
+  &:last-of-type {
+    margin-bottom: 2rem;
+  }
+`;
+
+const ProcessOfSocialInsuranceTitle = ({
+  year,
+}: Pick<ProcessOfSocialInsuranceProps, "year">) => (
+  <Fraction title={year || ""}>{""}</Fraction>
+);
+
+const ProcessOfSocialInsuranceBody = ({
   variation,
+  type,
   totalSalary,
   totalGeneration,
   socialInsuranceRate,
   resultValue,
 }: ProcessOfSocialInsuranceProps) => (
-  <ProcessOfSocialInsuranceWrapper>
-    <Fraction title={year || ""}>{""}</Fraction>
+  <>
     <Fraction title={`${type === "youth" ? "청년" : "장년"} 증가`}>
       {variation}
     </Fraction>
@@ -58,33 +116,6 @@ const ProcessOfSocialInsurance = ({
         font-weight: ${font.weight.bold};
       `}
     >{`${resultValue} 원`}</span>
-  </ProcessOfSocialInsuranceWrapper>
+  </>
 );
-
-const ProcessOfSocialInsuranceWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex: 1;
-  position: relative;
-  padding: 1rem 0;
-  & > div:first-of-type {
-    min-width: 50px;
-    font-size: 2rem;
-    position: absolute;
-    top: -1rem;
-    left: -2rem;
-    ${orangeGradient};
-    color: transparent;
-    background-clip: text;
-    text-shadow: 1px 3px 3px var(--yellow);
-    & > div:first-of-type {
-      border: none;
-    }
-  }
-  &:last-of-type {
-    margin-bottom: 2rem;
-  }
-`;
-
 export default ProcessOfSocialInsurance;

@@ -10,17 +10,20 @@ export type InputProps = {
   width?: number;
   placeholder?: string;
   RN?: string;
+  className?: string;
 };
 const Input = ({
   stateKey,
   title,
   width = 100,
   placeholder,
+  className,
   ...props
 }: InputProps) => {
   const [value, setValue] = useRecoilState(inputState({ stateKey, ...props }));
   return (
     <label
+      className={className}
       css={css`
         display: flex;
         font-weight: ${font.weight.bold};

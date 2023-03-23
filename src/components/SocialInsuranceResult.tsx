@@ -2,14 +2,18 @@ import type { YearlySocialInsuranceProps } from "./YearlySocialInsurance";
 
 import { useMemo } from "react";
 import styled from "@emotion/styled";
+import { useRecoilValue } from "recoil";
 
 import useCorporate from "hooks/useCorporate";
 import useCalculator from "hooks/useCalculator";
+
+import { inputState } from "recoil/base";
 
 import { getLastYears } from "lib/values";
 import { parseMoney, roundOff } from "lib/utils";
 
 import YearlySocialInsurance from "./YearlySocialInsurance";
+import TextFallback from "./TextFallback";
 
 const SocialInsuranceResult = () => {
   const last5Years = useMemo(() => getLastYears(5), []);
@@ -19,6 +23,10 @@ const SocialInsuranceResult = () => {
   const { sum, variation, months, socialInsuranceRates } = useCalculator({
     RN,
   });
+  const code = useRecoilValue(
+    inputState({ stateKey: "socialInsuranceCode", RN })
+  );
+  if (code === "") return <TextFallback message="Please Input Code" />;
   return (
     <SocialInsuranceResultWrapper>
       {last5Years.map((year) => {
