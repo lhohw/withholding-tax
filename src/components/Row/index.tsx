@@ -35,20 +35,7 @@ const Row = ({
 }: RowProps) => {
   const totalWidth = useMemo(() => w.reduce((x, y) => x + y) + 50, [w]);
   return (
-    <div
-      className={className}
-      style={style}
-      css={css`
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        background-color: rgba(254, 254, 254, 0.376);
-        transition: color 0.15s ease-in-out;
-        &:nth-of-type(odd) {
-          ${!isHeading && lightOrangeGradient};
-        }
-      `}
-    >
+    <RowWrapper className={className} style={style} isHeading={isHeading}>
       <List width={totalWidth}>
         {handler}
         {data.map((d, i) => {
@@ -59,10 +46,12 @@ const Row = ({
             : styled(Item)`
                 color: ${isAllChecked || (i >= 6 && checked && checked[i - 6])
                   ? "var(--orange)"
-                  : data[i] === "청년"
+                  : d === "청년"
                   ? i >= 6
                     ? "var(--blue)"
                     : "inherit"
+                  : typeof d === "string" && /-\d/.exec(d)
+                  ? "var(--red)"
                   : "inherit"};
                 text-decoration: ${isAllChecked ||
                 (i >= 6 && checked && checked[i - 6])
@@ -81,8 +70,33 @@ const Row = ({
           );
         })}
       </List>
-    </div>
+    </RowWrapper>
   );
 };
 
+const RowWrapper = ({
+  className,
+  style,
+  isHeading,
+  children,
+}: Pick<RowProps, "className" | "style" | "isHeading"> & {
+  children: React.ReactNode;
+}) => (
+  <div
+    className={className}
+    style={style}
+    css={css`
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: rgba(254, 254, 254, 0.376);
+      transition: color 0.15s ease-in-out;
+      &:nth-of-type(odd) {
+        ${!isHeading && lightOrangeGradient};
+      }
+    `}
+  >
+    {children}
+  </div>
+);
 export default Row;

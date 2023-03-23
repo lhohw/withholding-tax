@@ -16,6 +16,7 @@
   --black: rgb(60, 57, 49);
   --navy: rgb(0, 0, 128);
   --blue: rgb(65, 65, 221);
+  --red: rgb(250, 99, 75);
 }
 @media (prefers-color-scheme: dark) {
   :root {
