@@ -46,8 +46,6 @@ body {
   color: var(--text);
   background-color: var(--background);
   background: var(--main-gradient);
-  overflow-x: scroll;
-  min-width: 1420px;
 }
 
 body[theme="light"] {

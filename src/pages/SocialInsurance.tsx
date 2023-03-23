@@ -23,12 +23,14 @@ const SocialInsurance = () => {
 };
 
 const SocialInsuranceWrapper = styled.div`
-  padding: 0rem 6rem 3rem 6rem;
-  margin: 2rem 0;
-  min-width: 1150px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 0rem 6rem 3rem 6rem;
+  margin: 2rem 0;
+  @media (max-width: 1240px) {
+    align-items: flex-start;
+  }
 `;
 
 const SocialInsuranceCodeInput = styled(Input)`

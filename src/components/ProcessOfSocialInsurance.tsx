@@ -2,11 +2,12 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { TiTimes, TiDivide, TiEquals } from "react-icons/ti";
 
+import { orangeGradient } from "styles/gradient";
+
 import * as font from "constants/font";
 
 import Fraction from "./Fraction";
 import BigText from "./BigText";
-import { orangeGradient } from "styles/gradient";
 import TextFallback from "./TextFallback";
 
 export type ProcessOfSocialInsuranceProps = {
@@ -114,6 +115,8 @@ const ProcessOfSocialInsuranceBody = ({
     <span
       css={css`
         font-weight: ${font.weight.bold};
+        word-break: keep-all;
+        white-space: nowrap;
       `}
     >{`${resultValue} 원`}</span>
   </>

@@ -55,6 +55,8 @@ const MetaphorButton = ({
           font-size: 0.9rem;
           font-weight: bold;
           padding: 0.3rem 0.8rem;
+          word-break: keep-all;
+          white-space: nowrap;
         `}
       >
         {title}

@@ -1,5 +1,6 @@
 import { css } from "@emotion/react";
 import { BiChevronDown } from "react-icons/bi";
+
 import { whiteNeumorphism } from "styles/neumorphism";
 
 export type AccordianProps = {
@@ -61,7 +62,7 @@ const AccordianWrapper = ({
       font-weight: bolder;
       ${whiteNeumorphism("8px")}
       cursor: pointer;
-      margin: 0.5rem 1rem;
+      margin: 1.5rem 1rem;
       position: relative;
       transition: 0.4s border-radius ease-in-out, 0.8s border-color ease-in-out,
         0.125s background-color ease-in-out;

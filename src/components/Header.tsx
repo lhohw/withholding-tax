@@ -18,8 +18,10 @@ const Header = () => {
         <HomeButton />
         <SocialInsuranceButton />
         <EmploymentIncreaseButton />
-        <CorporateAccordian />
-        <YearAccordian />
+        <AccordianWrapper>
+          <CorporateAccordian />
+          <YearAccordian />
+        </AccordianWrapper>
         <Metaphors />
       </ContentWrapper>
     </HeaderWrapper>
@@ -31,7 +33,6 @@ const HeaderWrapper = styled.div`
   flex-direction: row;
   align-items: center;
   width: 100%;
-  min-width: 1420px;
   border-bottom: 1px solid var(--yellow);
   padding: 1rem;
   flex-wrap: wrap;
@@ -57,5 +58,13 @@ const ContentWrapper = styled.div`
   align-items: center;
   margin-left: auto;
   margin-right: 2rem;
+  flex-wrap: wrap;
 `;
+
+const AccordianWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+`;
+
 export default Header;

@@ -11,6 +11,9 @@ const Metaphors = () => {
         display: flex;
         flex-direction: row;
         margin-left: 3rem;
+        @media (max-width: 1024px) {
+          margin: 2rem 1rem;
+        }
         @media (max-width: 768px) {
           margin: 1rem;
         }

@@ -1,4 +1,5 @@
 // import { useCallback, useEffect, useMemo } from "react";
+import { css } from "@emotion/react";
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 
 import Table from "pages/Table";
@@ -53,9 +54,18 @@ const App = () => {
 };
 
 const VariationWithOutlet = () => (
-  <>
+  <div
+    css={css`
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      @media (max-width: 1240px) {
+        align-items: flex-start;
+      }
+    `}
+  >
     <Variation />
     <Outlet />
-  </>
+  </div>
 );
 export default App;

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 
 import useYear from "hooks/useYear";
 import useCorporate from "hooks/useCorporate";
@@ -9,6 +9,7 @@ import TableHeading from "components/TableHeading";
 import TableData from "components/TableData";
 import TableResult from "components/TableResult";
 import Statistics from "components/Statistics";
+import { whiteNeumorphism } from "styles/neumorphism";
 
 const Table = () => {
   const {
@@ -21,37 +22,29 @@ const Table = () => {
 
   const corporate = useMemo(() => corporates[RN], [corporates, RN]);
   return (
-    <TableWrapper>
+    <TablePageWrapper>
       <Statistics corporate={corporate} year={year} />
-      <TableHeading />
-      <TableData corporate={corporate} year={year} />
-      <TableResult corporate={corporate} year={year} />
-    </TableWrapper>
+      <TableWrapper>
+        <TableHeading />
+        <TableData corporate={corporate} year={year} />
+        <TableResult corporate={corporate} year={year} />
+      </TableWrapper>
+    </TablePageWrapper>
   );
 };
 
-const TableWrapper = ({ children }: { children: React.ReactNode }) => (
-  <div
-    css={css`
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem 0;
-    `}
-  >
-    <div
-      css={css`
-        background: #eae8e8;
-        box-shadow: 22px 22px 66px #b2b0b0, -22px -22px 66px #ffffff;
-        @media print {
-          box-shadow: none;
-        }
-      `}
-    >
-      {children}
-    </div>
-  </div>
-);
+const TablePageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0;
+  @media (max-width: 1240px) {
+    align-items: flex-start;
+  }
+`;
+
+const TableWrapper = styled.div`
+  ${whiteNeumorphism("0")};
+`;
 
 export default Table;

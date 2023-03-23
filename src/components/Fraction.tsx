@@ -16,6 +16,8 @@ const Fraction = ({ title, children }: FractionProps) => (
       padding: 0.3rem;
       font-size: ${font.size.base};
       margin: 0 1rem;
+      word-break: keep-all;
+      white-space: nowrap;
     `}
   >
     <div
