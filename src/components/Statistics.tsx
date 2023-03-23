@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 
 import useTable from "hooks/useTable";
 import Corporate from "models/Corporate";
@@ -9,6 +9,7 @@ import Row from "./Row";
 
 import MonthCounter from "./MonthCounter";
 import Heading from "./Row/Heading";
+import { whiteNeumorphism } from "styles/neumorphism";
 
 export type StatisticsProps = {
   corporate: Corporate;
@@ -39,28 +40,29 @@ const Statistics = ({ corporate, year }: StatisticsProps) => {
     [variation, month]
   );
   return (
-    <div
-      css={css`
-        display: flex;
-        flex-direction: row;
-        position: relative;
-      `}
-    >
-      <div
-        css={css`
-          display: flex;
-          flex-direction: column;
-          margin-bottom: 2rem;
-          align-items: flex-start;
-        `}
-      >
+    <StatisticsWrapper>
+      <StatisticsTableWrapper>
         <Heading data={["", "전체", "청년", "장년"]} width={width} />
         <Row data={sumData} width={width} />
         <Row data={variationData} width={width} />
-      </div>
+      </StatisticsTableWrapper>
       <MonthCounter year={year} RN={corporate.RN} />
-    </div>
+    </StatisticsWrapper>
   );
 };
+
+const StatisticsWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  margin-bottom: 3rem;
+  ${whiteNeumorphism("0")};
+`;
+
+const StatisticsTableWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
 
 export default Statistics;
