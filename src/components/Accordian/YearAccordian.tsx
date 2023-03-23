@@ -1,7 +1,10 @@
 import type { AccordianProps } from ".";
 
-import useYear from "hooks/useYear";
 import { useCallback } from "react";
+import { useLocation } from "react-router-dom";
+
+import useYear from "hooks/useYear";
+
 import Accordian from ".";
 
 const YearAccordian = () => {
@@ -20,6 +23,7 @@ const YearAccordian = () => {
     },
     [isYearListOpen, years, setSelectedYear, toggleYearListOpen]
   );
+  const { pathname } = useLocation();
   return (
     <Accordian
       width="130px"
@@ -29,6 +33,7 @@ const YearAccordian = () => {
       placeholder="YEAR"
       toggle={toggleYearListOpen}
       onSelect={onSelect}
+      disable={pathname !== "/"}
     />
   );
 };
