@@ -8,9 +8,17 @@ export type InputProps = {
   stateKey: string;
   title: string;
   width?: number;
+  placeholder?: string;
+  RN?: string;
 };
-const Input = ({ stateKey, title, width = 100 }: InputProps) => {
-  const [value, setValue] = useRecoilState(inputState({ stateKey }));
+const Input = ({
+  stateKey,
+  title,
+  width = 100,
+  placeholder,
+  ...props
+}: InputProps) => {
+  const [value, setValue] = useRecoilState(inputState({ stateKey, ...props }));
   return (
     <label
       css={css`
@@ -35,6 +43,7 @@ const Input = ({ stateKey, title, width = 100 }: InputProps) => {
         `}
         value={value}
         onChange={(e) => setValue(e.target.value)}
+        placeholder={placeholder}
       />
     </label>
   );
