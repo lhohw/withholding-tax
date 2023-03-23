@@ -9,7 +9,7 @@ export type UseTableProps = {
 };
 const useTable = ({ RN, year }: UseTableProps) => {
   const [resultData, setResultData] = useRecoilState(resultState({ RN, year }));
-  const statistics = useRecoilValue(statisticsState);
+  const statistics = useRecoilValue(statisticsState(year));
   const [month, setMonth] = useRecoilState(
     inputState({ RN, year, stateKey: "month" })
   );
