@@ -9,7 +9,7 @@ export type MetaphorButtonProps = {
   title: string;
   to?: string;
   children: React.ReactNode;
-  onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  onClick?: (e?: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const MetaphorButton = ({
@@ -64,6 +64,7 @@ const MetaphorButton = ({
       <div
         css={css`
           display: flex;
+          flex: 1;
           padding: 0.5rem;
           min-width: 75px;
           flex-direction: row;
