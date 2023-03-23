@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 
 import useTable from "hooks/useTable";
 import Corporate from "models/Corporate";
-import { getStatisticsData } from "lib/utils";
+import { withDividedByMonth } from "lib/utils";
 
 import Row from "./Row";
 
@@ -17,16 +17,26 @@ export type StatisticsProps = {
 const Statistics = ({ corporate, year }: StatisticsProps) => {
   const width = useMemo(() => [50, 150, 150, 150], []);
   const {
-    statistics: { sum, diff },
+    statistics: { sum, variation },
     month,
   } = useTable({ RN: corporate.RN, year });
   const sumData = useMemo(
-    () => getStatisticsData("합계", sum, +month),
+    () => [
+      "합계",
+      ...Object.values(sum).map((data) =>
+        withDividedByMonth(data.totalGeneration, month)
+      ),
+    ],
     [sum, month]
   );
-  const diffData = useMemo(
-    () => getStatisticsData("증감", diff, +month),
-    [diff, month]
+  const variationData = useMemo(
+    () => [
+      "증감",
+      ...Object.values(variation).map((data) =>
+        withDividedByMonth(data.totalGeneration, month)
+      ),
+    ],
+    [variation, month]
   );
   return (
     <div
@@ -46,7 +56,7 @@ const Statistics = ({ corporate, year }: StatisticsProps) => {
       >
         <Heading data={["", "전체", "청년", "장년"]} width={width} />
         <Row data={sumData} width={width} />
-        <Row data={diffData} width={width} />
+        <Row data={variationData} width={width} />
       </div>
       <MonthCounter year={year} RN={corporate.RN} />
     </div>

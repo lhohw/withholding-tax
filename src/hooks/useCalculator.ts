@@ -1,17 +1,21 @@
 import { useRecoilValue } from "recoil";
-
-import { resultSumState, resultDiffState } from "recoil/calculator";
+import { socialInsuranceTableState, yearlyMonthState } from "recoil/calculator";
+import { socialInsuranceRatesState } from "recoil/calculator";
 
 export type UseCalculatorProps = {
   RN: string;
 };
 const useCalculator = ({ RN }: UseCalculatorProps) => {
-  const resultSum = useRecoilValue(resultSumState({ RN }));
-  const resultDiff = useRecoilValue(resultDiffState({ RN }));
-
+  const { sum, variation } = useRecoilValue(socialInsuranceTableState);
+  const months = useRecoilValue(yearlyMonthState(6));
+  const socialInsuranceRates = useRecoilValue(
+    socialInsuranceRatesState({ RN })
+  );
   return {
-    resultSum,
-    resultDiff,
+    sum,
+    variation,
+    months,
+    socialInsuranceRates,
   };
 };
 
