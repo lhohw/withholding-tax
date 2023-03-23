@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { css } from "@emotion/react";
+import styled from "@emotion/styled";
 
 import useCorporate from "hooks/useCorporate";
 
@@ -8,6 +9,7 @@ import Row from "./Row";
 import Heading from "./Row/Heading";
 import useCalculator from "hooks/useCalculator";
 import { getLastYears } from "lib/values";
+import { withDividedByMonth } from "lib/utils";
 
 const Variation = () => {
   const {
@@ -15,25 +17,43 @@ const Variation = () => {
   } = useCorporate();
   const last6Years = useMemo(() => getLastYears(6), []);
   const width = useMemo(() => [80, 120, 120, 120, 120, 120, 120], []);
-  const { resultSum, resultDiff } = useCalculator({ RN });
-  const shiftedResultDiff = useMemo(
-    () => resultDiff.map((row) => [row[0], "", ...row.slice(1)]),
-    [resultDiff]
+  const titles = useMemo(
+    () => ({
+      total: "전체",
+      youth: "청년",
+      manhood: "장년",
+    }),
+    []
+  );
+  const { sum, variation, months } = useCalculator({ RN });
+  const resultSumData = useMemo(
+    () =>
+      Object.entries(sum).map(([type, yearlyData]) => [
+        `${titles[type as keyof typeof titles]} (합)`,
+        ...Object.entries(yearlyData).map(([year, { totalGeneration }]) =>
+          withDividedByMonth(totalGeneration, months[year])
+        ),
+      ]),
+    [sum, months, titles]
+  );
+  const resultvariationData = useMemo(
+    () =>
+      Object.entries(variation).map(([type, yearlyData]) => [
+        `${titles[type as keyof typeof titles]} (증감)`,
+        "",
+        ...Object.entries(yearlyData).map(([year, { totalGeneration }]) =>
+          withDividedByMonth(totalGeneration, months[year])
+        ),
+      ]),
+    [variation, months, titles]
   );
   return (
-    <div
-      css={css`
-        display: flex;
-        flex-direction: column;
-        width: ${width.reduce((x, y) => x + y) + 50}px;
-        margin-top: 2rem;
-      `}
-    >
+    <VariationWrapper width={width}>
       <Heading width={width} data={["", ...last6Years]} />
-      {resultSum.map((data, i) => (
+      {resultSumData.map((data, i) => (
         <Row key={i} data={data} width={width} />
       ))}
-      {shiftedResultDiff.map((data, i) => (
+      {resultvariationData.map((data, i) => (
         <Row
           key={i}
           data={data}
@@ -44,8 +64,14 @@ const Variation = () => {
           `}
         />
       ))}
-    </div>
+    </VariationWrapper>
   );
 };
 
+const VariationWrapper = styled.div<{ width: number[] }>`
+  display: flex;
+  flex-direction: column;
+  width: ${(props) => props.width.reduce((x, y) => x + y) + 50}px;
+  margin-top: 2rem;
+`;
 export default Variation;
