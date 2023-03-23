@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Outlet } from "react-router-dom";
 import { css } from "@emotion/react";
 
 import useYear from "hooks/useYear";
@@ -6,7 +7,7 @@ import useCorporate from "hooks/useCorporate";
 
 import ErrorBoundary from "components/ErrorBoundary";
 import Header from "components/Header";
-import { Outlet } from "react-router-dom";
+import Layout from "components/Layout";
 
 const Main = () => {
   const { selectedYear } = useYear();
@@ -22,7 +23,9 @@ const Main = () => {
       {!selectedYear.selected || !selectedCorporate.selected ? (
         <Fallback message={message} />
       ) : (
-        <Outlet />
+        <Layout>
+          <Outlet />
+        </Layout>
       )}
     </ErrorBoundary>
   );
@@ -43,4 +46,5 @@ const Fallback = ({ message }: { message: string }) => (
     {message}
   </div>
 );
+
 export default Main;
