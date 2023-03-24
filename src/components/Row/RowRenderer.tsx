@@ -1,14 +1,13 @@
 import type { ResultState } from "recoil/table/atom";
 
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import { css } from "@emotion/react";
-import { useRecoilState } from "recoil";
 
 import Employee from "models/Employee";
 
 import useYear from "hooks/useYear";
 import useTable from "hooks/useTable";
-import { employeeCheckedState } from "recoil/table";
+import useEmployee from "hooks/useEmployee";
 
 import Row from ".";
 import CheckBox, { CheckBoxProps } from "../CheckBox";
@@ -20,17 +19,13 @@ export type RowRendererProps = {
 const RowRenderer = ({ style, employee }: RowRendererProps) => {
   const {
     id,
-    earnedIncomeWithholdingDepartment,
-    date,
     corporate: { RN },
   } = employee;
   const {
     selectedYear: { selected: year },
   } = useYear();
 
-  const [checked, setChecked] = useRecoilState(
-    employeeCheckedState({ id, year, earnedIncomeWithholdingDepartment, date })
-  );
+  const { checked, setChecked, workingDays } = useEmployee({ employee, year });
   const { resultData, setResultData } = useTable({ RN, year });
 
   const onToggle: CheckBoxProps["onToggle"] = (idx) => {
@@ -111,7 +106,11 @@ const RowRenderer = ({ style, employee }: RowRendererProps) => {
   return (
     <Row
       css={css`
-        color: ${isAllChecked ? "var(--orange)" : "inherit"};
+        color: ${isAllChecked
+          ? "var(--orange)"
+          : workingDays && workingDays <= 31
+          ? "var(--purple)"
+          : "inherit"};
         text-decoration: ${isAllChecked ? "line-through" : "none"};
       `}
       style={style}
@@ -124,4 +123,4 @@ const RowRenderer = ({ style, employee }: RowRendererProps) => {
   );
 };
 
-export default RowRenderer;
+export default React.memo(RowRenderer);
