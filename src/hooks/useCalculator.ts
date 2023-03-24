@@ -1,6 +1,10 @@
 import { useRecoilValue } from "recoil";
-import { socialInsuranceTableState, yearlyMonthState } from "recoil/calculator";
-import { socialInsuranceRatesState } from "recoil/calculator";
+
+import {
+  socialInsuranceTableState,
+  yearlyMonthState,
+  socialInsuranceRatesState,
+} from "recoil/calculator";
 
 export type UseCalculatorProps = {
   RN: string;
