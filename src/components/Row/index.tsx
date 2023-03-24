@@ -19,6 +19,7 @@ export type RowProps = {
   checked?: boolean[];
   handler?: React.ReactNode;
   width?: number[];
+  title?: string;
   onToggle?: (idx: number) => void;
 };
 const Row = ({
@@ -30,12 +31,18 @@ const Row = ({
   isAllChecked = false,
   checked = null!,
   handler = <Item width={50} />,
+  title,
   width: w = [80, 80, 80, 80, 130, 130, ...new Array(12).fill(50)],
   onToggle,
 }: RowProps) => {
   const totalWidth = useMemo(() => w.reduce((x, y) => x + y) + 50, [w]);
   return (
-    <RowWrapper className={className} style={style} isHeading={isHeading}>
+    <RowWrapper
+      className={className}
+      style={style}
+      isHeading={isHeading}
+      title={title}
+    >
       <List width={totalWidth}>
         {handler}
         {data.map((d, i) => {
@@ -79,12 +86,14 @@ const RowWrapper = ({
   style,
   isHeading,
   children,
-}: Pick<RowProps, "className" | "style" | "isHeading"> & {
+  title,
+}: Pick<RowProps, "className" | "style" | "isHeading" | "title"> & {
   children: React.ReactNode;
 }) => (
   <div
     className={className}
     style={style}
+    title={title}
     css={css`
       display: flex;
       flex-direction: column;

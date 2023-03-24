@@ -105,6 +105,13 @@ const RowRenderer = ({ style, employee }: RowRendererProps) => {
   );
   return (
     <Row
+      title={
+        isAllChecked
+          ? "삭제됨. 급여 및 인원 미포함"
+          : workingDays && workingDays <= 31
+          ? "근무일 수 31일 이하. 급여 및 인원 포함"
+          : "급여 및 인원 포함"
+      }
       css={css`
         color: ${isAllChecked
           ? "var(--orange)"
