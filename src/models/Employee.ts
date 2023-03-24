@@ -66,9 +66,9 @@ class Employee {
     if (!this.earnedIncomeWithholdingDepartment[year]) {
       return [
         name,
-        "",
-        "",
         birth.slice(2),
+        "",
+        "",
         "0",
         "0",
         ...new Array(12).fill("-"),

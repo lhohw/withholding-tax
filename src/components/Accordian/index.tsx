@@ -142,7 +142,7 @@ const AccordianOptions = ({
       background-color: inherit;
       width: 100%;
       border-radius: 0 0 8px 8px;
-      transition: 0.4s all ease-in-out;
+      transition: 0.25s all ease-in-out;
       overflow: hidden;
       z-index: 2;
     `}
