@@ -5,6 +5,7 @@ import { css } from "@emotion/react";
 import { useRecoilState } from "recoil";
 
 import Employee from "models/Employee";
+
 import useYear from "hooks/useYear";
 import useTable from "hooks/useTable";
 import { employeeCheckedState } from "recoil/table";
@@ -14,11 +15,13 @@ import CheckBox, { CheckBoxProps } from "../CheckBox";
 
 export type RowRendererProps = {
   style: React.CSSProperties;
-  employee: Employee;
+  employee: InstanceType<typeof Employee>;
 };
 const RowRenderer = ({ style, employee }: RowRendererProps) => {
   const {
     id,
+    earnedIncomeWithholdingDepartment,
+    date,
     corporate: { RN },
   } = employee;
   const {
@@ -26,7 +29,7 @@ const RowRenderer = ({ style, employee }: RowRendererProps) => {
   } = useYear();
 
   const [checked, setChecked] = useRecoilState(
-    employeeCheckedState({ id, year, RN })
+    employeeCheckedState({ id, year, earnedIncomeWithholdingDepartment, date })
   );
   const { resultData, setResultData } = useTable({ RN, year });
 
@@ -64,25 +67,42 @@ const RowRenderer = ({ style, employee }: RowRendererProps) => {
     nextResultData: ResultState
   ) => {
     const PADDING = 2;
+    const salary = employee.earnedIncomeWithholdingDepartment[year];
+    const isAllChecked = checked.every((ch) => ch === true);
     for (let idx = 0; idx < 12; idx++) {
       if (condition(idx)) {
         nextChecked[idx] = !nextChecked[idx];
-        const { salary } =
-          employee.earnedIncomeWithholdingDepartment[year][idx];
-        const { youth, manhood } = salary;
+        const { salary: monthlySalary } = salary[idx];
+        const { youth, manhood } = monthlySalary;
         const nextFlag = nextChecked[idx] ? -1 : 1;
-        nextResultData.total[1] += (youth + manhood) * nextFlag;
         if (youth) {
           nextResultData.total[PADDING + idx] += nextFlag;
           nextResultData.youth[PADDING + idx] += nextFlag;
-          nextResultData.youth[0] += youth * nextFlag;
         } else if (manhood) {
           nextResultData.total[PADDING + idx] += nextFlag;
           nextResultData.manhood[PADDING + idx] += nextFlag;
-          nextResultData.manhood[1] += manhood * nextFlag;
         }
       }
     }
+    const isAllNextChecked = nextChecked.every((ch) => ch === true);
+    const nextFlag =
+      isAllChecked && !isAllNextChecked
+        ? 1
+        : !isAllChecked && isAllNextChecked
+        ? -1
+        : 0;
+
+    const { youth, manhood } = salary.reduce(
+      (acc, { salary }) => ({
+        youth: acc.youth + salary.youth,
+        manhood: acc.manhood + salary.manhood,
+      }),
+      { youth: 0, manhood: 0 }
+    );
+
+    nextResultData.youth[0] += youth * nextFlag;
+    nextResultData.manhood[1] += manhood * nextFlag;
+    nextResultData.total[1] += (youth + manhood) * nextFlag;
   };
   const isAllChecked = useMemo(
     () => checked.every((ch) => ch === true),
