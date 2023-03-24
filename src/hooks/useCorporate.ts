@@ -16,59 +16,20 @@ const useCorporate = () => {
       [RN: string]: InstanceType<typeof Corporate>;
     } = { ...corporates };
     for (const employee of employees) {
-      const {
-        id,
-        birth,
-        corporate,
-        year,
-        earnedIncomeWithholdingDepartment,
-        date,
-        salary,
-      } = employee;
+      const { id, corporate, year } = employee;
       const { RN } = corporate;
       if (!nextCorporates[RN]) {
-        nextCorporates[RN] = new Corporate({
-          ...corporate,
-          employees: {
-            [id]: employee,
-          },
-        });
+        nextCorporates[RN] = createCorporate({ employee });
       } else if (!nextCorporates[RN].employees[id]) {
-        nextCorporates[RN] = new Corporate({
-          ...nextCorporates[RN],
-          address: nextCorporates[RN].address || corporate.address,
-          name: nextCorporates[RN].name || corporate.name,
-          employees: {
-            ...nextCorporates[RN].employees,
-            [id]: employee,
-          },
+        nextCorporates[RN] = addEmployeeToCorporate({
+          corporate: nextCorporates[RN],
+          employee,
         });
       } else {
-        nextCorporates[RN] = new Corporate({
-          ...nextCorporates[RN],
-          employees: {
-            ...nextCorporates[RN].employees,
-            [id]: new Employee(
-              nextCorporates[RN].employees[id].id,
-              nextCorporates[RN].employees[id].birth || birth,
-              nextCorporates[RN].employees[id].name,
-              nextCorporates[RN].employees[id].corporate,
-              {
-                ...nextCorporates[RN].employees[id].date,
-                [year]: date[year],
-              },
-              {
-                ...nextCorporates[RN].employees[id]
-                  .earnedIncomeWithholdingDepartment,
-                [year]: earnedIncomeWithholdingDepartment[year],
-              },
-              year,
-              {
-                ...nextCorporates[RN].employees[id].salary,
-                [year]: salary[year],
-              }
-            ),
-          },
+        nextCorporates[RN] = addEmployeeYearlyDataToCorporate({
+          corporate: nextCorporates[RN],
+          employee,
+          year,
         });
       }
     }
@@ -88,6 +49,74 @@ const useCorporate = () => {
     addEmployees,
     filterEmployees,
   };
+};
+
+type CreateCorporateProps = {
+  employee: InstanceType<typeof Employee>;
+};
+const createCorporate = ({ employee }: CreateCorporateProps) => {
+  return new Corporate({
+    ...employee.corporate,
+    employees: {
+      [employee.id]: employee,
+    },
+  });
+};
+
+type AddEmployeeToCorporateProps = CreateCorporateProps & {
+  corporate: InstanceType<typeof Corporate>;
+};
+const addEmployeeToCorporate = ({
+  corporate,
+  employee,
+}: AddEmployeeToCorporateProps) => {
+  const { address, name, employees } = corporate;
+  return new Corporate({
+    ...corporate,
+    address: address || employee.corporate.address,
+    name: name || employee.corporate.name,
+    employees: {
+      ...employees,
+      [employee.id]: employee,
+    },
+  });
+};
+
+type AddEmployeeYearlyDataToCorporateProps = AddEmployeeToCorporateProps & {
+  year: string;
+};
+const addEmployeeYearlyDataToCorporate = ({
+  corporate,
+  employee,
+  year,
+}: AddEmployeeYearlyDataToCorporateProps) => {
+  const { id, birth, date, earnedIncomeWithholdingDepartment, salary } =
+    employee;
+  return new Corporate({
+    ...corporate,
+    employees: {
+      ...corporate.employees,
+      [id]: new Employee(
+        corporate.employees[id].id,
+        corporate.employees[id].birth || birth,
+        corporate.employees[id].name,
+        corporate.employees[id].corporate,
+        {
+          ...corporate.employees[id].date,
+          [year]: date[year],
+        },
+        {
+          ...corporate.employees[id].earnedIncomeWithholdingDepartment,
+          [year]: earnedIncomeWithholdingDepartment[year],
+        },
+        year,
+        {
+          ...corporate.employees[id].salary,
+          [year]: salary[year],
+        }
+      ),
+    },
+  });
 };
 
 export default useCorporate;
