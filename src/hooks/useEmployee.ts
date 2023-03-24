@@ -33,7 +33,7 @@ const useEmployee = ({ employee, year }: UseEmployeeProps) => {
         if (startDate > monthsLastDay) return false;
         if ((!resign || Date.parse(resign) > monthsLastDay) && total === 0)
           return true;
-        if (resign && isRetired(resign, year, idx + 1)) return true;
+        if (resign && isRetired(resign, year, idx + 1) && total) return true;
         return false;
       }
     );
