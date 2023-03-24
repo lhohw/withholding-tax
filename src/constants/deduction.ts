@@ -1,5 +1,6 @@
 type Generation = Record<"youth" | "manhood", number>;
 export type CorporateSizes = "small" | "medium" | "large";
+export type CapitalStatus = "capital" | "nonCapital";
 
 export type EmploymentIncrease = {
   [year: string]: {
