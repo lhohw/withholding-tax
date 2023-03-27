@@ -1,9 +1,10 @@
-import { PaymentDate, YYYYMMDD } from "../features/person/personAPI";
-import { getBirthCentury } from "./values";
+import type { YYYYMMDD } from "models/Employee";
+
 import {
   socialInsuranceRate as SIR,
   industrialAccidentRate as IAR,
 } from "constants/law";
+import { getBirth } from "./api/employeeAPI";
 
 export const degToRad = (deg: number) => (deg / 180) * Math.PI;
 
@@ -29,15 +30,10 @@ export const getDays = (year: number, month: number) =>
     31,
   ][month];
 
-export const isYouth = (RRN: string, date: PaymentDate) => {
-  const [year, month] = date.split("/").map(Number);
+export const isYouth = (RRN: string, date: number) => {
+  const [year, month] = numberToDate(date).map(Number);
   const limit = new Date(year - 30, month - 1, getDays(year, month - 1));
-  const [f] = RRN.split("-");
-  const prefix = getBirthCentury(RRN);
-  const y = parseInt(prefix + f.slice(0, 2));
-  const m = parseInt(f.slice(2, 4));
-  const d = parseInt(f.slice(4, 6));
-  const birth = new Date(y, m - 1, d);
+  const birth = new Date(getBirth(RRN));
   return birth > limit;
 };
 
@@ -72,24 +68,11 @@ const numToStr = (x: number) => {
     i -= 3;
   }
   return (minus ? "-" : "") + ret.slice(1);
-  // const minus = x < 0;
-  // let str = minus ? x.toString().slice(1) : x.toString();
-  // let underDecimalPoint = "";
-  // if (str.indexOf(".") !== -1) {
-  //   [str, underDecimalPoint] = str.split(".");
-  // }
-  // let i = str.length;
-  // let ret = "";
-  // while (i > 0) {
-  //   ret = "," + str.slice(Math.max(0, i - 3), i) + ret;
-  //   i -= 3;
-  // }
-  // return (
-  //   (minus ? "-" : "") +
-  //   ret.slice(1) +
-  //   (underDecimalPoint ? `.${underDecimalPoint.slice(0, 2)}` : "")
-  // );
 };
+
+export const dateToNumber = (date: string) => new Date(date).getTime();
+export const numberToDate = (num: number) =>
+  new Date(num).toLocaleDateString().split(". ");
 
 export function parseMoney<T extends string | number>(
   x: T
@@ -123,3 +106,14 @@ export const lessThan28Days = (startDate: string, retirementDate: string) =>
 
 export const roundOff = (x: number) =>
   (x < 0 ? Math.ceil(x * 100) : Math.floor(x * 100)) / 100;
+
+export const withDividedByMonth = (data: number, month: string) =>
+  `${roundOff(data / (+month || 1))} [${data}]`;
+
+export const getGenerationSum = (data: number[]) =>
+  data.slice(2).reduce((x, y) => x + y);
+
+export const getResultSum = (result: number[]) => ({
+  totalSalary: result[0] + result[1],
+  totalGeneration: getGenerationSum(result),
+});

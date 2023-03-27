@@ -2,54 +2,31 @@ import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 import Item from "./Item";
 import { css } from "@emotion/react";
 import React, { useCallback } from "react";
+import { focus } from "lib/dom";
 
 export type CheckBoxProps = {
+  width?: number;
   id: string;
   checked: boolean[];
-  onToggle: (id: string) => void;
+  onToggle: (idx?: number) => void;
 };
-const CheckBox = ({ id, checked, onToggle }: CheckBoxProps) => {
+const CheckBox = ({ width = 50, id, checked, onToggle }: CheckBoxProps) => {
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent<SVGElement>) => {
       if (e.code === "Enter") {
-        onToggle(id);
-        const filtered = Array.prototype.filter.call(
-          document.querySelectorAll('svg[tabindex="0"]'),
-          (elem: SVGElement) =>
-            // @ts-ignore
-            e.target.getClientRects()[0].y < elem.getClientRects()[0].y
-        );
-        if (filtered.length) filtered[0].focus();
+        onToggle();
+        focus("next", e, 'svg[tabindex="0"]');
       }
       if (e.code === "ArrowDown" || e.code === "ArrowUp") {
         e.preventDefault();
-        if (e.code === "ArrowDown") {
-          const filtered = Array.prototype.filter.call(
-            document.querySelectorAll('svg[tabindex="0"]'),
-            (elem: SVGElement) =>
-              // @ts-ignore
-              e.target.getClientRects()[0].y < elem.getClientRects()[0].y
-          );
-          if (filtered.length) filtered[0].focus();
-        } else {
-          const filtered = Array.prototype.filter.call(
-            document.querySelectorAll('svg[tabindex="0"]'),
-            (elem: SVGElement) =>
-              // @ts-ignore
-              e.target.getClientRects()[0].y > elem.getClientRects()[0].y
-          );
-          if (filtered.length) filtered[filtered.length - 1].focus();
-        }
+        if (e.code === "ArrowDown") focus("next", e, 'svg[tabindex="0"]');
+        else focus("prev", e, 'svg[tabindex="0"]');
       }
     },
-    [id, onToggle]
+    [onToggle]
   );
   return (
-    <Item
-      css={css`
-        width: 50px;
-      `}
-    >
+    <Item width={width}>
       {checked.findIndex((e) => e === false) === -1 ? (
         <MdCheckBox
           css={css`
@@ -57,7 +34,7 @@ const CheckBox = ({ id, checked, onToggle }: CheckBoxProps) => {
           `}
           tabIndex={0}
           size={25}
-          onClick={() => onToggle(id)}
+          onClick={() => onToggle()}
           onKeyDown={onKeyDown}
         />
       ) : (
@@ -67,7 +44,7 @@ const CheckBox = ({ id, checked, onToggle }: CheckBoxProps) => {
           `}
           tabIndex={0}
           size={25}
-          onClick={() => onToggle(id)}
+          onClick={() => onToggle()}
           onKeyDown={onKeyDown}
         />
       )}

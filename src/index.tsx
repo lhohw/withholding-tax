@@ -1,9 +1,8 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { Provider } from "react-redux";
-import { store } from "./app/store";
-import Main from "./Main";
+import App from "./App";
 import reportWebVitals from "./reportWebVitals";
+import { RecoilRoot } from "recoil";
 import "./index.css";
 
 const container = document.getElementById("root")!;
@@ -11,9 +10,9 @@ const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <Provider store={store}>
-      <Main />
-    </Provider>
+    <RecoilRoot>
+      <App />
+    </RecoilRoot>
   </React.StrictMode>
 );
 

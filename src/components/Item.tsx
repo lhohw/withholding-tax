@@ -7,18 +7,21 @@ export type ItemProps = {
 };
 
 const Item = styled.li<ItemProps>`
-  display: flex;
+  display: ${(props) => (props.width === 0 ? "none" : "flex")};
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
-  min-width: ${(props) => props.width + "px"};
-  width: ${(props) => props.width + "px"};
+  min-width: ${(props) => (props.width || 0) + "px"};
+  width: ${(props) => (props.width || 0) + "px"};
   font-size: ${font.size.medium};
   padding: 0.5rem;
   white-space: nowrap;
   overflow-x: scroll;
   transition: color 0.15s ease-in-out;
+  &:nth-of-type(2) {
+    align-items: flex-start;
+  }
 `;
 
 export default Item;

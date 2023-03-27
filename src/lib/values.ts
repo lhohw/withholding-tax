@@ -1,18 +1,26 @@
 export const getBirthCentury = (RRN: string) => {
-  const firstRearDigit = RRN.split("-")[1][0];
+  const [front, rear] = RRN.split("-");
+  const firstRearDigit = rear[0];
+  if (firstRearDigit === "*")
+    return (
+      19 + Number(parseInt(front.slice(0, 2)) - (getThisYear() % 100) < 0)
+    ).toString();
   return (
     19 +
-    (firstRearDigit === "3" ||
-    firstRearDigit === "4" ||
-    firstRearDigit === "7" ||
-    firstRearDigit === "8"
-      ? 1
-      : 0)
+    Number(
+      firstRearDigit === "3" ||
+        firstRearDigit === "4" ||
+        firstRearDigit === "7" ||
+        firstRearDigit === "8"
+    )
   ).toString();
 };
 
+export const getThisYear = () =>
+  parseInt(new Date().toLocaleString().split(". ")[0]);
+
 export const getLastYears = (len: number) => {
-  const year = parseInt(new Date().toLocaleString().split(". ")[0]);
+  const year = getThisYear();
   return new Array(len)
     .fill(undefined)
     .map((_, i) => (year - (len - i)).toString());

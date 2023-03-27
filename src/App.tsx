@@ -1,26 +1,42 @@
-import ErrorBoundary from "components/ErrorBoundary";
-import Reader from "features/reader/Reader";
-import Corporate from "features/corporate/Corporate";
-import Loading from "features/loading/Loading";
+import { css } from "@emotion/react";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 
-import { useAppSelector } from "app/hooks";
+import Table from "pages/Table";
+import Main from "pages/Main";
+import SocialInsurance from "pages/SocialInsurance";
+import EmploymentIncrease from "pages/EmploymentIncrease";
+
+import Variation from "components/Variation";
 
 const App = () => {
-  const { loading } = useAppSelector((state) => state.loading);
-  const { list, selected } = useAppSelector((state) => state.reader);
-  const { year, corporate } = selected;
   return (
-    <ErrorBoundary>
-      <div>
-        <Reader />
-        {loading ? (
-          <Loading />
-        ) : year && corporate ? (
-          <Corporate RN={corporate} year={year} data={list[corporate]} />
-        ) : null}
-      </div>
-    </ErrorBoundary>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Main />}>
+          <Route path="/" element={<Table />} />
+          <Route path="/" element={<VariationWithOutlet />}>
+            <Route path="socialInsurance" element={<SocialInsurance />} />
+            <Route path="employmentIncrease" element={<EmploymentIncrease />} />
+          </Route>
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 };
 
+const VariationWithOutlet = () => (
+  <div
+    css={css`
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      @media (max-width: 1240px) {
+        align-items: flex-start;
+      }
+    `}
+  >
+    <Variation />
+    <Outlet />
+  </div>
+);
 export default App;
