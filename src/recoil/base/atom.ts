@@ -27,3 +27,11 @@ export const inputState = atomFamily<string, InputStateProps>({
     return "";
   },
 });
+
+export type LoadingStateProps = {
+  type: string;
+};
+export const loadingState = atomFamily<boolean, LoadingStateProps>({
+  key: "LoadingState",
+  default: false,
+});
