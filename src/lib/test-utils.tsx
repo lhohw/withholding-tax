@@ -1,43 +1,10 @@
 import type { MonthlyStatementOfPaymentOfWageAndSalary } from "models/Employee";
-import type { RenderOptions } from "@testing-library/react";
-import type { PreloadedState } from "@reduxjs/toolkit";
-import type { RootState, AppStore } from "app/store";
 
-import React, { PropsWithChildren } from "react";
-import { render } from "@testing-library/react";
-import { Provider } from "react-redux";
-import { MemoryRouter } from "react-router-dom";
-
-import { setupStore } from "app/store";
-import { Generation } from "features/corporate/corporateSlice";
 import { dateToNumber } from "./utils";
-
-interface ExtendedRenderOptions extends Omit<RenderOptions, "queries"> {
-  preloadedState?: PreloadedState<RootState>;
-  store?: AppStore;
-}
-
-export function renderWithProviders(
-  ui: React.ReactElement,
-  {
-    preloadedState = {},
-    store = setupStore(preloadedState),
-    ...renderOptions
-  }: ExtendedRenderOptions = {}
-) {
-  function Wrapper({ children }: PropsWithChildren<{}>): JSX.Element {
-    return (
-      <MemoryRouter>
-        <Provider store={store}>{children}</Provider>
-      </MemoryRouter>
-    );
-  }
-  return { store, ...render(ui, { wrapper: Wrapper, ...renderOptions }) };
-}
 
 export function createMockSalary(
   year: string,
-  generation: Generation[]
+  generation: ("청년" | "장년" | "-")[]
 ): MonthlyStatementOfPaymentOfWageAndSalary[] {
   return generation.map((gen, idx) => {
     const youth = gen === "청년" ? 100 : 0,
