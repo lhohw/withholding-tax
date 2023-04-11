@@ -10,7 +10,9 @@ const Layout = ({ children }: LayoutProps) => (
       flex-direction: column;
       align-items: flex-start;
       width: 100%;
-      overflow: scroll;
+      @media (max-width: 1260px) {
+        overflow-x: scroll;
+      }
     `}
   >
     <div

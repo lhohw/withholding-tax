@@ -17,7 +17,6 @@ const Item = styled.li<ItemProps>`
   font-size: ${font.size.medium};
   padding: 0.5rem;
   white-space: nowrap;
-  overflow-x: scroll;
   transition: color 0.15s ease-in-out;
   &:nth-of-type(2) {
     align-items: flex-start;
