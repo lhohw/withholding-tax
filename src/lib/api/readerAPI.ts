@@ -9,6 +9,7 @@ import {
 } from "pdfjs-dist";
 // @ts-ignore
 import * as pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
+import produce from "immer";
 
 import Employee from "models/Employee";
 import { getId, getBirth } from "./employeeAPI";
@@ -32,7 +33,6 @@ import {
   incomeEarnerRegex,
 } from "constants/regex";
 import { dateToNumber, parseMoney, isYouth } from "lib/utils";
-import produce from "immer";
 
 GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
@@ -209,22 +209,21 @@ const parseData = (
 
 const createDataObject = <T extends { [key: string]: any }>(
   str: string,
-  breadcrumb: string[],
+  route: string[],
   regex?: RegExp
 ) => {
-  if (!breadcrumb.length)
-    throw new Error("Breadcrumb for data oject is required");
+  if (!route.length) throw new Error("route for data oject is required");
   if (regex) str = removeKeyFromRegex(str, regex);
 
   const obj = produce({} as T, (draft) => {
-    for (let i = 0; i < breadcrumb.length - 1; i++) {
-      const key = breadcrumb[i];
+    for (let i = 0; i < route.length - 1; i++) {
+      const key = route[i];
       // @ts-ignore
       if (!draft[key]) draft[key] = {};
       draft = draft[key];
     }
     // @ts-ignore
-    draft[breadcrumb[breadcrumb.length - 1]] = str;
+    draft[route[route.length - 1]] = str;
   });
   return obj;
 };

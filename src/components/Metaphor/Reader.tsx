@@ -26,7 +26,7 @@ const Reader = () => {
       for (let i = 0; i < files.length; i++) {
         const fReader = new FileReader();
         fReader.readAsArrayBuffer(files[i]);
-        fReader.onloadend = async ({ target: { result: data } }: any) => {
+        fReader.onload = async ({ target: { result: data } }: any) => {
           const employees = (await read(data))!;
           res.push(employees);
           if (res.length === files.length) {
@@ -35,6 +35,9 @@ const Reader = () => {
             );
             setLoading(false);
           }
+        };
+        fReader.onerror = (e) => {
+          console.log(e);
         };
       }
     },
