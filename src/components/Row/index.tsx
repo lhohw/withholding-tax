@@ -1,4 +1,4 @@
-import { CSSProperties, useMemo } from "react";
+import React, { CSSProperties, useMemo } from "react";
 
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
@@ -70,7 +70,7 @@ const Row = ({
             <Cell
               key={i}
               width={isTotal && i === 4 ? 0 : isTotal && i === 5 ? 260 : w[i]}
-              onClick={onToggle ? () => onToggle(i - 6) : null!}
+              onClick={onToggle && i >= 6 ? () => onToggle(i - 6) : null!}
             >
               {d}
             </Cell>
@@ -108,4 +108,4 @@ const RowWrapper = ({
     {children}
   </div>
 );
-export default Row;
+export default React.memo(Row);
