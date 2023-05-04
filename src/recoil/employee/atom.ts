@@ -2,7 +2,12 @@ import { atomFamily } from "recoil";
 
 import Employee from "models/Employee";
 
-import { getDays, getWorkingDays, isRetired } from "lib/utils/date";
+import {
+  getLastDay,
+  getWorkingDays,
+  isResigned,
+  parseDate,
+} from "lib/utils/date";
 
 export type EmployeeCheckedStateProps = {
   id: string;
@@ -39,14 +44,13 @@ const getDefaultEmployeeChecked = ({
   return mappedEarnedIncomeWithholdingDepartment!.map((total, idx) => {
     if (!date[year]?.start) return false;
 
-    const startDate = Date.parse(date[year].start);
-    const monthsLastDay = Date.parse(
-      `${year}.${(idx + 1).toString().padStart(2, "0")}.${getDays(+year, idx)}`
-    );
+    const startDate = parseDate(date[year].start);
+    const month = idx + 1;
+    const monthsLastDay = getLastDay(+year, month);
     if (startDate > monthsLastDay) return false;
-    if ((!resign || Date.parse(resign) > monthsLastDay) && total === 0)
+    if ((!resign || !isResigned(resign, year, month)) && total === 0)
       return true;
-    if (resign && isRetired(resign, year, idx + 1) && total) return true;
+    if (resign && isResigned(resign, year, month) && total) return true;
     return false;
   });
 };

@@ -1,3 +1,4 @@
+import { getLastDay, isResigned, parseDate } from "lib/utils/date";
 import Corporate from "./Corporate";
 import { parseMoney } from "lib/utils";
 
@@ -61,19 +62,7 @@ class Employee {
     }
   ) {}
   getTableData(year: string) {
-    const { name, date, birth, earnedIncomeWithholdingDepartment, salary } =
-      this;
-    if (!this.earnedIncomeWithholdingDepartment[year]) {
-      return [
-        name,
-        birth.slice(2),
-        "",
-        "",
-        "0",
-        "0",
-        ...new Array(12).fill("-"),
-      ];
-    }
+    const { name, date, birth, salary } = this;
     const { start, resign } = date[year];
     const { youth, manhood } = salary[year];
     return [
@@ -83,9 +72,17 @@ class Employee {
       resign.slice(2),
       parseMoney(youth),
       parseMoney(manhood),
-      ...earnedIncomeWithholdingDepartment[year].map((e) =>
-        e.salary.youth ? "청년" : e.salary.manhood ? "장년" : "-"
-      ),
+      ...new Array(12).fill(undefined).map((_, idx) => {
+        const month = idx + 1;
+        const now = getLastDay(+year, month);
+        const startDate = parseDate(start);
+        if (now < startDate) return "-";
+        if (isResigned(resign, year, month)) return "-";
+        const limit = getLastDay(+year - 30, month);
+        const birthDate = parseDate(birth);
+        if (birthDate > limit) return "청년";
+        return "장년";
+      }),
     ];
   }
 }
