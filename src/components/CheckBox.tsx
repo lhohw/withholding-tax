@@ -2,7 +2,7 @@ import { MdCheckBox, MdCheckBoxOutlineBlank } from "react-icons/md";
 import Item from "./Item";
 import { css } from "@emotion/react";
 import React, { useCallback } from "react";
-import { focus } from "lib/dom";
+import { focus } from "lib/utils/dom";
 
 export type CheckBoxProps = {
   width?: number;

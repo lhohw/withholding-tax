@@ -7,7 +7,7 @@ import { css } from "@emotion/react";
 import { useRecoilValue } from "recoil";
 
 import { parseMoney } from "lib/utils";
-import { getLastYears } from "lib/values";
+import { getLastYears } from "lib/utils/values";
 
 import {
   employmentIncreaseTypes,

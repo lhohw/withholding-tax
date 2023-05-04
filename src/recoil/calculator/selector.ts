@@ -11,7 +11,7 @@ import { generationTypes } from "constants/value";
 import { CorporateSizes, employmentIncrease } from "constants/deduction";
 import { industrialAccidentRate } from "constants/law";
 
-import { getLastYears } from "lib/values";
+import { getLastYears } from "lib/utils/values";
 import { getSocialInsuranceRate, roundOff } from "lib/utils";
 
 import { UseCalculatorProps } from "hooks/useCalculator";

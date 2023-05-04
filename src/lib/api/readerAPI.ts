@@ -32,7 +32,8 @@ import {
   monthlyStatementRegex,
   incomeEarnerRegex,
 } from "constants/regex";
-import { dateToNumber, parseMoney, isYouth } from "lib/utils";
+import { parseMoney } from "lib/utils";
+import { dateToNumber, isYouth } from "lib/utils/date";
 
 GlobalWorkerOptions.workerSrc = pdfjsWorker;
 

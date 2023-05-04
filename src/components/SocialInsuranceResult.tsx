@@ -9,7 +9,7 @@ import useCalculator from "hooks/useCalculator";
 
 import { inputState } from "recoil/base";
 
-import { getLastYears } from "lib/values";
+import { getLastYears } from "lib/utils/values";
 import { parseMoney, roundOff } from "lib/utils";
 
 import YearlySocialInsurance from "./YearlySocialInsurance";

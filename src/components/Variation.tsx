@@ -7,7 +7,7 @@ import { whiteNeumorphism } from "styles/neumorphism";
 import useCorporate from "hooks/useCorporate";
 import useCalculator from "hooks/useCalculator";
 
-import { getLastYears } from "lib/values";
+import { getLastYears } from "lib/utils/values";
 import { withDividedByMonth } from "lib/utils";
 
 import Row from "./Row";

@@ -3,8 +3,8 @@ import type { YYYYMMDD } from "models/Employee";
 import type { CorporateProps } from "features/corporate/Corporate";
 import { CorporateState, Generation } from "features/corporate/corporateSlice";
 
-import { getLastYears } from "lib/values";
-import { createMockSalary } from "lib/test-utils";
+import { getLastYears } from "lib/utils/values";
+import { createMockSalary } from "lib/utils/test";
 
 export const RN: string = "000-00-00000";
 export type PersonnelData = CorporateProps["data"];

@@ -2,7 +2,7 @@ import { atomFamily } from "recoil";
 
 import Employee from "models/Employee";
 
-import { getDays, getWorkingDays, isRetired } from "lib/utils";
+import { getDays, getWorkingDays, isRetired } from "lib/utils/date";
 
 export type EmployeeCheckedStateProps = {
   id: string;

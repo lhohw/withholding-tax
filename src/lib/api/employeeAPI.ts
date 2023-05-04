@@ -1,6 +1,6 @@
 import type { YYYYMMDD } from "models/Employee";
 
-import { getBirthCentury } from "lib/values";
+import { getBirthCentury } from "lib/utils/values";
 
 const cache: {
   [RRN: string]: string;

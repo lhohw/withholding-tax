@@ -1,6 +1,6 @@
 import type { MonthlyStatementOfPaymentOfWageAndSalary } from "models/Employee";
 
-import { dateToNumber } from "./utils";
+import { dateToNumber } from "./date";
 
 export function createMockSalary(
   year: string,
