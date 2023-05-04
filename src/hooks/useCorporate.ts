@@ -38,10 +38,7 @@ const useCorporate = () => {
 
   const filterEmployees = (employees: Corporate["employees"], year: string) => {
     const employeesArr = Object.values(employees) as Employee[];
-    return [
-      ...employeesArr.filter((employee) => !!employee.date[year]),
-      ...employeesArr.filter((employee) => !employee.date[year]),
-    ];
+    return employeesArr.filter((employee) => !!employee.date[year]);
   };
   return {
     selectedCorporate,
