@@ -1,7 +1,6 @@
 /* eslint-disable no-useless-escape */
 export const withholdingTaxRegex = new RegExp(
-  "소득자별\\s*근로소득\\s*원천징수부|" +
-    "귀속연도\\s*\\d+|" +
+  "귀속연도\\s*\\d+|" +
     "주민등록번호(\\s)*(\\d)+-(\\d|\\*)*|" +
     "성명:\\s*([\\(\\)가-힣a-zA-Z]+)?|" +
     "입사일\\s*(\\d+년\\d+월\\d+일\\s?)?|" +
@@ -14,8 +13,7 @@ export const withholdingTaxRegex = new RegExp(
 );
 
 export const taxLoveWithholdingTaxRegex = new RegExp(
-  "소득자별\\s*근로소득\\s*원천징수부|" +
-    "귀속연도\\s*\\d+|" +
+  "귀속연도\\s*\\d+|" +
     "주민등록번호(\\s)*(\\d)+-(\\d|\\*)*|" +
     "성\\s*명\\s*([()가-힣a-zA-Z]+)?|" +
     "입사일\\s*[\\d+/]*|" +

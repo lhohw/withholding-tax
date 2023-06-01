@@ -67,10 +67,9 @@ export const read = async (data: ArrayBuffer) => {
 
 const readPDF = async (data: ArrayBuffer) => {
   const pdf = await getPDFDocumentFrom(data);
-  const _isTaxLove = await isTaxLove(pdf);
-  const pdfData = await getPDFDataFrom(pdf, _isTaxLove);
+  const { pdfData, isTaxLove } = await getPDFDataFrom(pdf);
 
-  const employeeInfo = createEmployeeInfo(pdfData, _isTaxLove);
+  const employeeInfo = createEmployeeInfo({ pdfData, isTaxLove });
   return employeeInfo;
 };
 
@@ -82,23 +81,20 @@ const getPDFDocumentFrom = async (data: ArrayBuffer) => {
   }).promise;
 };
 
-const isTaxLove = async (pdf: PDFDocumentProxy) => {
-  const md = await pdf.getMetadata();
-  // @ts-ignore
-  const isTaxLove = md?.info?.Creator === "세무사랑 Pro";
-  return isTaxLove;
-};
-
-const getPDFDataFrom = async (pdf: PDFDocumentProxy, isTaxLove = false) => {
+const getPDFDataFrom = async (pdf: PDFDocumentProxy) => {
   const pdfData: { data: WithholdingTaxData; offsetX: number[] }[] = [];
   const totalPage = pdf.numPages;
+  let isTaxLove = false;
   for (let pageNumber = 1; pageNumber <= totalPage; pageNumber++) {
     const page = await pdf.getPage(pageNumber);
     const { text, offsetX } = await extractTextAndOffsetXFromPage(page);
+    if (!/소득자별\s*근로소득\s*원천징수부/.exec(text)) continue;
+
+    isTaxLove = isTaxLove || !/사원코드/.exec(text);
     const pageData = createWithholdingTaxData({ text, isTaxLove })!;
     if (pageData) pdfData.push({ data: pageData, offsetX });
   }
-  return pdfData;
+  return { pdfData, isTaxLove };
 };
 
 const extractTextAndOffsetXFromPage = async (page: PDFPageProxy) => {
@@ -139,14 +135,9 @@ const createWithholdingTaxData: CreateWithholdingTaxData = ({
 }) => {
   const withholdingTaxData = {} as WithholdingTaxData;
   let match;
-  let isWithholdingTax = false;
   const regex = isTaxLove ? taxLoveWithholdingTaxRegex : withholdingTaxRegex;
   while ((match = regex.exec(text))) {
     let str = match[0];
-    if (/소득자별\s*근로소득\s*원천징수부/.exec(str)) {
-      isWithholdingTax = true;
-      continue;
-    }
     if (str.startsWith("35") && str.endsWith("계")) {
       str = str.slice(2);
       match.index += 2;
@@ -156,7 +147,6 @@ const createWithholdingTaxData: CreateWithholdingTaxData = ({
     if (key === "data") withholdingTaxData.index = match.index;
     setData(withholdingTaxData, data, key);
   }
-  if (!isWithholdingTax) return null;
   return withholdingTaxData;
 };
 
@@ -245,10 +235,10 @@ const setData = (
   here[key] = data[key];
 };
 
-const createEmployeeInfo = (
-  pdfData: Awaited<ReturnType<typeof getPDFDataFrom>>,
-  isTaxLove = false
-) => {
+const createEmployeeInfo = ({
+  pdfData,
+  isTaxLove,
+}: Awaited<ReturnType<typeof getPDFDataFrom>>) => {
   const employeeInfo = pdfData.map(({ data, offsetX }) => {
     const statement = createStatement(data, offsetX, isTaxLove);
     const { year, name, RRN, corporate, date } = data;
