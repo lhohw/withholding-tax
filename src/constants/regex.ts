@@ -37,23 +37,13 @@ export const dateRegex = {
   start: /입사일\s*/,
   resign: /퇴사일\s*/,
 };
-export const monthlyStatementRegex = (isTaxLove: boolean) => {
-  if (isTaxLove) return taxLoveMonthlyStatementRegex();
-  return new RegExp(
-    new Array(12)
-      .fill(0)
-      .map((_, i) => i + 1 + "월")
-      .join("|") + "|연말|종전|납세|소",
-    "g"
-  );
-};
 
-const taxLoveMonthlyStatementRegex = () =>
+export const monthlyStatementRegex = () =>
   new RegExp(
     new Array(12)
       .fill(0)
-      .map((_, i) => `\\d{2,4}/${(i + 1).toString().padStart(2, "0")}`)
-      .join("|") + "|연말|계",
+      .map((_, i) => `${i + 1}(월?) \\d{2,4}/\\d{1,2}`)
+      .join("|") + "|연말|계|종전|납세|소",
     "g"
   );
 

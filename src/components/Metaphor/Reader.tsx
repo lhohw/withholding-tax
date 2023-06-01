@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { css } from "@emotion/react";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { VscBook } from "react-icons/vsc";
 
 import useCorporate from "hooks/useCorporate";
@@ -15,7 +15,7 @@ import Metaphor from ".";
 
 const Reader = () => {
   const { addEmployees } = useCorporate();
-  const [, setLoading] = useRecoilState(loadingState({ type: "reader" }));
+  const setLoading = useSetRecoilState(loadingState({ type: "reader" }));
 
   const readFiles = useCallback(
     async (files: FileList | null) => {
@@ -26,9 +26,16 @@ const Reader = () => {
       for (let i = 0; i < files.length; i++) {
         const fReader = new FileReader();
         fReader.readAsArrayBuffer(files[i]);
-        fReader.onload = async ({ target: { result: data } }: any) => {
-          const employees = (await read(data))!;
-          res.push(employees);
+        fReader.onloadend = async ({ target: { result: data } }: any) => {
+          let employees;
+          try {
+            employees = (await read(data as ArrayBuffer))!;
+            res.push(employees);
+          } catch (e) {
+            console.log(`Error in file read - "${files[i].name}"\n`, e);
+            setLoading(false);
+            return;
+          }
           if (res.length === files.length) {
             await addEmployees(
               res.reduce((acc, employees) => acc.concat(employees), [])

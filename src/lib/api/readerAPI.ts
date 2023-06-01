@@ -37,9 +37,10 @@ import { dateToNumber, isYouth } from "lib/utils/date";
 
 GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
-export const read = async (data: string) => {
+export const read = async (data: ArrayBuffer) => {
   const employeeInfo = await readPDF(data);
   const result: Employee[] = [];
+
   for (const {
     year,
     name,
@@ -64,7 +65,7 @@ export const read = async (data: string) => {
   return result;
 };
 
-const readPDF = async (data: string) => {
+const readPDF = async (data: ArrayBuffer) => {
   const pdf = await getPDFDocumentFrom(data);
   const _isTaxLove = await isTaxLove(pdf);
   const pdfData = await getPDFDataFrom(pdf, _isTaxLove);
@@ -73,7 +74,7 @@ const readPDF = async (data: string) => {
   return employeeInfo;
 };
 
-const getPDFDocumentFrom = async (data: string) => {
+const getPDFDocumentFrom = async (data: ArrayBuffer) => {
   return await getDocument({
     data,
     cMapUrl: "../../../cmaps/",
@@ -136,7 +137,7 @@ const createWithholdingTaxData: CreateWithholdingTaxData = ({
   text,
   isTaxLove,
 }) => {
-  const withholdingTaxData: WithholdingTaxData = {} as WithholdingTaxData;
+  const withholdingTaxData = {} as WithholdingTaxData;
   let match;
   let isWithholdingTax = false;
   const regex = isTaxLove ? taxLoveWithholdingTaxRegex : withholdingTaxRegex;
@@ -146,7 +147,6 @@ const createWithholdingTaxData: CreateWithholdingTaxData = ({
       isWithholdingTax = true;
       continue;
     }
-    // isTaxLove &&
     if (str.startsWith("35") && str.endsWith("계")) {
       str = str.slice(2);
       match.index += 2;
@@ -171,7 +171,7 @@ const parseData = (
   if (str.match(RRNRegex)) return createDataObject(str, ["RRN"], RRNRegex);
   if (str.match(addressRegex)) {
     return createDataObject(
-      removeKeyFromRegex(str, incomeEarnerRegex),
+      extractValue(str, incomeEarnerRegex),
       ["corporate", "address"],
       addressRegex
     );
@@ -180,7 +180,7 @@ const parseData = (
   if (str.match(RNRegex))
     return createDataObject(str, ["corporate", "RN"], RNRegex);
   if (str.match(dateRegex.start)) {
-    str = removeKeyFromRegex(str, dateRegex.start);
+    str = extractValue(str, dateRegex.start);
     if (str.match(/\//)) str = str.replace(/\//g, ".");
     else if (str.match(/\d+년\d+월\d+일/))
       str = str.replace(/[년|월|일]/g, (matched) =>
@@ -193,7 +193,7 @@ const parseData = (
     );
   }
   if (str.match(dateRegex.resign)) {
-    str = removeKeyFromRegex(str, dateRegex.resign);
+    str = extractValue(str, dateRegex.resign);
     if (str.match(/\//)) str = str.replace(/\//g, ".");
     else if (str.match(/\d+년\d+월\d+일/))
       str = str.replace(/[년|월|일]/g, (matched) =>
@@ -213,8 +213,8 @@ const createDataObject = <T extends { [key: string]: any }>(
   route: string[],
   regex?: RegExp
 ) => {
-  if (!route.length) throw new Error("route for data oject is required");
-  if (regex) str = removeKeyFromRegex(str, regex);
+  if (!route.length) throw new Error("route for data object is required");
+  if (regex) str = extractValue(str, regex);
 
   const obj = produce({} as T, (draft) => {
     for (let i = 0; i < route.length - 1; i++) {
@@ -229,8 +229,7 @@ const createDataObject = <T extends { [key: string]: any }>(
   return obj;
 };
 
-const removeKeyFromRegex = (str: string, regex: RegExp) =>
-  str.replace(regex, "");
+const extractValue = (str: string, regex: RegExp) => str.replace(regex, "");
 
 const setData = (
   here: { [key: string]: any },
@@ -273,31 +272,27 @@ const createStatement = (
   isTaxLove: boolean
 ) => {
   const { data: text, index, year, RRN } = data;
-  let match;
-  let here = -1;
   const statement: MonthlyStatementOfPaymentOfWageAndSalary[] = [];
   const salary: Employee["salary"] = {};
-
   salary[year] = { youth: 0, manhood: 0 };
-  let tag = "";
-  const regex = monthlyStatementRegex(isTaxLove);
+
+  let match;
+  let month = -1;
   let expectedMonth = 1;
-  let minus = 0;
+  const regex = monthlyStatementRegex();
+  match = regex.exec(text);
+
+  if (!match) throw new Error("no matched to regex. check text and pdf");
+
+  let here = match.index;
+  month = getMonthFromMatched(year, match[0]);
   while ((match = regex.exec(text))) {
-    if (here === -1) {
-      tag = isTaxLove
-        ? match[0].split("/")[1]
-        : match[0].replace("월", "").padStart(2, "0");
-      here = match.index;
-      if (parseInt(tag) === 2 && !text.startsWith("12")) minus++;
-      continue;
-    }
     // create default monthly statement
-    while (parseInt(tag) - minus !== expectedMonth && expectedMonth <= 12) {
-      if (parseInt(tag) - minus < expectedMonth) {
+    while (month !== expectedMonth && expectedMonth <= 12) {
+      if (month < expectedMonth) {
         throw new Error("invalid month, check pdf and reader.");
       }
-      const monthlyStatement = createMonthlyStatement(
+      const defaultMonthlyStatement = createMonthlyStatement(
         "",
         offsetX,
         index + here,
@@ -307,41 +302,37 @@ const createStatement = (
         isTaxLove,
         expectedMonth++
       );
-      statement.push(monthlyStatement);
+      statement.push(defaultMonthlyStatement);
     }
+
+    if (isNaN(month)) break;
+
+    // create expected monthly statement
     const monthlyStatement = createMonthlyStatement(
-      text.slice(here, match.index),
+      text.substring(here, match.index),
       offsetX,
       index + here,
       RRN,
-      (+tag - minus).toString().padStart(2, "0"),
+      month.toString().padStart(2, "0"),
       +year,
       isTaxLove,
       expectedMonth++
     );
-    if (!monthlyStatement) return statement;
+
     statement.push(monthlyStatement);
     salary[year].youth += monthlyStatement.salary.youth;
     salary[year].manhood += monthlyStatement.salary.manhood;
 
-    tag =
-      (isTaxLove
-        ? (+match[0].split("/")[1] - minus).toString().padStart(2, "0")
-        : (+match[0].replace("월", "") - minus).toString().padStart(2, "0")) ||
-      (+match[0] - minus).toString().padStart(2, "0");
     here = match.index;
+    month = getMonthFromMatched(year, match[0]);
   }
   return statement;
 };
 
-const findPositionForParsingStatement = (x: number, range: number[]) => {
-  let i = 0;
-  while (i < range.length && x > range[i]) i++;
-  if (i === range.length) {
-    i--;
-    console.error("Can not find position for statement " + x);
-  }
-  return titles[i];
+const getMonthFromMatched = (year: string, matched: string) => {
+  const [_month, _year, splitted] = matched.split(/\/|\s/g);
+  if (_month === "12" && parseInt(splitted) <= 3 && year === _year) return 2; // for "1(월)2(월) 2019/02" case
+  return parseInt(_month);
 };
 
 const createMonthlyStatement = (
@@ -354,9 +345,6 @@ const createMonthlyStatement = (
   isTaxLove: boolean,
   expectedMonth: number
 ): MonthlyStatementOfPaymentOfWageAndSalary => {
-  if (isTaxLove && expectedMonth <= 11 && line) {
-    line = line.slice(0, line.lastIndexOf((expectedMonth + 1).toString()));
-  }
   if (line.startsWith("연말")) return null!;
   const obj = defaultStatement();
   let prev = -1;
@@ -390,6 +378,16 @@ const createMonthlyStatement = (
     monthlyStatement.salary.youth = monthlyStatement.totalSalary.total;
   else monthlyStatement.salary.manhood = monthlyStatement.totalSalary.total;
   return monthlyStatement;
+};
+
+const findPositionForParsingStatement = (x: number, range: number[]) => {
+  let i = 0;
+  while (i < range.length && x > range[i]) i++;
+  if (i === range.length) {
+    i--;
+    console.error("Can not find position for statement " + x);
+  }
+  return titles[i];
 };
 
 const createMonthlyStatementByObject = (
