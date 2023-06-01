@@ -97,7 +97,7 @@ const RowWrapper = ({
     css={css`
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: flex-start;
       background-color: rgba(254, 254, 254, 0.376);
       transition: color 0.15s ease-in-out;
       &:nth-of-type(odd) {
