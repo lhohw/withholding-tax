@@ -23,7 +23,14 @@ const TableData = ({ corporate, year }: TableDataProps) => {
   const rowRenderer: ListRowRenderer = useCallback(
     ({ key, index, style }) => {
       const employee = filteredEmployees[index];
-      return <RowRenderer key={key} style={style} employee={employee} />;
+      return (
+        <RowRenderer
+          key={key}
+          style={style}
+          employee={employee}
+          index={index}
+        />
+      );
     },
     [filteredEmployees]
   );

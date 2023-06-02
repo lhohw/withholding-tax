@@ -12,8 +12,9 @@ import CheckBox from "../CheckBox";
 export type RowRendererProps = {
   style: React.CSSProperties;
   employee: InstanceType<typeof Employee>;
+  index: number;
 };
-const RowRenderer = ({ style, employee }: RowRendererProps) => {
+const RowRenderer = ({ style, employee, index }: RowRendererProps) => {
   const { id } = employee;
   const {
     selectedYear: { selected: year },
@@ -72,6 +73,7 @@ const RowRenderer = ({ style, employee }: RowRendererProps) => {
       checked={checked}
       isAllChecked={isAllChecked}
       onToggle={onToggleData}
+      index={index}
     />
   );
 };

@@ -21,6 +21,7 @@ export type RowProps = {
   width?: number[];
   title?: string;
   onToggle?: (idx: number) => void;
+  index?: number;
 };
 const Row = ({
   style,
@@ -34,6 +35,7 @@ const Row = ({
   title,
   width: w = [80, 80, 80, 80, 130, 130, ...new Array(12).fill(50)],
   onToggle,
+  index,
 }: RowProps) => {
   const totalWidth = useMemo(() => w.reduce((x, y) => x + y) + 50, [w]);
   return (
@@ -42,6 +44,7 @@ const Row = ({
       style={style}
       isHeading={isHeading}
       title={title}
+      index={index}
     >
       <List width={totalWidth}>
         {handler}
@@ -87,7 +90,8 @@ const RowWrapper = ({
   isHeading,
   children,
   title,
-}: Pick<RowProps, "className" | "style" | "isHeading" | "title"> & {
+  index,
+}: Pick<RowProps, "className" | "style" | "isHeading" | "title" | "index"> & {
   children: React.ReactNode;
 }) => (
   <div
@@ -100,9 +104,14 @@ const RowWrapper = ({
       align-items: flex-start;
       background-color: rgba(254, 254, 254, 0.376);
       transition: color 0.15s ease-in-out;
-      &:nth-of-type(odd) {
-        ${!isHeading && lightOrangeGradient};
-      }
+      ${typeof index === "number"
+        ? index % 2 === 0 && lightOrangeGradient
+        : !isHeading &&
+          css`
+            &:nth-of-type(odd) {
+              ${lightOrangeGradient}
+            }
+          `}
     `}
   >
     {children}
